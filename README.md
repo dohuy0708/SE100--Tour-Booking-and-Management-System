@@ -3,6 +3,7 @@
 <p align="center">
   <img src="https://www.uit.edu.vn/sites/vi/files/banner_uit.png" alt="Alt text">
 </p>
+
 ## Tour Booking and Management System 
 
 The tour booking and management system is a website and management platform that helps customers search and book tours quickly and conveniently. At the same time, it helps service providers or travel companies manage their website effectively.
