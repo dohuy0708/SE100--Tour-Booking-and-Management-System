@@ -9,9 +9,6 @@ export class TourMedia {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   media_id!: string;
 
-  @ManyToOne(()=>Tour, (tour)=>tour.tour_id, {onDelete:'CASCADE'}) 
-  tour_id!: Tour;
-
   @Column('varchar', { length: 255 })  
   cover_image!: string;
 
@@ -32,4 +29,8 @@ export class TourMedia {
 
   @Column('varchar', { length: 255 })  
   image_6!: string;
+
+  @ManyToOne(()=>Tour, (tour)=>tour.media, {onDelete:'CASCADE'})
+  tour_id!:Tour;
+
 }

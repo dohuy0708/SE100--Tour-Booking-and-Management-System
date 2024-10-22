@@ -4,6 +4,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGenerate
 import { Group } from './group_model';
 import { User } from './user_model';
 import { Tour } from './tour_model';
+import { Booking } from './booking_model';
 
 
 
@@ -14,7 +15,7 @@ export class Schedule {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   schedule_id!: string;
 
-  @OneToMany(()=>Tour, (tour)=>tour.tour_id)  
+  @ManyToOne(()=>Tour, (tour)=>tour.schedules)  
   tour_id!: Tour;
 
   @Column({ type: 'date' })
@@ -29,5 +30,6 @@ export class Schedule {
   @Column('int')  
   available_slots!: number;
 
-
+  @OneToMany(()=> Booking, (booking)=>booking.schedule_id)
+  bookings!:Booking[];
 }

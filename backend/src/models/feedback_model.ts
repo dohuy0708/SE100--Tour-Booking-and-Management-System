@@ -14,10 +14,10 @@ export class Feedback {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   feedback_id!: string;
 
-  @OneToMany(()=>User, (user)=>user.user_id)  
+  @ManyToOne(()=>User, (user)=>user.feedbacks)  
   customer_id!: User;
 
-  @OneToMany(()=>Tour, (tour)=>tour.tour_id)  
+  @ManyToOne(()=>Tour, (tour)=>tour.feedbacks)  
   tour_id!: Tour;
 
   @Column({ type: 'text' })

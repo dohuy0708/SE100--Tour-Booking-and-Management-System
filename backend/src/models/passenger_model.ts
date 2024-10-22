@@ -13,7 +13,7 @@ export class Passenger {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   passenger_id!: string;
 
-  @ManyToOne(()=>Booking, (booking)=>booking.booking_id)  
+  @ManyToOne(()=>Booking, (booking)=>booking.passengers, {onDelete:'CASCADE'})  
   booking_id!: Booking;
 
   @Column('varchar', {length:100})

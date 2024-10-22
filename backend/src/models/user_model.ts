@@ -2,6 +2,8 @@ import { injectable } from 'inversify';    // Dependency Injection nếu bạn d
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Group } from './group_model';
 import { group } from 'console';
+import { Feedback } from './feedback_model';
+import { Booking } from './booking_model';
 
 @injectable()  // Sử dụng DI của inversify nếu bạn dùng DI
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
@@ -24,6 +26,13 @@ export class User {
   @Column('date')  
   date_of_birth!: Date;
 
-  @ManyToOne(()=> Group, (group)=>group.group_id)  
+  @ManyToOne(()=> Group, (group)=>group.users, {onDelete:'SET NULL'})  
   group_id!: Group;
+
+  @OneToMany(()=> Feedback, (feedback)=>feedback.customer_id)
+  feedbacks!:Feedback[];
+
+  @OneToMany(()=> Booking, (booking)=>booking.customer_id)
+  bookings!:Booking[];
+
 }

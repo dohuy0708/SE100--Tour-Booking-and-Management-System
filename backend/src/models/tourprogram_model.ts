@@ -9,13 +9,13 @@ export class TourProgram {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   schedule_id!: string;
 
-  @OneToMany(()=>Tour, (tour)=>tour.tour_id, {onDelete:'CASCADE'}) 
-  tour_id!: Tour;
-
   @Column('int')  
   day_number!: string;
 
   @Column('text')  
   schedule_description!: string;
+
+  @ManyToOne(() => Tour, (tour) => tour.programs, { onDelete: 'CASCADE' })
+  tour_id!: Tour;
 
 }

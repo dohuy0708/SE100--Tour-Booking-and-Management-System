@@ -6,9 +6,9 @@ import { Role } from './role_model';
 @injectable()  // Sử dụng DI của inversify nếu bạn dùng DI
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
 export class Group_Role {
-  @OneToMany(()=>Group , (group)=>group.group_id)
+  @ManyToOne(()=>Group , (group)=>group.group_roles)
   group_id!: Group;
 
-  @OneToMany(()=>Role , (role)=>role.role_id)
+  @ManyToOne(()=>Role , (role)=>role.group_roles)
   role_id!: Role;
 }

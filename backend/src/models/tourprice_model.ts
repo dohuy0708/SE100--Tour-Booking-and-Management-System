@@ -9,9 +9,6 @@ export class TourPrice {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   price_id!: string;
 
-  @OneToMany(()=>Tour, (tour)=>tour.tour_id, {onDelete:'CASCADE'}) 
-  tour_id!: Tour;
-
   @Column({type:'decimal', precision:10, scale:2})  
   adult_price!: string;
 
@@ -21,5 +18,7 @@ export class TourPrice {
   @Column({type:'decimal', precision:10, scale:2})  
   infant_price!: string;
 
+  @ManyToOne(() => Tour, (tour) => tour.prices, { onDelete: 'CASCADE' })
+  tour_id!: Tour;
 
 }

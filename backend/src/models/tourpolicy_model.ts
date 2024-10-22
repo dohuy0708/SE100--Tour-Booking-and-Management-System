@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';    // Dependency Injection nếu bạn dùng inversify
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Group } from './group_model';
+import { Tour } from './tour_model';
 
 enum PolicyType {
     Domestic = 'domestic',
@@ -21,4 +22,6 @@ export class TourPolicy {
   @Column({type:'text'})  
   policy_content!: string;
 
+  @OneToMany(()=>Tour, (tour)=> tour.policy_id)
+  tours!:Tour[]
 }

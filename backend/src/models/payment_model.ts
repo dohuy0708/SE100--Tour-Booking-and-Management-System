@@ -20,9 +20,6 @@ export class Payment {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   payment_id!: string;
 
-  @OneToMany(()=>Booking, (booking)=>booking.booking_id)  
-  booking_id!: Booking;
-
   @Column({ type: 'decimal', precision:10, scale:2 })
   amount_paid!: string;
 
@@ -32,5 +29,7 @@ export class Payment {
   @Column({type:'enum', enum:PaymentMethod, default:'cash'})  
   payment_method!: PaymentMethod;
 
+  @ManyToOne(() => Booking, (booking) => booking.payments, { onDelete: 'CASCADE' })
+  booking_id!: Booking;
 
 }

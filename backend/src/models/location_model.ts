@@ -2,6 +2,7 @@ import { injectable } from 'inversify';    // Dependency Injection nếu bạn d
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Group } from './group_model';
 import { Tour } from './tour_model';
+import { Tour_Location } from './tour_location_model';
 
 @injectable()  // Sử dụng DI của inversify nếu bạn dùng DI
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
@@ -14,5 +15,8 @@ export class Location {
 
   @Column('varchar', {length:255})  
   address!: string;
+
+  @OneToMany(() => Tour_Location, (tour_location) => tour_location.Location_id)
+  tourLocations!: Tour_Location[];
 
 }
