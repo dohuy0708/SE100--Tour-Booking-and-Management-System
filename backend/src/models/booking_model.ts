@@ -8,9 +8,10 @@ import { Tour } from './tour_model';
 import { Passenger } from './passenger_model';
 import { Payment } from './payment_model';
 import { scheduler } from 'timers/promises';
+import { BaseModel } from './base-model';
 
 
-enum BookingStatus {
+export enum BookingStatus {
     PENDING = 'pending',
     CONFIRMED = 'confirmed',
     CANCELLED = 'cancelled'
@@ -18,7 +19,7 @@ enum BookingStatus {
 
 @injectable()  // Sử dụng DI của inversify nếu bạn dùng DI
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
-export class Booking {
+export class Booking extends BaseModel {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   booking_id!: string;
 

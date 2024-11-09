@@ -5,6 +5,7 @@ import { Group } from './group_model';
 import { User } from './user_model';
 import { Tour } from './tour_model';
 import { Booking } from './booking_model';
+import { BaseModel } from './base-model';
 
 
 enum PaymentMethod {
@@ -16,7 +17,7 @@ enum PaymentMethod {
 
 @injectable()  // Sử dụng DI của inversify nếu bạn dùng DI
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
-export class Payment {
+export class Payment extends BaseModel{
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   payment_id!: string;
 

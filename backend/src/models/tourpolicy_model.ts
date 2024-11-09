@@ -2,8 +2,9 @@ import { injectable } from 'inversify';    // Dependency Injection nếu bạn d
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Group } from './group_model';
 import { Tour } from './tour_model';
+import { BaseModel } from './base-model';
 
-enum PolicyType {
+export enum PolicyType {
     Domestic = 'domestic',
     International = 'international',
   }
@@ -12,7 +13,7 @@ enum PolicyType {
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
 
 
-export class TourPolicy {
+export class TourPolicy extends BaseModel{
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   policy_id!: string;
 

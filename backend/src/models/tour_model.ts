@@ -11,7 +11,7 @@ import { Feedback } from './feedback_model';
 
 
 
-enum TourType {
+export enum TourType {
     Domestic = 'domestic',
     International = 'international',
   }
