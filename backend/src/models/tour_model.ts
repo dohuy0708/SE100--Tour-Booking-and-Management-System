@@ -8,6 +8,7 @@ import { Tour_Location } from './tour_location_model';
 import { Schedule } from './schedule_model';
 import { Booking } from './booking_model';
 import { Feedback } from './feedback_model';
+import { BaseModel } from './base-model';
 
 
 
@@ -17,7 +18,7 @@ export enum TourType {
   }
 @injectable()  // Sử dụng DI của inversify nếu bạn dùng DI
 @Entity()      // Đánh dấu class này là một entity trong TypeORM
-export class Tour {
+export class Tour extends BaseModel {
   @PrimaryGeneratedColumn('uuid')  // Tự động tạo cột ID kiểu UUID
   tour_id!: string;
 

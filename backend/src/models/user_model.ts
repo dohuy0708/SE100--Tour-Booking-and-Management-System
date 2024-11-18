@@ -1,7 +1,6 @@
 import { injectable } from 'inversify';    // Dependency Injection nếu bạn dùng inversify
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Group } from './group_model';
-import { group } from 'console';
 import { Feedback } from './feedback_model';
 import { Booking } from './booking_model';
 import { BaseModel } from './base-model';

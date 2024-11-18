@@ -1,18 +1,21 @@
-import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn, Column } from 'typeorm';
 
-export abstract class BaseModel {
-  @CreateDateColumn({ name: 'create_at' })
-  createAt!: Date;
+export class BaseModel {
+  @Column('uuid', { nullable: true })
+  id?: string;
 
-  @UpdateDateColumn({ name: 'update_at' })
-  updateAt!: Date;
+  @CreateDateColumn()  
+  createdAt?: Date;
 
-  @Column({ nullable: true, name: 'create_by' })
-  createBy!: string;
+  @UpdateDateColumn()  
+  updatedAt?: Date;
 
-  @Column({ nullable: true, name: 'update_by' })
-  updateBy!: string;
+  @Column('varchar', { nullable: true })  
+  createdBy?: string;
 
-  @Column({ nullable: true, name: 'delete_at' })
-  deleteAt!: Date;
+  @Column('varchar', { nullable: true })  
+  updatedBy?: string;
+
+  @DeleteDateColumn()  
+  deletedAt?: Date;
 }
