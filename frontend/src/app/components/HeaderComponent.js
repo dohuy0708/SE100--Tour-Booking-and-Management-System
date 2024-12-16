@@ -6,7 +6,7 @@ export default function HeaderComponent() {
       <div className="max-w-7xl h-full mx-auto ">
         <div className="flex justify-between h-full items-center">
           <div>
-            <img className="h-16 text-white" src="./logo.png" />
+            <img className="h-16 text-white" src="/logo.png" alt="logo kaze" />
           </div>
           <div> Đăng nhập</div>
         </div>

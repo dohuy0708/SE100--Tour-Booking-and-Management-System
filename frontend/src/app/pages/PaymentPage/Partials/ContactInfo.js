@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-
+import { sPayment } from "../paymentStore";
 const ContactInfo = () => {
-  const [contactInfo, setContactInfo] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-  });
+  const info = sPayment.slice((n) => n.info).use();
+  console.log("name: ", info.name);
+  //const [contactInfo, setContactInfo] = useState("");
 
+  const setContactInfo = (e) => {
+    info.name = { ...info, name: e.target.value };
+  };
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
@@ -16,10 +16,8 @@ const ContactInfo = () => {
           type="text"
           placeholder="Nhập họ tên"
           className="w-full border rounded-lg p-2"
-          value={contactInfo.name}
-          onChange={(e) =>
-            setContactInfo({ ...contactInfo, name: e.target.value })
-          }
+          value={info.name}
+          onChange={(e) => setContactInfo(e)}
         />
       </div>
       <div>
@@ -28,10 +26,10 @@ const ContactInfo = () => {
           type="text"
           placeholder="Nhập số điện thoại"
           className="w-full border rounded-lg p-2"
-          value={contactInfo.phone}
-          onChange={(e) =>
-            setContactInfo({ ...contactInfo, phone: e.target.value })
-          }
+          // value={contactInfo.phone}
+          // onChange={(e) =>
+          //   setContactInfo({ ...contactInfo, phone: e.target.value })
+          // }
         />
       </div>
       <div>
@@ -40,10 +38,10 @@ const ContactInfo = () => {
           type="email"
           placeholder="Nhập email"
           className="w-full border rounded-lg p-2"
-          value={contactInfo.email}
-          onChange={(e) =>
-            setContactInfo({ ...contactInfo, email: e.target.value })
-          }
+          // value={contactInfo.email}
+          // onChange={(e) =>
+          //   setContactInfo({ ...contactInfo, email: e.target.value })
+          // }
         />
       </div>
       <div>
@@ -52,10 +50,10 @@ const ContactInfo = () => {
           type="text"
           placeholder="Nhập địa chỉ"
           className="w-full border rounded-lg p-2"
-          value={contactInfo.address}
-          onChange={(e) =>
-            setContactInfo({ ...contactInfo, address: e.target.value })
-          }
+          // value={contactInfo.address}
+          // onChange={(e) =>
+          //   setContactInfo({ ...contactInfo, address: e.target.value })
+          // }
         />
       </div>
     </div>

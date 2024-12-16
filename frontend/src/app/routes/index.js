@@ -21,7 +21,7 @@ const routes = [
     isShowLayout: true,
   },
   {
-    path: "/tour",
+    path: "/tour/:id",
     page: TourPage,
     isShowLayout: true,
   },

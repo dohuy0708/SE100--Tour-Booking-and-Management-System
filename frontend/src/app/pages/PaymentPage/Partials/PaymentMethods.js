@@ -1,6 +1,6 @@
 import React from "react";
 
-const PaymentMethods = ({ selectedPayment, setSelectedPayment }) => {
+const PaymentMethods = () => {
   const paymentMethods = [
     { id: "cash", label: "Tiền mặt" },
     {
@@ -33,9 +33,9 @@ const PaymentMethods = ({ selectedPayment, setSelectedPayment }) => {
     { id: "credit", label: "Thẻ tín dụng" },
   ];
 
-  const handlePaymentChange = (id) => {
-    setSelectedPayment(id);
-  };
+  // const handlePaymentChange = (id) => {
+  //   setSelectedPayment(id);
+  // };
 
   return (
     <div className="mt-8">
@@ -43,24 +43,24 @@ const PaymentMethods = ({ selectedPayment, setSelectedPayment }) => {
       <div className="space-y-4 mt-4">
         {paymentMethods.map((method) => (
           <div
-            key={method.id}
-            className={`border rounded-lg p-4 flex items-start space-x-4 ${
-              selectedPayment === method.id
-                ? "border-blue-500"
-                : "border-gray-300"
-            }`}
-            onClick={() => handlePaymentChange(method.id)}
+          // key={method.id}
+          // className={`border rounded-lg p-4 flex items-start space-x-4 ${
+          //   selectedPayment === method.id
+          //     ? "border-blue-500"
+          //     : "border-gray-300"
+          // }`}
+          // onClick={() => handlePaymentChange(method.id)}
           >
             <input
               type="radio"
-              id={method.id}
+              //id={method.id}
               name="payment"
-              checked={selectedPayment === method.id}
-              onChange={() => handlePaymentChange(method.id)}
+              //checked={selectedPayment === method.id}
+              // onChange={() => handlePaymentChange(method.id)}
               className="mt-1"
             />
             <div>
-              <label
+              {/* <label
                 htmlFor={method.id}
                 className="font-semibold text-gray-700"
               >
@@ -68,7 +68,7 @@ const PaymentMethods = ({ selectedPayment, setSelectedPayment }) => {
               </label>
               {method.details && selectedPayment === method.id && (
                 <div className="mt-2 text-gray-600">{method.details}</div>
-              )}
+              )} */}
             </div>
           </div>
         ))}

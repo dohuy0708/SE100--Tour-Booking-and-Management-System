@@ -1,34 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-const tours = [
-  {
-    id: 1,
-    place: "Đà Nẵng",
-    title: "ĐÓN TẾT DƯƠNG LỊCH 2025",
-    image: "/img1.png",
-  },
-  {
-    id: 2,
-    place: "Hạ Long",
-    title: "Du xuân trên Vịnh 2025",
-    image: "/img2.png",
-  },
-  {
-    id: 3,
-    place: "Hội An",
-    title: "Phố cổ đón xuân 2025",
-    image: "/img3.png",
-  },
-];
-
-function Slider() {
+function Slider({ tours }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(null);
 
   // Xử lý tự động chuyển slide
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % tours.length);
+      setCurrentSlide((prev) => (prev + 1) % 3);
     }, 5000);
     setAutoPlay(interval); // Lưu lại tham chiếu để có thể dừng
     return () => clearInterval(interval); // Dọn dẹp khi unmount hoặc state thay đổi

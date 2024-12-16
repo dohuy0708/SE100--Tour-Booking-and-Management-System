@@ -3,10 +3,11 @@ import ContactInfo from "./ContactInfo";
 import PassengerList from "./PassengerList";
 import PaymentMethods from "./PaymentMethods";
 import NotesSection from "./NotesSection";
+import { sPayment } from "../paymentStore";
 
 const Step1 = () => {
-  const [notes, setNotes] = useState(""); // Ghi chú
-  const [selectedPayment, setSelectedPayment] = useState("cash"); // Phương thức thanh toán
+  // const [notes, setNotes] = useState(sPayment.notes); // Ghi chú
+  // const [selectedPayment, setSelectedPayment] = useState("cash"); // Phương thức thanh toán
 
   return (
     <div>
@@ -17,12 +18,14 @@ const Step1 = () => {
       <PassengerList />
 
       {/* Ghi chú */}
-      <NotesSection notes={notes} setNotes={setNotes} />
+      <NotesSection
+      // notes={notes} setNotes={setNotes}
+      />
 
       {/* Phương thức thanh toán */}
       <PaymentMethods
-        selectedPayment={selectedPayment}
-        setSelectedPayment={setSelectedPayment}
+      // selectedPayment={selectedPayment}
+      // setSelectedPayment={setSelectedPayment}
       />
     </div>
   );

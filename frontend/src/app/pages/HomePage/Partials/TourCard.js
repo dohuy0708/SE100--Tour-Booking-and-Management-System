@@ -1,8 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function TourCard({ tour }) {
   const { title, startTime, duration, price, seatsLeft, image } = tour;
-
+  const navigate = useNavigate();
+  const goToTourPage = () => {
+    navigate(`/tour/${tour.id}`);
+  };
   return (
     <div className="bg-white rounded shadow-md overflow-hidden">
       <img src={image} alt={title} className="w-full h-64 object-cover" />
@@ -27,7 +31,10 @@ function TourCard({ tour }) {
 
             <span className="text-red  text-2xl">{price} đ</span>
           </div>
-          <button className="px-4 py-2 font-semibold bg-red text-white rounded-lg ">
+          <button
+            className="px-4 py-2 font-semibold bg-red text-white rounded-lg "
+            onClick={goToTourPage}
+          >
             Đặt chỗ
           </button>
         </div>

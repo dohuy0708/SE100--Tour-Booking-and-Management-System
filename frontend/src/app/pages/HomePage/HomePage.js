@@ -1,50 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "./Partials/Slider";
 import SearchBar from "../../components/SearchBar";
 import TourSection from "./Partials/TourSection";
+import {
+  getAbroadTours,
+  getBannerTours,
+  getDomestricTours,
+  getNewTours,
+} from "../../Services/userService";
 
 export default function HomePage() {
-  const toursData = [
-    {
-      id: 1,
-      title: "Hà Nội - Hạ Long - Yên Tử - Ninh Bình",
-      startTime: "08:00 12/12/2024",
-      duration: "3N2Đ",
-      price: "6.000.000",
-      seatsLeft: 3,
-      image: "/tour1.png",
-    },
-    {
-      id: 2,
-      title: "Hà Nội - Hạ Long - Yên Tử - Ninh Bình",
-      startTime: "08:00 12/12/2024",
-      duration: "3N2Đ",
-      price: "6.000.000",
-      seatsLeft: 3,
-      image: "/tour1.png",
-    },
-    {
-      id: 3,
-      title: "Hà Nội - Hạ Long - Yên Tử - Ninh Bình",
-      startTime: "08:00 12/12/2024",
-      duration: "3N2Đ",
-      price: "6.000.000",
-      seatsLeft: 3,
-      image: "/tour1.png",
-    },
-  ];
+  const [bannerTours, setBannerTours] = useState([]);
+  const [newTours, setNewTours] = useState([]);
+  const [domestricTours, setDomestricTours] = useState([]);
+  const [abroadTours, setAbroadTours] = useState([]);
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const bannerRes = await getBannerTours();
+        if (bannerRes) setBannerTours(bannerRes);
+        //
+        const newRes = await getNewTours();
+        if (newRes) setNewTours(newRes);
+        //
+        const domestricRes = await getDomestricTours();
+        if (domestricRes) setDomestricTours(domestricRes);
+        //
+        const abroadRes = await getAbroadTours();
+        if (abroadRes) setAbroadTours(abroadRes);
+      } catch (error) {
+        console.error("Failed to fetch tours:", error);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
   return (
     <div>
       <div className="relative">
-        <Slider />
+        <Slider tours={bannerTours} />
         <div className="absolute w-1/2 bottom-[-22px] left-1/2 transform -translate-x-1/2">
           <SearchBar />
         </div>
       </div>
-      <div className="mx-4">
-        <TourSection title="Đón Tết 2025" tours={toursData} />
-        <TourSection title="Tour trong nước nổi bật" tours={toursData} />
-        <TourSection title="Tour nước ngoài nổi bật" tours={toursData} />
+      <div className="mx-32">
+        <TourSection title="Đón Tết 2025" tours={newTours} />
+        <TourSection title="Tour trong nước nổi bật" tours={domestricTours} />
+        <TourSection title="Tour nước ngoài nổi bật" tours={abroadTours} />
       </div>
     </div>
   );

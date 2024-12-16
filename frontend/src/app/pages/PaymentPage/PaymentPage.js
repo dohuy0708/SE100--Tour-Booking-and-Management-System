@@ -3,9 +3,11 @@ import StepBar from "./Partials/StepBar";
 import Step1 from "./Partials/Step1";
 import Step2 from "./Partials/Step2";
 import Step3 from "./Partials/Step3";
+import { sPayment } from "./paymentStore";
 
 const PaymentPage = () => {
   const [step, setStep] = useState(1); // Bước hiện tại, bắt đầu từ bước 1
+  const info = sPayment.use();
 
   const handleNextStep = () => {
     if (step < 3) {
@@ -47,6 +49,7 @@ const PaymentPage = () => {
           {step < 3 ? "Tiếp tục" : "Đặt Ngay"}
         </button>
       </div>
+
       {/* Step Content */}
       {step === 1 && <Step1 />}
       {step === 2 && <Step2 />}
