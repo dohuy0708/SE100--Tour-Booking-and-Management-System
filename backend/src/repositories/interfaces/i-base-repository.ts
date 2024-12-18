@@ -1,7 +1,7 @@
 import { PagingDto } from '../../dto/paging-dto';
 import { DeleteResultType } from '../../types/delete-result-type';
 import { RecordOrderType } from '../../types/record-order-type';
-import { UpdateResultType } from '../../types/update-resu;t-type';
+import { UpdateResultType } from '../../types/update-result-type';
 import { DeepPartial, FindOptionsSelect } from 'typeorm';
 
 export interface IBaseRepository<T> {

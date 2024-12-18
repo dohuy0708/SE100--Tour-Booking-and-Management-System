@@ -4,7 +4,7 @@ import { IBaseRepository } from '../interfaces/i-base-repository';
 import { DeleteResultType } from '../../types/delete-result-type';
 import { ITYPES } from '../../types/interface-type';
 import { RecordOrderType } from '../../types/record-order-type';
-import { UpdateResultType } from '../../types/update-resu;t-type';
+import { UpdateResultType } from '../../types/update-result-type';
 import BaseError from '../../utils/base-error';
 import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
