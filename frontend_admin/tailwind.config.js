@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}", // Đường dẫn tới các tệp của bạn
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customBG: "#F5F6FA",
+      },
+    },
   },
   plugins: [],
 };
