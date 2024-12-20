@@ -9,6 +9,7 @@ export const sPayment = signify({
     address: "",
   },
   passengers: [], // Danh sách hành khách
+  price: 0,
   note: "",
   paymentMethod: "",
 });

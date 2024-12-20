@@ -1,12 +1,15 @@
 import React from "react";
-import ScheduleRow from "./ScheduleRow";
+import { useNavigate } from "react-router-dom";
 
-const ScheduleTable = ({ scheduleData }) => {
+const ScheduleTable = ({ scheduleData, tour }) => {
   const ticketTypes =
     scheduleData.length > 0
       ? scheduleData[0].tickets.map((ticket) => ticket.type)
       : [];
-
+  const navigate = useNavigate();
+  const handleByTckets = (tourId, dayId) => {
+    navigate(`/payment?tourId=${tourId}&dayId=${dayId}`);
+  };
   return (
     <div className="bg-secd mt-4">
       <table className="w-full text-left border-collapse">
@@ -24,12 +27,25 @@ const ScheduleTable = ({ scheduleData }) => {
         </thead>
         <tbody>
           {scheduleData.map((schedule, index) => (
-            <ScheduleRow
-              key={index}
-              date={schedule.date}
-              tickets={schedule.tickets}
-              seats={schedule.seats}
-            />
+            <tr className="border-b p-3 font-medium">
+              <td className="p-3 pl-6   font-medium">{schedule.date}</td>
+              {schedule.tickets.map((ticket, index) => (
+                <td key={index} className=" text-red">
+                  <p>{ticket.price} VND</p>
+                </td>
+              ))}
+              <td className=" text-red text-center">
+                {schedule.available_slots}
+              </td>
+              <td className=" text-center">
+                <button
+                  onClick={() => handleByTckets(tour.id, schedule.id)}
+                  className="bg-main text-white px-4 py-2 rounded hover:bg-blue-600 "
+                >
+                  Mua vé
+                </button>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>

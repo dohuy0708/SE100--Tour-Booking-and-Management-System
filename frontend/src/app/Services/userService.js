@@ -28,7 +28,7 @@ const getTourInfo = (id) => {
 const getPaymentMethods = () => {
   return paymentMethods;
 };
-
+const getUserInfo = ({ username, password }) => {};
 export {
   getBannerTours,
   getNewTours,

@@ -20,11 +20,7 @@ const TourInfo = ({ tour }) => {
           </p>
         </div>
 
-        <p>
-          <strong>Phương tiện:</strong>{" "}
-          <span className="text-red font-medium"> {tour.transport}</span>
-        </p>
-        <ScheduleTable scheduleData={tour.days} />
+        <ScheduleTable scheduleData={tour.days} tour={tour} />
       </div>
       <Itinerary days={tour.scheduleData} />
     </div>

@@ -2,7 +2,7 @@ import React from "react";
 import PassengerInfo from "./PassengerInfo"; // Import component đã có
 import { sPayment } from "../paymentStore";
 
-const PassengerList = () => {
+const PassengerList = ({ day }) => {
   // Lấy danh sách hành khách từ Signify store
   const sPassengers = sPayment.slice((n) => n.passengers).use();
 
@@ -10,13 +10,17 @@ const PassengerList = () => {
   const passengerTypes = {
     adult: { label: "Người lớn", description: "Từ 12 trở lên" },
     child: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
-    infant: { label: "Em bé", description: "Dưới 3 tuổi" },
+    baby: { label: "Em bé", description: "Dưới 3 tuổi" },
   };
 
   // Tăng số lượng hành khách
   const handleIncrement = (type) => {
     sPayment.set((state) => {
       state.value.passengers.push({ type, name: "", gender: "Nam", dob: "" });
+    });
+    var iN = type === "adult" ? 0 : type === "child" ? 1 : 2;
+    sPayment.set((pre) => {
+      pre.value.price += day.tickets[iN].price;
     });
   };
 
@@ -25,6 +29,10 @@ const PassengerList = () => {
     sPayment.set((state) => {
       const index = state.value.passengers.findIndex((p) => p.type === type);
       if (index > -1) state.value.passengers.splice(index, 1);
+    });
+    var iN = type === "adult" ? 0 : type === "child" ? 1 : 2;
+    sPayment.set((pre) => {
+      pre.value.price -= day.tickets[iN].price;
     });
   };
 
