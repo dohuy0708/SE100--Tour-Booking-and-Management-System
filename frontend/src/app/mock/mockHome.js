@@ -98,4 +98,63 @@ const tourInfo = {
     },
   ],
 };
-export { toursData, bannerTours, tourInfo };
+const paymentMethods = [
+  {
+    id: "cash",
+    label: "Tiền mặt",
+    details: (
+      <p>
+        Quý khách có thể thanh toán trực tiếp bằng tiền mặt tại quầy giao dịch
+        của công ty chúng tôi.
+      </p>
+    ),
+  },
+  {
+    id: "bank",
+    label: "Chuyển khoản",
+    details: (
+      <>
+        <p>
+          Quý khách sau khi thực hiện việc chuyển khoản vui lòng gửi email đến{" "}
+          <a href="mailto:22520538@gm.uit.edu.vn" className="text-blue-500">
+            22520538@gm.uit.edu.vn
+          </a>{" "}
+          hoặc gọi tổng đài <strong>19001839</strong> để được xác nhận từ công
+          ty chúng tôi.
+        </p>
+        <p className="mt-2">
+          <strong>Tên Tài Khoản:</strong> Công ty CP Du lịch và Tiếp thị GTVT
+          Việt Nam - Vietravel
+        </p>
+        <p>
+          <strong>Số Tài Khoản:</strong> 190261 6659 4669
+        </p>
+        <p>
+          <strong>Ngân hàng:</strong> Techcombank - Chi nhánh Tp.HCM
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "zalopay",
+    label: "Thanh toán bằng ZaloPay",
+    details: (
+      <p>
+        Quý khách có thể thanh toán qua ví điện tử ZaloPay bằng cách quét mã QR
+        hoặc thực hiện giao dịch trên ứng dụng ZaloPay.
+      </p>
+    ),
+  },
+  {
+    id: "credit",
+    label: "Thẻ tín dụng",
+    details: (
+      <p>
+        Chúng tôi chấp nhận các loại thẻ tín dụng phổ biến như Visa, Mastercard.
+        Vui lòng đảm bảo thẻ của bạn có đủ hạn mức trước khi thanh toán.
+      </p>
+    ),
+  },
+];
+
+export { toursData, bannerTours, tourInfo, paymentMethods };

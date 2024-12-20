@@ -12,10 +12,9 @@ const StepBar = ({ step }) => {
     <div className="flex items-center justify-center space-x-8 mb-8">
       {steps.map((item, index) => (
         <div key={index} className="flex items-center space-x-2">
-          {/* Icon và vòng tròn */}
           <div
             className={`w-12 h-12 flex items-center justify-center rounded-full border-2 ${
-              step === index + 1 ? "bg-blue-500 border-blue-500" : "bg-gray-300"
+              step === index + 1 ? "bg-main border-main" : "bg-gray-300"
             }`}
           >
             <span
@@ -27,10 +26,9 @@ const StepBar = ({ step }) => {
             </span>
           </div>
 
-          {/* Label */}
           <div
             className={`text-sm font-semibold ${
-              step === index + 1 ? "text-blue-500" : "text-gray-500"
+              step === index + 1 ? "text-main" : "text-gray-500"
             }`}
           >
             {item.label}

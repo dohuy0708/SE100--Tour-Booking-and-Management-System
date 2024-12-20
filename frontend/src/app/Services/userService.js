@@ -1,4 +1,9 @@
-import { bannerTours, tourInfo, toursData } from "../mock/mockHome";
+import {
+  bannerTours,
+  paymentMethods,
+  tourInfo,
+  toursData,
+} from "../mock/mockHome";
 const getBannerTours = () => {
   return bannerTours;
   //   return axios.get(`/api/tour`, {});
@@ -20,6 +25,9 @@ const getTourInfo = (id) => {
   return tourInfo;
   // return axios.get(`/api/tour?id=${id}`, { id: id });
 };
+const getPaymentMethods = () => {
+  return paymentMethods;
+};
 
 export {
   getBannerTours,
@@ -27,4 +35,5 @@ export {
   getDomestricTours,
   getAbroadTours,
   getTourInfo,
+  getPaymentMethods,
 };

@@ -36,7 +36,6 @@ const Filter = ({ onApplyFilters }) => {
       destination,
       date: selectedDate,
       tourType,
-      transport,
     };
     onApplyFilters(filters); // Truyền dữ liệu bộ lọc ra ngoài
   };
@@ -125,7 +124,7 @@ const Filter = ({ onApplyFilters }) => {
       </div>
 
       {/* Phương tiện */}
-      <div>
+      {/* <div>
         <h3 className="font-semibold mb-2">Phương tiện:</h3>
         <div className="grid grid-cols-2 gap-2">
           {transportTypes.map((type) => (
@@ -140,7 +139,7 @@ const Filter = ({ onApplyFilters }) => {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Nút áp dụng */}
       <div>

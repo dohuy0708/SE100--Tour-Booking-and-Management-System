@@ -1,70 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import PassengerInfo from "./PassengerInfo"; // Import component đã có
+import { sPayment } from "../paymentStore";
 
 const PassengerList = () => {
-  const [passengers, setPassengers] = useState({
-    adult: 1,
-    child: 0,
-    toddler: 0,
-    infant: 0,
-  });
+  // Lấy danh sách hành khách từ Signify store
+  const sPassengers = sPayment.slice((n) => n.passengers).use();
 
+  // Định nghĩa loại hành khách
   const passengerTypes = {
     adult: { label: "Người lớn", description: "Từ 12 trở lên" },
-    child: { label: "Trẻ em", description: "Từ 5 - 11 tuổi" },
-    toddler: { label: "Trẻ nhỏ", description: "Từ 2 - 4 tuổi" },
-    infant: { label: "Em bé", description: "Dưới 2 tuổi" },
+    child: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
+    infant: { label: "Em bé", description: "Dưới 3 tuổi" },
   };
-
-  const [passengerDetails, setPassengerDetails] = useState({
-    adult: [{ name: "", gender: "Nam", dob: "" }],
-    child: [],
-    toddler: [],
-    infant: [],
-  });
 
   // Tăng số lượng hành khách
   const handleIncrement = (type) => {
-    setPassengers((prev) => ({
-      ...prev,
-      [type]: prev[type] + 1,
-    }));
-
-    setPassengerDetails((prev) => ({
-      ...prev,
-      [type]: [...prev[type], { name: "", gender: "Nam", dob: "" }],
-    }));
+    sPayment.set((state) => {
+      state.value.passengers.push({ type, name: "", gender: "Nam", dob: "" });
+    });
   };
 
   // Giảm số lượng hành khách
   const handleDecrement = (type) => {
-    if (passengers[type] > 0) {
-      setPassengers((prev) => ({
-        ...prev,
-        [type]: prev[type] - 1,
-      }));
-
-      setPassengerDetails((prev) => ({
-        ...prev,
-        [type]: prev[type].slice(0, -1), // Xóa phần tử cuối cùng
-      }));
-    }
+    sPayment.set((state) => {
+      const index = state.value.passengers.findIndex((p) => p.type === type);
+      if (index > -1) state.value.passengers.splice(index, 1);
+    });
   };
 
   // Cập nhật thông tin hành khách
-  const handleDetailChange = (type, index, field, value) => {
-    const updatedDetails = [...passengerDetails[type]];
-    updatedDetails[index][field] = value;
-
-    setPassengerDetails((prev) => ({
-      ...prev,
-      [type]: updatedDetails,
-    }));
+  const handleDetailChange = (index, field, value) => {
+    sPayment.set((state) => {
+      state.value.passengers[index][field] = value;
+    });
   };
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         {Object.keys(passengerTypes).map((key) => (
           <div
             key={key}
@@ -84,16 +57,20 @@ const PassengerList = () => {
             <div className="flex items-center space-x-4">
               <button
                 className={`w-8 h-8 rounded-full ${
-                  passengers[key] > 0
+                  sPassengers.filter((p) => p.type === key).length > 0
                     ? "bg-gray-300 hover:bg-gray-400"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 } flex items-center justify-center`}
                 onClick={() => handleDecrement(key)}
-                disabled={passengers[key] === 0}
+                disabled={
+                  sPassengers.filter((p) => p.type === key).length === 0
+                }
               >
                 -
               </button>
-              <span className="text-lg font-medium">{passengers[key]}</span>
+              <span className="text-lg font-medium">
+                {sPassengers.filter((p) => p.type === key).length}
+              </span>
               <button
                 className="w-8 h-8 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center"
                 onClick={() => handleIncrement(key)}
@@ -108,19 +85,15 @@ const PassengerList = () => {
       {/* Danh sách thông tin hành khách */}
       <div>
         <h3 className="text-lg font-semibold mb-4">Thông tin hành khách</h3>
-        {Object.keys(passengerTypes).map((type) =>
-          passengerDetails[type].map((detail, index) => (
-            <PassengerInfo
-              key={`${type}-${index}`}
-              typeLabel={passengerTypes[type].label}
-              index={index}
-              detail={detail}
-              onChange={(field, value) =>
-                handleDetailChange(type, index, field, value)
-              }
-            />
-          ))
-        )}
+        {sPassengers.map((detail, index) => (
+          <PassengerInfo
+            key={index}
+            typeLabel={passengerTypes[detail.type].label}
+            index={index}
+            detail={detail}
+            onChange={(field, value) => handleDetailChange(index, field, value)}
+          />
+        ))}
       </div>
     </div>
   );

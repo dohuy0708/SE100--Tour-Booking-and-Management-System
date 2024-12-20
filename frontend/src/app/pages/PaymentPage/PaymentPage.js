@@ -3,12 +3,18 @@ import StepBar from "./Partials/StepBar";
 import Step1 from "./Partials/Step1";
 import Step2 from "./Partials/Step2";
 import Step3 from "./Partials/Step3";
-import { sPayment } from "./paymentStore";
 
 const PaymentPage = () => {
   const [step, setStep] = useState(1); // Bước hiện tại, bắt đầu từ bước 1
-  const info = sPayment.use();
-
+  // const validateStep = () => {
+  //   if (step === 1) {
+  //     return info.step1Data && info.step1Data.requiredField; // Kiểm tra dữ liệu bước 1
+  //   }
+  //   if (step === 2) {
+  //     return info.step2Data && info.step2Data.selectedOption; // Kiểm tra dữ liệu bước 2
+  //   }
+  //   return true; // Bước cuối không cần xác thực
+  // };
   const handleNextStep = () => {
     if (step < 3) {
       setStep(step + 1);
@@ -28,6 +34,11 @@ const PaymentPage = () => {
       {/* Thanh tiến trình */}
       <StepBar step={step} />
 
+      {/* Step Content */}
+      {step === 1 && <Step1 />}
+      {step === 2 && <Step2 />}
+      {step === 3 && <Step3 />}
+
       {/* Nút điều hướng */}
       <div className="flex justify-between mt-8">
         <button
@@ -43,17 +54,12 @@ const PaymentPage = () => {
         </button>
 
         <button
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg font-semibold"
+          className="px-6 py-2 bg-main text-white rounded-lg font-semibold"
           onClick={handleNextStep}
         >
           {step < 3 ? "Tiếp tục" : "Đặt Ngay"}
         </button>
       </div>
-
-      {/* Step Content */}
-      {step === 1 && <Step1 />}
-      {step === 2 && <Step2 />}
-      {step === 3 && <Step3 />}
     </div>
   );
 };

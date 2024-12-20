@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { sPayment } from "../paymentStore";
 const ContactInfo = () => {
   const info = sPayment.slice((n) => n.info).use();
-  console.log("name: ", info.name);
-  //const [contactInfo, setContactInfo] = useState("");
 
-  const setContactInfo = (e) => {
-    info.name = { ...info, name: e.target.value };
+  const handleOnChangeInput = (event, field) => {
+    const val = event.target.value;
+    sPayment.set((pre) => {
+      pre.value.info[field] = val;
+    });
   };
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -17,7 +18,7 @@ const ContactInfo = () => {
           placeholder="Nhập họ tên"
           className="w-full border rounded-lg p-2"
           value={info.name}
-          onChange={(e) => setContactInfo(e)}
+          onChange={(event) => handleOnChangeInput(event, "name")}
         />
       </div>
       <div>
@@ -26,10 +27,8 @@ const ContactInfo = () => {
           type="text"
           placeholder="Nhập số điện thoại"
           className="w-full border rounded-lg p-2"
-          // value={contactInfo.phone}
-          // onChange={(e) =>
-          //   setContactInfo({ ...contactInfo, phone: e.target.value })
-          // }
+          value={info.phone}
+          onChange={(event) => handleOnChangeInput(event, "phone")}
         />
       </div>
       <div>
@@ -38,10 +37,8 @@ const ContactInfo = () => {
           type="email"
           placeholder="Nhập email"
           className="w-full border rounded-lg p-2"
-          // value={contactInfo.email}
-          // onChange={(e) =>
-          //   setContactInfo({ ...contactInfo, email: e.target.value })
-          // }
+          value={info.email}
+          onChange={(event) => handleOnChangeInput(event, "email")}
         />
       </div>
       <div>
@@ -50,10 +47,8 @@ const ContactInfo = () => {
           type="text"
           placeholder="Nhập địa chỉ"
           className="w-full border rounded-lg p-2"
-          // value={contactInfo.address}
-          // onChange={(e) =>
-          //   setContactInfo({ ...contactInfo, address: e.target.value })
-          // }
+          value={info.address}
+          onChange={(event) => handleOnChangeInput(event, "address")}
         />
       </div>
     </div>
