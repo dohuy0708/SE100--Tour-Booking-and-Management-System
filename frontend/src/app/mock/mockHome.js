@@ -168,5 +168,11 @@ const paymentMethods = [
     ),
   },
 ];
-
-export { toursData, bannerTours, tourInfo, paymentMethods };
+const userInfo = {
+  id: 1,
+  email: "22520462@gm.uit.edu.vn",
+  name: "Lê Huy Hoàng",
+  phone: "0916097570",
+  dob: "18/07/2004",
+};
+export { toursData, bannerTours, tourInfo, paymentMethods, userInfo };

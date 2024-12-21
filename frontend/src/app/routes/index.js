@@ -5,6 +5,7 @@ import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import Search from "../pages/Search/Search";
 import TourPage from "../pages/TourPage/TourPage";
 import Singup from "../pages/Access/Singup";
+import Profile from "../pages/Profile/Profile";
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
   {
     path: "/tour/:id",
     page: TourPage,
+    isShowLayout: true,
+  },
+  {
+    path: "/profile",
+    page: Profile,
     isShowLayout: true,
   },
   {

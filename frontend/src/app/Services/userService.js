@@ -3,6 +3,7 @@ import {
   paymentMethods,
   tourInfo,
   toursData,
+  userInfo,
 } from "../mock/mockHome";
 const getBannerTours = () => {
   return bannerTours;
@@ -28,7 +29,9 @@ const getTourInfo = (id) => {
 const getPaymentMethods = () => {
   return paymentMethods;
 };
-const getUserInfo = ({ username, password }) => {};
+const getUserInfo = ({ id }) => {
+  return userInfo;
+};
 export {
   getBannerTours,
   getNewTours,
@@ -36,4 +39,5 @@ export {
   getAbroadTours,
   getTourInfo,
   getPaymentMethods,
+  getUserInfo,
 };
