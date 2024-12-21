@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { login, mockLogin } from "../../Services/authService";
+import { mockLogin } from "../../Services/authService";
 import { useNavigate } from "react-router-dom";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const Login = () => {
   const [userName, setUserName] = useState("");
@@ -54,7 +55,13 @@ const Login = () => {
         </div>
 
         {/* Right Section */}
-        <div className="flex-1 flex flex-col justify-center px-8 py-12">
+        <div className="flex-1 flex flex-col justify-center px-8 py-12 relative">
+          <XMarkIcon
+            className="absolute right-4 top-4 h-6 hover:text-main cursor-pointer hover:bg-gray-100"
+            onClick={() => {
+              navigate("/");
+            }}
+          />
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
             ĐĂNG NHẬP
           </h2>
@@ -115,7 +122,7 @@ const Login = () => {
                   Nhớ mật khẩu
                 </label>
               </div>
-              <a href="#" className="ml-2 text-sm text-main hover:underline">
+              <a className="ml-2 text-sm text-main hover:underline">
                 Quên mật khẩu?
               </a>
             </div>
@@ -128,6 +135,18 @@ const Login = () => {
               >
                 {isLoading ? "Đang xử lý..." : "Đăng nhập"}
               </button>
+            </div>
+            {/* Đã có tài khoản? Đăng nhập */}
+            <div className="mt-4 text-center">
+              <p>
+                Chưa có tài khoản?{" "}
+                <button
+                  onClick={() => navigate("/signUp")}
+                  className="text-blue-500 hover:underline"
+                >
+                  Đăng ký
+                </button>
+              </p>
             </div>
           </div>
         </div>

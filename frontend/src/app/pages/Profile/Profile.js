@@ -9,8 +9,8 @@ export default function Profile() {
   const [selectedTab, setSelectedTab] = useState("profile");
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const id = localStorage.getItem("user");
   useEffect(() => {
+    const id = localStorage.getItem("user");
     const fetchUserData = async () => {
       try {
         const data = await getUserInfo(id);

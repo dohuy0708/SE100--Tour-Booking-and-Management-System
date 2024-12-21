@@ -4,8 +4,8 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import PaymentPage from "../pages/PaymentPage/PaymentPage";
 import Search from "../pages/Search/Search";
 import TourPage from "../pages/TourPage/TourPage";
-import Singup from "../pages/Access/Singup";
 import Profile from "../pages/Profile/Profile";
+import SignUp from "../pages/Access/SignUp";
 
 const routes = [
   {
@@ -19,8 +19,8 @@ const routes = [
     isShowLayout: false,
   },
   {
-    path: "/singup",
-    page: Singup,
+    path: "/signup",
+    page: SignUp,
     isShowLayout: false,
   },
   {
