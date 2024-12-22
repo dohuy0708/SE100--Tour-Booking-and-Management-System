@@ -3,11 +3,16 @@ import { useFilterContext } from "../../../context/FilterContext.js";
 
 const customerTypes = ["Người lớn", "Trẻ em", "Em bé"];
 
-export default function BookingModal({ isOpen, onClose }) {
+const orderInf = {
+  paymentMethod: "CreditCard", // Hình thức thanh toán: Thẻ tín dụng
+  status: "Confirmed", // Trạng thái đơn hàng: Đã xác nhận
+};
+
+export default function EditBookingModal({ isOpen, onClose, initialBooking }) {
   const { tourData } = useFilterContext(); // Lấy dữ liệu từ context
 
   // Kiểm tra tourData có được lấy không
-  console.log("Tour Data Modal:", tourData);
+  console.log("Innitial Booking:", initialBooking);
 
   const [selectedTour, setSelectedTour] = useState(null);
   const [selectedStartDate, setSelectedStartDate] = useState("");
@@ -19,78 +24,43 @@ export default function BookingModal({ isOpen, onClose }) {
   });
   const [bookingInfo, setBookingInfo] = useState({
     ticketQuantity: 1,
-    customers: [
-      {
-        type: "",
-        fullName: "",
-        gender: "",
-        dob: "",
-        price: 0,
-      },
-    ],
+    bookingStatus: "pending",
     totalPrice: 0,
-  });
 
-  const handleTicketQuantityChange = (e) => {
+    customers: [
+      { type: "Người lớn", fullName: "", gender: "", dob: "", price: 100 },
+    ],
+  });
+  const [orderInfo, setOrderInfo] = useState(orderInf); // Dữ liệu order info
+
+  if (!isOpen) return null;
+
+  const handleTourChange = (e) => {
+    const tour = tourData.find((t) => t.tourId === parseInt(e.target.value));
+    setSelectedTour(tour);
+    setSelectedStartDate(""); // Reset ngày khởi hành khi thay đổi tour
+  };
+
+  const handleCustomerChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedCustomers = [...bookingInfo.customers];
+    updatedCustomers[index][name] = value;
+    setBookingInfo({ ...bookingInfo, customers: updatedCustomers });
+  };
+
+  const handleTicketChange = (e) => {
     const quantity = e.target.value;
     const newCustomers = Array.from({ length: quantity }, () => ({
       type: "",
       fullName: "",
       gender: "",
       dob: "",
-      price: 0,
+      price: 100,
     }));
-
-    setBookingInfo((prev) => ({
-      ...prev,
+    setBookingInfo({
+      ...bookingInfo,
       ticketQuantity: quantity,
       customers: newCustomers,
-    }));
-  };
-
-  const handleTourChange = (e) => {
-    const tour = tourData.find((t) => t.tourId === parseInt(e.target.value));
-    setSelectedTour(tour);
-    setSelectedStartDate(""); // Reset ngày khởi hành khi thay đổi tour
-    // Reset lại thông tin đặt vé và số lượng vé về 1
-    setBookingInfo({
-      ticketQuantity: 1,
-      customers: [
-        {
-          type: "",
-          fullName: "",
-          gender: "",
-          dob: "",
-          price: 0,
-        },
-      ],
-      totalPrice: 0,
-    });
-  };
-  const handleCustomerChange = (index, field, value) => {
-    setBookingInfo((prev) => {
-      const updatedCustomers = [...prev.customers];
-      updatedCustomers[index] = {
-        ...updatedCustomers[index],
-        [field]: value,
-      };
-
-      // Cập nhật giá vé nếu field là loại khách
-      if (field === "type") {
-        updatedCustomers[index].price =
-          value === "Người lớn"
-            ? selectedTour?.tourPrice?.adult || 0
-            : value === "Trẻ em"
-            ? selectedTour?.tourPrice?.child || 0
-            : value === "Em bé"
-            ? selectedTour?.tourPrice?.infant || 0
-            : 0;
-      }
-
-      return {
-        ...prev,
-        customers: updatedCustomers,
-      };
     });
   };
 
@@ -101,27 +71,12 @@ export default function BookingModal({ isOpen, onClose }) {
     );
   };
 
-  const handleSubmitBooking = () => {
-    const bookingData = {
-      selectedTour,
-      selectedStartDate,
-      customerInfo,
-      bookingInfo,
-    };
-
-    console.log("Booking Data:", bookingData);
-    alert("Đặt tour thành công!");
-    onClose(); // Close modal after booking
-  };
-
-  if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">
-      <div className="bg-white rounded-lg shadow-lg w-4/5 p-6 flex flex-col max-h-[90vh]">
+      <div className="bg-white rounded-lg shadow-lg w-4/5 p-6  flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex justify-between items-center border-b mb-4">
-          <h1 className="text-2xl font-semibold">Đặt tour</h1>
+          <h1 className="text-2xl font-semibold ">Đặt tour</h1>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 flex"
@@ -132,12 +87,12 @@ export default function BookingModal({ isOpen, onClose }) {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="size-6"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
+                d="M6 18 18 6M6 6l12 12"
               />
             </svg>
           </button>
@@ -148,12 +103,12 @@ export default function BookingModal({ isOpen, onClose }) {
           className="overflow-auto flex-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {/* Tour Info */}
+          {/* Tour info */}
           <div className="mb-4">
-            <h4 className="text-xl text-blue-500 font-semibold mb-2">
+            <h4 className="text-xl text-blue-500  font-semibold mb-2">
               Thông tin tour
             </h4>
-            <div className="flex border border-gray-300 rounded-lg p-2 bg-slate-50 gap-4">
+            <div className="flex   border border-gray-300 rounded-lg p-2 bg-slate-50  gap-4">
               {/* Tour Selection */}
               <div className="flex-grow-[6] basis-[60%]">
                 <h4 className="font-semibold">Chọn tour:</h4>
@@ -162,7 +117,6 @@ export default function BookingModal({ isOpen, onClose }) {
                   value={selectedTour ? selectedTour.tourId : ""}
                   onChange={handleTourChange}
                 >
-                  <option value="">Chọn tour</option>
                   {tourData.map((tour) => (
                     <option key={tour.tourId} value={tour.tourId}>
                       {tour.tourName}
@@ -180,32 +134,31 @@ export default function BookingModal({ isOpen, onClose }) {
                   onChange={(e) => setSelectedStartDate(e.target.value)}
                 >
                   <option value="">Chọn ngày</option>
-                  {selectedTour?.schedules.map((schedule, idx) => (
-                    <option
-                      key={schedule.scheduleId}
-                      value={schedule.departureDate}
-                    >
-                      {schedule.departureDate}
-                    </option>
-                  ))}
+                  {selectedTour &&
+                    selectedTour.schedules.map((schedule, idx) => (
+                      <option
+                        key={schedule.scheduleId}
+                        value={schedule.departureDate}
+                      >
+                        {schedule.departureDate}
+                      </option>
+                    ))}
                 </select>
               </div>
-
-              {/* Ticket Quantity */}
               <div className="flex-grow-[1] basis-[10%]">
-                <h4 className="font-semibold">Số lượng vé:</h4>
+                <h4 className="font-semibold"> Số lượng vé: </h4>
                 <input
                   type="number"
                   className="mt-2 w-full p-2 border rounded"
                   placeholder="Số vé"
                   value={bookingInfo.ticketQuantity}
-                  onChange={handleTicketQuantityChange}
+                  onChange={handleTicketChange}
                   min={1}
-                  disabled={selectedTour === null} // Chỉ cho phép thay đổi khi tour đã được chọn
                 />
               </div>
             </div>
           </div>
+
           {/* Customer Information */}
           <div className="mb-4 ">
             <h4 className="font-semibold text-xl text-blue-500 mb-2">
@@ -271,6 +224,7 @@ export default function BookingModal({ isOpen, onClose }) {
               </div>
             </div>
           </div>
+
           {/* Booking Information */}
           <div className="mb-4">
             <h4 className="font-semibold text-blue-500 text-xl">
@@ -288,9 +242,7 @@ export default function BookingModal({ isOpen, onClose }) {
                         className="mt-2 w-full p-2 border rounded"
                         name="type"
                         value={customer.type}
-                        onChange={(e) =>
-                          handleCustomerChange(index, "type", e.target.value)
-                        } // Truyền field và value
+                        onChange={(e) => handleCustomerChange(index, e)}
                       >
                         <option value="">Chọn loại khách</option>
                         {customerTypes.map((type, idx) => (
@@ -347,7 +299,7 @@ export default function BookingModal({ isOpen, onClose }) {
                       <input
                         type="text"
                         className="mt-2 w-full p-2 border rounded text-yellow-500"
-                        value={`${customer.price.toLocaleString()} VND`} // Giá vé có thể được tính toán hoặc lấy từ một biến
+                        value={"1000 VND"} // Giá vé có thể được tính toán hoặc lấy từ một biến
                         disabled
                       />
                     </div>
@@ -356,6 +308,7 @@ export default function BookingModal({ isOpen, onClose }) {
               ))}
             </div>
           </div>
+
           {/* Order Information */}
           <div className="mb-4">
             <h4 className="text-xl text-blue-500  font-semibold mb-2">
@@ -368,6 +321,8 @@ export default function BookingModal({ isOpen, onClose }) {
               </div>
             </div>
           </div>
+
+          {/* Booking Buttons */}
           <div className="mt-6 flex justify-end space-x-4">
             <button
               onClick={onClose}
@@ -382,7 +337,6 @@ export default function BookingModal({ isOpen, onClose }) {
               Cập nhật
             </button>
           </div>
-          {/* Booking Details */}
         </div>
       </div>
     </div>

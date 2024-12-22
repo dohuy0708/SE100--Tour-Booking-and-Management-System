@@ -1,10 +1,18 @@
+import { useState } from "react";
+import EditBookingModal from "./EditBookingModal";
+
 export default function BookingItemComponent({ booking }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
   const handleEdit = (id) => {
-    // Logic xử lý khi bấm nút Edit
-    console.log(`Chỉnh sửa thông tin booking với ID: ${id}`);
-    // Thêm modal hoặc form chỉnh sửa ở đây
+    setSelectedBooking(booking);
+    setIsModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBooking(null);
+  };
   return (
     <div className="flex items-center p-4 bg-white rounded-md shadow-md">
       {/* Tour Image */}
@@ -78,6 +86,13 @@ export default function BookingItemComponent({ booking }) {
           </button>
         </div>
       </div>
+
+      {/* Edit Booking Modal */}
+      <EditBookingModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        initialBooking={selectedBooking}
+      />
     </div>
   );
 }

@@ -1,0 +1,248 @@
+const BookingDetailData = [
+  {
+    bookingId: 1,
+    type: "child",
+    passenger: {
+      passengerId: 1,
+      fullName: "Nguyen Van A",
+      passportNumber: "A12345678",
+      dob: "1990-01-01",
+      email: "nguyenvana@example.com",
+      phone: "0123456789",
+    },
+  },
+  {
+    bookingId: 1,
+    type: "child",
+    passenger: {
+      passengerId: 2,
+      fullName: "Tran Thi B",
+      passportNumber: "B23456789",
+      dob: "1995-05-15",
+      email: "tranthib@example.com",
+      phone: "0987654321",
+    },
+  },
+  {
+    bookingId: 2,
+    type: "infant",
+    passenger: {
+      passengerId: 3,
+      fullName: "Le Hoang C",
+      passportNumber: "C34567890",
+      dob: "1988-08-08",
+      email: "lehoangc@example.com",
+      phone: "0111222333",
+    },
+  },
+  {
+    bookingId: 2,
+    type: "child",
+    passenger: {
+      passengerId: 4,
+      fullName: "Pham Van D",
+      passportNumber: "D45678901",
+      dob: "2000-12-25",
+      email: "phamvand@example.com",
+      phone: "0222333444",
+    },
+  },
+  {
+    bookingId: 3,
+    type: "adult",
+    passenger: {
+      passengerId: 5,
+      fullName: "Nguyen Thi E",
+      passportNumber: "E56789012",
+      dob: "1985-04-17",
+      email: "nguyenthie@example.com",
+      phone: "0333444555",
+    },
+  },
+  {
+    bookingId: 3,
+    type: "child",
+    passenger: {
+      passengerId: 6,
+      fullName: "Hoang Minh F",
+      passportNumber: "F67890123",
+      dob: "2010-06-19",
+      email: "hoangminhf@example.com",
+      phone: "0444555666",
+    },
+  },
+  {
+    bookingId: 4,
+    type: "adult",
+    passenger: {
+      passengerId: 7,
+      fullName: "Phan Thi G",
+      passportNumber: "G78901234",
+      dob: "1992-09-05",
+      email: "phanthig@example.com",
+      phone: "0555666777",
+    },
+  },
+  {
+    bookingId: 4,
+    type: "infant",
+    passenger: {
+      passengerId: 8,
+      fullName: "Truong Minh H",
+      passportNumber: "H89012345",
+      dob: "2022-02-20",
+      email: "truongminhh@example.com",
+      phone: "0666777888",
+    },
+  },
+  {
+    bookingId: 5,
+    type: "child",
+    passenger: {
+      passengerId: 9,
+      fullName: "Nguyen Thi I",
+      passportNumber: "I90123456",
+      dob: "2005-11-10",
+      email: "nguyenthi@example.com",
+      phone: "0777888999",
+    },
+  },
+  {
+    bookingId: 5,
+    type: "adult",
+    passenger: {
+      passengerId: 10,
+      fullName: "Lai Minh J",
+      passportNumber: "J01234567",
+      dob: "1980-01-22",
+      email: "laiminhj@example.com",
+      phone: "0888999000",
+    },
+  },
+  {
+    bookingId: 6,
+    type: "adult",
+    passenger: {
+      passengerId: 11,
+      fullName: "Phuong Thi K",
+      passportNumber: "K12345678",
+      dob: "1993-07-12",
+      email: "phuongthik@example.com",
+      phone: "0999000111",
+    },
+  },
+  {
+    bookingId: 6,
+    type: "child",
+    passenger: {
+      passengerId: 12,
+      fullName: "Nguyen Hoang L",
+      passportNumber: "L23456789",
+      dob: "2015-03-04",
+      email: "nguyenhoangl@example.com",
+      phone: "1011122333",
+    },
+  },
+  {
+    bookingId: 7,
+    type: "adult",
+    passenger: {
+      passengerId: 13,
+      fullName: "Tran Thi M",
+      passportNumber: "M34567890",
+      dob: "1991-06-08",
+      email: "tranthim@example.com",
+      phone: "1122334455",
+    },
+  },
+  {
+    bookingId: 7,
+    type: "child",
+    passenger: {
+      passengerId: 14,
+      fullName: "Pham Thi N",
+      passportNumber: "N45678901",
+      dob: "2012-10-25",
+      email: "phamthin@example.com",
+      phone: "2233445566",
+    },
+  },
+  {
+    bookingId: 8,
+    type: "adult",
+    passenger: {
+      passengerId: 15,
+      fullName: "Le Minh O",
+      passportNumber: "O56789012",
+      dob: "1982-12-30",
+      email: "leminho@example.com",
+      phone: "3344556677",
+    },
+  },
+  {
+    bookingId: 8,
+    type: "infant",
+    passenger: {
+      passengerId: 16,
+      fullName: "Nguyen Thi P",
+      passportNumber: "P67890123",
+      dob: "2023-01-14",
+      email: "nguyenthip@example.com",
+      phone: "4455667788",
+    },
+  },
+  {
+    bookingId: 9,
+    type: "adult",
+    passenger: {
+      passengerId: 17,
+      fullName: "Nguyen Thi Q",
+      passportNumber: "Q78901234",
+      dob: "1987-09-09",
+      email: "nguyenthiq@example.com",
+      phone: "5566778899",
+    },
+  },
+  {
+    bookingId: 9,
+    type: "child",
+    passenger: {
+      passengerId: 18,
+      fullName: "Le Thi R",
+      passportNumber: "R89012345",
+      dob: "2014-05-23",
+      email: "lethir@example.com",
+      phone: "6677889900",
+    },
+  },
+  {
+    bookingId: 10,
+    type: "child",
+    passenger: {
+      passengerId: 19,
+      fullName: "Phan Thi S",
+      passportNumber: "S90123456",
+      dob: "2007-08-17",
+      email: "phanthis@example.com",
+      phone: "7788990011",
+    },
+  },
+  {
+    bookingId: 10,
+    type: "adult",
+    passenger: {
+      passengerId: 20,
+      fullName: "Tran Thi T",
+      passportNumber: "T01234567",
+      dob: "1984-04-02",
+      email: "tranthit@example.com",
+      phone: "8899001122",
+    },
+  },
+];
+
+export const getBookingDetailByBooking = async (bookingId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(BookingDetailData), 500); // Mô phỏng thời gian tải
+  });
+};
