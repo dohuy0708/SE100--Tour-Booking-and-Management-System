@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import mongooser from "mongoose";
 
 const ScheduleSchema = new mongooser.Schema({
@@ -42,3 +43,5 @@ export const getSchedules=()=>ScheduleModel.find();
 export const getScheduleById=(schedule_id:string)=>ScheduleModel.findById(schedule_id);
 
 export const getScheduleByCode=(schedule_code:string)=>ScheduleModel.findOne({schedule_code});
+
+export const getScheduleByTourId=(tour_id:string)=>ScheduleModel.find({tour_id});

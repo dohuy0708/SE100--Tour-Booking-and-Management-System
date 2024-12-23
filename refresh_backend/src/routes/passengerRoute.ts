@@ -1,4 +1,4 @@
-import { createNewPassenger, updatePassenger, deletePassenger, getAllPassengers } from './../controllers/passengerController';
+import { createNewPassenger, updatePassenger, deletePassenger, getAllPassengers } from '../controllers/passengerController';
 import express from 'express';
 
 export default (router: express.Router) => {

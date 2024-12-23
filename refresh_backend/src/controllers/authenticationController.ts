@@ -12,19 +12,19 @@ export const login=async(req:express.Request, res:express.Response):Promise<any>
         const {mail, pass }=req.body;
 
         if(!mail||!pass){
-            return res.sendStatus(400).json({message:'Email hoặc mật khẩu không được để trống'}).end();
+            return res.status(400).json({message:'Email hoặc mật khẩu không được để trống'});
         }   
 
         const user = await getUserByEmail(mail)
              .select('+authentication.salt +authentication.user_password');
         if(!user){
-           return res.status(400).json({message:'Email không tồn tại'}).end();
+           return res.status(400).json({message:'Email không tồn tại'});
         }   
 
         const expectedHash=authentication(user.authentication.salt, pass);
 
         if(user.authentication.user_password!==expectedHash){
-            return res.status(403).json({message:'Mật khẩu không đúng'}).end();
+            return res.status(403).json({message:'Mật khẩu không đúng'});
         }
 
         const salte=random();
@@ -34,12 +34,12 @@ export const login=async(req:express.Request, res:express.Response):Promise<any>
 
         res.cookie('5H-AUTH',user.authentication.sessionToken,{domain:'localhost', path:'/'});
 
-        return res.status(200).json(user).end();
+        return res.status(200).json(user);
 
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400);
+        return res.status(400);
     }
 }
 
@@ -47,14 +47,14 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
     try{
         const {mail, pass,name, phone, dob}=req.body;
 
-        if(!mail||!pass||!name||!phone||!dob){
-            return res.sendStatus(400);
+        if(mail==undefined||!pass==undefined||!name==undefined||!phone==undefined||!dob==undefined||mail==null||pass==null||name==null||phone==null||dob==null){
+            return res.status(400).json({message:'Thiếu thông tin'});
         }
 
         const existingUser =await getUserByEmail(mail);
 
         if(existingUser){
-            return res.status(400).json({message:'Email đã tồn tại'}).end();
+            return res.status(404).json({message:'Email đã tồn tại'});
         }
 
         const salte=random();
@@ -70,10 +70,10 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
         
         });
 
-        return res.status(200).json(user).end();  
+        return res.status(200).json(user);  
     }
     catch(error){
         console.log(error, 'Lỗi khi tạo người dùng');
-        return res.sendStatus(400);
+        return res.status(400);
     }
 }

@@ -1,4 +1,4 @@
-import { createGroupRole, getGroupRoles, deleteGroupRole } from "db/group_role";
+import { createGroupRole, getGroupRoles, deleteGroupRole } from "../db/group_role";
 import express from "express";
 
 export const getAllGroupRoles = async (req: express.Request, res: express.Response) => {
@@ -8,7 +8,7 @@ export const getAllGroupRoles = async (req: express.Request, res: express.Respon
         }
         catch(error){
             console.log(error);
-            return res.sendStatus(400).json({message:'Lỗi'}).end();
+            return res.status(400).json({message:'Lỗi'}).end();
         }
 }
 
@@ -17,7 +17,7 @@ export const createNewGroupRole = async (req: express.Request, res: express.Resp
         const {group_id, role_id}=req.body;
 
         if(!group_id || !role_id){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Group hoặc Role'}).end();
+            return res.status(400).json({message:'Thiếu thông tin Group hoặc Role'}).end();
         }
 
         const groupRole= await createGroupRole(group_id, role_id);
@@ -26,7 +26,7 @@ export const createNewGroupRole = async (req: express.Request, res: express.Resp
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 
 }

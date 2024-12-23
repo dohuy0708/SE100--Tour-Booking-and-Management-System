@@ -1,4 +1,4 @@
-import { createGroup, updateGroupById, deleteGroupById, getGroups } from "db/group";
+import { createGroup, updateGroupById, deleteGroupById, getGroups } from "../db/group";
 import express from "express";
 
 export const getAllGroups = async (req: express.Request, res: express.Response) => {
@@ -9,7 +9,7 @@ export const getAllGroups = async (req: express.Request, res: express.Response) 
         }
         catch(error){
             console.log(error);
-            return res.sendStatus(400).json({message:'Lỗi'}).end();
+            return res.status(400).json({message:'Lỗi'}).end();
         }
 }
 
@@ -17,8 +17,8 @@ export const createNewGroup = async (req: express.Request, res: express.Response
     try{
         const {name}=req.body;
 
-        if(!name){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Group'}).end();
+        if(name==null||name==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Group'}).end();
         }
 
         const group= await createGroup({
@@ -29,7 +29,7 @@ export const createNewGroup = async (req: express.Request, res: express.Response
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 
 }
@@ -38,16 +38,16 @@ export const updateGroup = async (req: express.Request, res: express.Response) =
 
     try{
         const {id}=req.params;  
-        const {group_name}=req.body;
+        const {name}=req.body;
 
-        if(!group_name){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Group'}).end();
+        if(name==null||name==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Group'}).end();
         }
 
-        const group= await updateGroupById(id, {group_name});
+        const group= await updateGroupById(id, {name});
 
         if(!group){
-            return res.sendStatus(400).json({message:'Group không tồn tại'}).end();
+            return res.status(400).json({message:'Group không tồn tại'}).end();
         }
         await group.save();
 
@@ -55,7 +55,7 @@ export const updateGroup = async (req: express.Request, res: express.Response) =
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -68,6 +68,6 @@ export const deleteGroup = async (req: express.Request, res: express.Response) =
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }

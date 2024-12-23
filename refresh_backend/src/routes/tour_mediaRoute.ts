@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewMedia, deleteMedia, updateMedia, getAllMedias } from 'controllers/tour_mediaController';
+import { createNewMedia, deleteMedia, updateMedia, getAllMedias } from '../controllers/tour_mediaController';
 
 export default (router: express.Router) => {
     router.post('/tour_medias', createNewMedia as any);

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewRole, deleteRole, updateRole, getAllRoles } from 'controllers/roleController';
+import { createNewRole, deleteRole, updateRole, getAllRoles } from '../controllers/roleController';
 
 
 export default (router: express.Router) => {

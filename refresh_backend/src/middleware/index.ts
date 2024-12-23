@@ -19,7 +19,7 @@ export const isAuthenticated=async(req:express.Request, res:express.Response,nex
     }
     catch(error){
         console.log(error);
-        res.sendStatus(400).json({message:'Lỗi'});
+        res.status(400).json({message:'Lỗi'});
     }
 }
 
@@ -29,17 +29,17 @@ export const isOwner=async(req:express.Request, res:express.Response, next: expr
         const currentUserId=get(req, 'indentity._id') as string;
 
         if(!currentUserId){
-            res.sendStatus(403).json({message:'Chưa đăng nhập'}).end();
+            res.status(403).json({message:'Chưa đăng nhập'}).end();
             return;
         }
         if(currentUserId.toString()!==id){
-            res.sendStatus(403).json({message:'Không có quyền'}).end();
+            res.status(403).json({message:'Không có quyền'}).end();
             return;
         }
         next();
     }
     catch(error){   
         console.log(error);
-        res.sendStatus(400).json({message:'Lỗi'}).end();
+        res.status(400).json({message:'Lỗi'}).end();
     }
 }

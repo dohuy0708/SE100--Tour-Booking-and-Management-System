@@ -1,4 +1,4 @@
-import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "db/tour";
+import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
 import express from "express";
 
 export const getAllTours = async (req: express.Request, res: express.Response) => {
@@ -9,33 +9,33 @@ export const getAllTours = async (req: express.Request, res: express.Response) =
         }
         catch(error){
             console.log(error);
-            return res.sendStatus(400).json({message:'Lỗi'}).end();
+            return res.status(400).json({message:'Lỗi'}).end();
         }
 }
 
 export const createNewTour = async (req: express.Request, res: express.Response) =>{
 
     try{
-        const {tour_name, tour_code, tour_type, duration, description, policy_id}=req.body;
+        const {name, code, type, dura, descri, policy}=req.body;
 
-        if(!tour_name||!tour_code||!tour_type||!duration||!description||!policy_id){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Tour'}).end();
+        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
         const tour= await createTour({
-            tour_name,
-            tour_code,
-            tour_type,
-            duration,
-            description,
-            policy_id,
+            tour_name: name,
+            tour_code: code,
+            tour_type: type,
+            duration: dura,
+            description: descri,
+            policy_id: policy,
         });
 
         return res.status(200).json(tour).end();
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -43,16 +43,16 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
 
     try{
         const {id}=req.params;  
-        const {tour_name, tour_code, tour_type, duration, description, policy_id}=req.body;
+        const {name, code, type, dura, descri, policy}=req.body;
 
-        if(!tour_name||!tour_code||!tour_type||!duration||!description||!policy_id){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Tour'}).end();
+        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
-        const tour= await updateTourById(id, {tour_name, tour_code, tour_type, duration, description, policy_id});
+        const tour= await updateTourById(id, {name, code, type, dura, descri, policy});
 
         if(!tour){
-            return res.sendStatus(400).json({message:'Tour không tồn tại'}).end();
+            return res.status(400).json({message:'Tour không tồn tại'}).end();
         }
         await tour.save();
 
@@ -60,7 +60,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -72,18 +72,18 @@ export const deleteTour = async (req: express.Request, res: express.Response) =>
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
 export const getTourByTourCode = async (req: express.Request, res: express.Response) =>{
     try{
-        const {tour_code}=req.body;
-        const tour= await getTourByCode(tour_code);
+        const {code}=req.body;
+        const tour= await getTourByCode(code);
         return res.status(200).json(tour).end();
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewPayment, updatePayment, deletePayment, getAllPayments } from 'controllers/paymentController';
+import { createNewPayment, updatePayment, deletePayment, getAllPayments } from '../controllers/paymentController';
 
 export default (router: express.Router) => {
     router.post('/payments', createNewPayment as any);

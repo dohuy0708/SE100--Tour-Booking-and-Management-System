@@ -1,4 +1,4 @@
-import { deleteUserById, getUserById, getUsers } from './../db/user';
+import { deleteUserById, getUserById, getUsers } from '../db/user';
 import express from 'express';
 
 export const getAllUsers = async (req: express.Request, res: express.Response)=> {
@@ -8,7 +8,7 @@ export const getAllUsers = async (req: express.Request, res: express.Response)=>
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -21,31 +21,31 @@ export const deleteUser=async(req:express.Request, res:express.Response)=>{
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
 export const updateUser=async(req:express.Request, res:express.Response)=>{
     try{
         const {id}=req.params;  
-        const {username}=req.body;
+        const {name}=req.body;
 
-        if(!username){
-            return res.sendStatus(400).json({message:'Thiếu thông tin User'}).end();
+        if(name==null||name==undefined){
+            return res.status(400).json({message:'Thiếu thông tin User'}).end();
         }
 
         const user= await getUserById(id);
 
         if(!user){
-            return res.sendStatus(400).json({message:'User không tồn tại'}).end();
+            return res.status(400).json({message:'User không tồn tại'}).end();
         }
-        user.user_name=username;
+        user.user_name=name;
         await user.save();
 
         return res.status(200).json(user).end();
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }

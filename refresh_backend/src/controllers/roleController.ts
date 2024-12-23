@@ -1,4 +1,4 @@
-import { createRole, updateRoleById, deleteRoleById, getRoles } from "db/role";
+import { createRole, updateRoleById, deleteRoleById, getRoles } from "../db/role";
 import express from "express";
 
 export const getAllRoles = async (req: express.Request, res: express.Response) => {
@@ -8,7 +8,7 @@ export const getAllRoles = async (req: express.Request, res: express.Response) =
         }
         catch(error){
             console.log(error);
-            return res.sendStatus(400).json({message:'Lỗi'}).end();
+            return res.status(400).json({message:'Lỗi'}).end();
         }
 }
 export const createNewRole = async (req: express.Request, res: express.Response) =>{
@@ -16,7 +16,7 @@ export const createNewRole = async (req: express.Request, res: express.Response)
         const {role_name, description, url}=req.body;
 
         if(!role_name||!description){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Role'}).end();
+            return res.status(400).json({message:'Thiếu thông tin Role'}).end();
         }
 
         const role= await createRole({
@@ -29,7 +29,7 @@ export const createNewRole = async (req: express.Request, res: express.Response)
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -39,13 +39,13 @@ export const updateRole = async (req: express.Request, res: express.Response) =>
         const {role_name}=req.body;
 
         if(!role_name){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Role'}).end();
+            return res.status(400).json({message:'Thiếu thông tin Role'}).end();
         }
 
         const role= await updateRoleById(id, {role_name});
 
         if(!role){
-            return res.sendStatus(400).json({message:'Role không tồn tại'}).end();
+            return res.status(400).json({message:'Role không tồn tại'}).end();
         }
         await role.save();
 
@@ -53,7 +53,7 @@ export const updateRole = async (req: express.Request, res: express.Response) =>
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -65,6 +65,6 @@ export const deleteRole = async (req: express.Request, res: express.Response) =>
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }

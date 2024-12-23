@@ -1,7 +1,7 @@
 import mongooser from "mongoose";
 
 export const PassengerSchema = new mongooser.Schema({
-    booking_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Booking', required: true},
+    //booking_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Booking', required: true},
     passenger_name:{type: String, required: true},
     passenger_age:{type: Number, required: true},
     passenger_type:{

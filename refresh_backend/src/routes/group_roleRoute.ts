@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllGroupRoles, createNewGroupRole, removeGroupRole } from 'controllers/group_roleController';
+import { getAllGroupRoles, createNewGroupRole, removeGroupRole } from '../controllers/group_roleController';
 
 
 export default (router: express.Router) => {

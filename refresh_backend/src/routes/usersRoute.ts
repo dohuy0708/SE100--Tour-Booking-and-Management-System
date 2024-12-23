@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, getAllUsers, updateUser } from 'controllers/userController';
+import { deleteUser, getAllUsers, updateUser } from '../controllers/userController';
 import { isAuthenticated, isOwner } from '../middleware';
 
 export default (router: express.Router) => {

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewGroup, deleteGroup, updateGroup, getAllGroups } from 'controllers/groupController';
+import { createNewGroup, deleteGroup, updateGroup, getAllGroups } from '../controllers/groupController';
 
 
 export default (router: express.Router) => {

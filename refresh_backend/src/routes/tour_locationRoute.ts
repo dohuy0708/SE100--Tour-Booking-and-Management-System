@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewTourLocation, getAllTourLocations, removeTourLocation } from 'controllers/tour_locationController';
+import { createNewTourLocation, getAllTourLocations, removeTourLocation } from '../controllers/tour_locationController';
 
 export default (router: express.Router) => {
  
