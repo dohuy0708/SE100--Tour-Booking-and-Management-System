@@ -1,4 +1,4 @@
-import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails   } from "../db/booking";
+import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails, BookingModel   } from "../db/booking";
 import express from "express";
 
 export const getAllBookings = async (req: express.Request, res: express.Response) => {
@@ -92,3 +92,22 @@ export const getBookingByIdWithTheDetails = async (req: express.Request, res: ex
         return res.status(400).json({ message: 'Lỗi' }).end();
     }
 }
+export const getToursByCustomerId = async (req: express.Request, res: express.Response) => {
+    try {
+      const customer_id = req.params.customer_id; 
+  
+      const bookings = await BookingModel.find({ customer_id })
+        .populate('tour_id'); 
+  
+      if (bookings.length === 0) {
+        return res.status(404).json({ message: 'Không tìm thấy tour cho khách hàng này' });
+      }
+  
+      const tours = bookings.map(booking => booking.tour_id);
+  
+      return res.status(200).json(tours);
+    } catch (error) {
+      console.error('Error in getToursByCustomerId:', error);
+      return res.status(500).json({ message: 'Lỗi khi lấy tour cho khách hàng', error });
+    }
+  };

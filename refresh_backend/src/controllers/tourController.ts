@@ -1,4 +1,4 @@
-import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
+import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, TourModel} from "../db/tour";
 import express from "express";
 
 export const getAllTours = async (req: express.Request, res: express.Response) => {
@@ -87,3 +87,14 @@ export const getTourByTourCode = async (req: express.Request, res: express.Respo
         return res.status(400).json({message:'Lỗi'}).end();
     }
 }
+export const getTourWithProgram = async (req: express.Request, res: express.Response) => {
+    try {
+      const tours = await TourModel.find().populate('TourProgram'); 
+      return res.status(200).json(tours).end();
+    } 
+    catch (error) {
+        console.log(error);
+        return res.sendStatus(400).json({message:'Lỗi'}).end();
+    }
+  }
+  
