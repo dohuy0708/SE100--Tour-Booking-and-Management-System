@@ -6,6 +6,7 @@ import Search from "../pages/Search/Search";
 import TourPage from "../pages/TourPage/TourPage";
 import Profile from "../pages/Profile/Profile";
 import SignUp from "../pages/Access/SignUp";
+import Contact from "../pages/Contact/Contact";
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
   {
     path: "/profile",
     page: Profile,
+    isShowLayout: true,
+  },
+  {
+    path: "/contact",
+    page: Contact,
     isShowLayout: true,
   },
   {

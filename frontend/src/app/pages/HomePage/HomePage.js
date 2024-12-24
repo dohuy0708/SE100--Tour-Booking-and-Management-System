@@ -8,6 +8,7 @@ import {
   getDomestricTours,
   getNewTours,
 } from "../../Services/userService";
+import FavoriteDestinations from "./Partials/FavoriteDestinations ";
 
 export default function HomePage() {
   const [bannerTours, setBannerTours] = useState([]);
@@ -36,7 +37,32 @@ export default function HomePage() {
 
     fetchTours();
   }, []);
-
+  const destinations = [
+    {
+      name: "Quảng Ninh",
+      image: "/img1.png",
+    },
+    {
+      name: "Hà Giang",
+      image: "/img2.png",
+    },
+    {
+      name: "Lào Cai",
+      image: "/img3.png",
+    },
+    {
+      name: "Ninh Bình",
+      image: "/tour1.png",
+    },
+    {
+      name: "Yên Bái",
+      image: "/img1.png",
+    },
+    // {
+    //   name: "Sơn La",
+    //   image: "/img2.png",
+    // },
+  ];
   return (
     <div>
       <div className="relative">
@@ -50,6 +76,7 @@ export default function HomePage() {
         <TourSection title="Tour trong nước nổi bật" tours={domestricTours} />
         <TourSection title="Tour nước ngoài nổi bật" tours={abroadTours} />
       </div>
+      <FavoriteDestinations destinations={destinations} />
     </div>
   );
 }

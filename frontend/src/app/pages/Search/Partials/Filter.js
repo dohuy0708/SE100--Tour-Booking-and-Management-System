@@ -16,7 +16,7 @@ const Filter = ({ onApplyFilters }) => {
     "10 - 20 triệu",
     "Trên 20 triệu",
   ];
-  const tourTypes = ["Cao cấp", "Tiêu chuẩn", "Tiết kiệm", "Giá tốt"];
+  const tourTypes = ["Trong nước", "Nước ngoài"];
   const transportTypes = ["Xe", "Máy bay"];
 
   // Hàm toggle chọn nhiều mục

@@ -31,7 +31,7 @@ const ScheduleTable = ({ scheduleData, tour }) => {
               <td className="p-3 pl-6   font-medium">{schedule.date}</td>
               {schedule.tickets.map((ticket, index) => (
                 <td key={index} className=" text-red">
-                  <p>{ticket.price} VND</p>
+                  <p>{ticket?.price.toLocaleString()} VND</p>
                 </td>
               ))}
               <td className=" text-red text-center">
