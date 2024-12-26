@@ -13,7 +13,7 @@ export default function CustomerPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold   text-gray-700 mb-4">KHÁCH HÀNG</h1>
+      <h1 className="text-2xl font-bold   text-gray-700 mb-2">KHÁCH HÀNG</h1>
       <div className="flex items-center justify-between mb-2">
         {/* Hiển thị SearchComponent để người dùng tìm kiếm */}
         <SearchComponent onSearch={handleSearch} />

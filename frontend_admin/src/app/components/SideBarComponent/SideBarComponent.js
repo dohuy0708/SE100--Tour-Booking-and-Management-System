@@ -198,61 +198,6 @@ export default function SideBarComponent() {
                     TOUR ĐÃ ĐI
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink
-                    aria-current="page"
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
-                      ${
-                        isActive
-                          ? "bg-blue-400 text-white"
-                          : "hover:bg-slate-300 hover:text-white"
-                      }`
-                    }
-                    to="/Location"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M12 4c2.2 0 4 1.8 4 4c0 2.1-2.1 5.5-4 7.9c-1.9-2.5-4-5.8-4-7.9c0-2.2 1.8-4 4-4m0-2C8.7 2 6 4.7 6 8c0 4.5 6 11 6 11s6-6.6 6-11c0-3.3-2.7-6-6-6m0 4c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2m8 13c0 2.2-3.6 4-8 4s-8-1.8-8-4c0-1.3 1.2-2.4 3.1-3.2l.6.9c-1 .5-1.7 1.1-1.7 1.8c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5c0-.7-.7-1.3-1.8-1.8l.6-.9c2 .8 3.2 1.9 3.2 3.2"
-                      />
-                    </svg>
-                    ĐIỂM ĐẾN
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    aria-current="page"
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
-                      ${
-                        isActive
-                          ? "bg-blue-400 text-white"
-                          : "hover:bg-slate-300 hover:text-white"
-                      }`
-                    }
-                    to="/Feedback"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
-                      className="duration-300 ease-in-out group-hover:scale-110 group-hover:text-white"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M12 15q.425 0 .713-.288T13 14t-.288-.712T12 13t-.712.288T11 14t.288.713T12 15m0-4q.425 0 .713-.288T13 10V6q0-.425-.288-.712T12 5t-.712.288T11 6v4q0 .425.288.713T12 11m-6 7l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"
-                      />
-                    </svg>
-                    PHẢN HỒI
-                  </NavLink>
-                </li>
               </ul>
             </div>
           </nav>

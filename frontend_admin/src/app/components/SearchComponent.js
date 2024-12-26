@@ -36,7 +36,7 @@ export default function SearchComponent({ onSearch }) {
         type="text"
         value={searchQuery}
         onChange={handleInputChange}
-        placeholder="Tìm kiếm tên khách hàng"
+        placeholder="Tìm kiếm..."
         className="block w-full rounded-lg border-gray-300 py-1.5 pl-8  pr-2 text-gray-900 ring-1 ring-inset placeholder:text-gray-400 focus:ring-2   focus:ring-gray-500  "
       />
     </div>
