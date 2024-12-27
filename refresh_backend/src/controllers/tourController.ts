@@ -1,4 +1,5 @@
-import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, TourModel} from "../db/tour";
+import { TourModel } from '../db/tour';
+import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
 import express from "express";
 
 export const getAllTours = async (req: express.Request, res: express.Response) => {

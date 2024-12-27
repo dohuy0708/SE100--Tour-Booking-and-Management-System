@@ -6,20 +6,20 @@ export const isAuthenticated=async(req:express.Request, res:express.Response,nex
     try{
         const sessionToken=req.cookies['5H-AUTH'];
         if(!sessionToken){
-            res.status(403).json({message:'Chưa từng đăng nhập'}).end();
+            res.status(401).json({message:'Chưa từng đăng nhập'}).end();
             return;
         }
         const exitstingUser=await getUserBySessionToken(sessionToken);
         if(!exitstingUser){
-            res.status(403).json({message:'Chưa đăng nhập'}).end();
+            res.status(403).json({message:'Phiên đăng nhập không hợp lệ'}).end();
             return
         }
         merge(req, {indentity: exitstingUser});
         next();
     }
     catch(error){
-        console.log(error);
-        res.status(400).json({message:'Lỗi'});
+        console.log("'Authentication error: ", error);
+        res.status(500).json({message:'Internal server error'}).end();
     }
 }
 
