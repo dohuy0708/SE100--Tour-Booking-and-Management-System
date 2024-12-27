@@ -4,10 +4,19 @@ import { GroupNames } from "../db/group";
 import { GroupRoleModel } from "../db/group_role";
 import merge from 'lodash';
 
+
+interface CustomRequest extends Request {
+    identity?: {
+      id: string;
+      group_id: string;
+      [key: string]: any;
+    };
+  }
+
 export const authorize=(requiredRole: string[])=>{
     return async(req: Request, res: Response, next: NextFunction)=>{
         try{
-            const user=req.indentity;
+            const user=(req as CustomRequest).identity;
             if(!user||!user.group_id){
                 res.status(401).json({message:'Forbidden: No Group assigned'}).end();
                 return;

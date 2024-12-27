@@ -14,7 +14,7 @@ export const isAuthenticated=async(req:express.Request, res:express.Response,nex
             res.status(403).json({message:'Phiên đăng nhập không hợp lệ'}).end();
             return
         }
-        merge(req, {indentity: exitstingUser});
+        merge(req, {identity: exitstingUser});
         next();
     }
     catch(error){
