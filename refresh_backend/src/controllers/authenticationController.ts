@@ -1,7 +1,8 @@
-import { authentication } from '../helpers';
+import { authentication } from './../helpers/index';
 import express from 'express';
-import { random } from '../helpers';
-import { getUserByEmail, createUser} from '../db/user';
+import { random, randomCode } from '../helpers';
+import { getUserByEmail, createUser, getUserById, getUserBySessionToken} from '../db/user';
+import { sendEmail } from '../helpers/mail_helper';
 //import BaseError from '../helpers';
 
 
@@ -27,6 +28,10 @@ export const login=async(req:express.Request, res:express.Response):Promise<any>
             return res.status(403).json({message:'Mật khẩu không đúng'});
         }
 
+        if(!user.authentication.isVerified){
+            return res.status(403).json({message:'Tài khoản chưa được xác thực'});
+        }
+
         const salte=random();
         user.authentication.sessionToken=authentication(salte, user._id.toString());
 
@@ -45,9 +50,9 @@ export const login=async(req:express.Request, res:express.Response):Promise<any>
 
 export const register=async(req:express.Request, res:express.Response):Promise<any>=>{
     try{
-        const {mail, pass,name, phone, dob}=req.body;
+        const {mail, pass,name, phone, dob, group}=req.body;
 
-        if(mail==undefined||!pass==undefined||!name==undefined||!phone==undefined||!dob==undefined||mail==null||pass==null||name==null||phone==null||dob==null){
+        if(mail==undefined||!pass==undefined||!name==undefined||!phone==undefined||!dob==undefined||group==undefined||mail==null||pass==null||name==null||phone==null||dob==null||group==null){
             return res.status(400).json({message:'Thiếu thông tin'});
         }
 
@@ -58,6 +63,9 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
         }
 
         const salte=random();
+        const Code=randomCode();//Ma xac thuc
+
+
         const user=await createUser({
             email: mail,
             user_name: name,
@@ -66,14 +74,115 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
             authentication:{
                 salt: salte,
                 user_password:authentication(salte, pass),
+                sessionToken:null,
+                verificationCode:Code,
+                isVerified:false,
             },
-        
+            group_id:group,
         });
 
-        return res.status(200).json(user);  
+        const subject = 'Xác thực tài khoản của bạn';
+        const content = 'Xin chào,' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
+
+
+
+        sendEmail(mail, subject, content).catch(err => {
+            console.error('Lỗi khi gửi email:', err); // Log lỗi nếu gửi email thất bại
+        });
+
+        return res.status(200).json({ message: 'Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản', userId:user._id });
     }
     catch(error){
         console.log(error, 'Lỗi khi tạo người dùng');
         return res.status(400);
+    }
+}
+
+export const verifyUser=async(req:express.Request, res:express.Response):Promise<any>=>{
+    try{
+        const {mail, code}=req.body;
+
+        if(mail==undefined||code==undefined||mail==null||code==null){
+            return res.status(400).json({message:'Thiếu thông tin'});
+        }
+
+        const user=await getUserByEmail(mail).select('+authentication.verificationCode');
+
+        if(!user){
+            return res.status(404).json({message:'User không tồn tại'});
+        }
+
+        const realcode=parseInt(code);
+
+        if(user.authentication.verificationCode!==realcode){
+            return res.status(403).json({message:user.authentication.verificationCode});
+        }
+
+        user.authentication.isVerified=true;
+        user.authentication.verificationCode=undefined;//Xoa ma xac thuc
+
+        await user.save();
+
+        return res.status(200).json({message:'Xác thực thành công'});
+    }
+    catch(error){
+        console.log(error, 'Lỗi khi xác thực tài khoản');
+        return res.status(400).json({message:'Lỗi trong quá trình xác thực tài khoản'});
+    }
+}
+
+export const resendverifyUser=async(req:express.Request, res:express.Response):Promise<any>=>{
+    try{
+        const  {mail}=req.body;
+        if(!mail){
+            return res.status(400).json({message:'Thiếu thông tin mail'});
+        }
+
+        const user=await getUserByEmail(mail);
+        if(!user){
+            return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
+        }
+        const newCode=randomCode();
+        user.authentication.verificationCode=newCode;
+        await user.save();
+
+        const subject = 'Xác thực tài khoản của bạn';
+        const content = 'Xin chào,'+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist. Mã xác thực của bạn là: '+newCode+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
+
+
+
+        sendEmail(mail, subject, content).catch(err => {
+            console.error('Lỗi khi gửi email:', err); // Log lỗi nếu gửi email thất bại
+        });
+
+        return res.status(200).json({message:'Gửi lại mã xác thực thành công, vui lòng kiểm tra email'});
+    }
+    catch(error){
+        console.log(error, 'Lỗi khi gửi lại mã xác thực');
+        return res.status(400).json({message:'Lỗi trong quá trình gửi lại mã xác thực'});
+    }
+}
+
+export const logout = async (req: express.Request, res: express.Response): Promise<any> => {
+    try{
+        const sessionToken=req.cookies['5H-AUTH'];
+        if(!sessionToken){
+            return res.status(400).json({message:'Chưa đăng nhập hoặc không tìm thấy sessionToken'});
+        }
+        const user=await getUserBySessionToken(sessionToken);
+        if(!user){
+            return res.status(404).json({message:'Phiên đăng nhập không hợp lệ'});
+        }
+
+        user.authentication.sessionToken=null;
+        await user.save();
+        res.clearCookie('5H-AUTH',{ domain:'localhost', path:'/'});
+
+        return res.status(200).json({message:'Đăng xuất thành công'});
+
+    }
+    catch(error){
+        console.log(error, 'Lỗi khi đăng xuất');
+        return res.status(400).json({message:'Lỗi trong quá trình đăng xuất'});
     }
 }

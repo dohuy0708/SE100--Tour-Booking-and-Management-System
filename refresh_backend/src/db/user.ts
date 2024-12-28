@@ -9,7 +9,10 @@ const UserSchema = new mongooser.Schema({
         user_password: {type: String, required: true, select: false},
         salt: {type: String, select: false},
         sessionToken: {type: String, select: false},
+        verificationCode: { type: Number, select: false }, // Mã xác thực
+        isVerified: { type: Boolean, default: false }, // Trạng thái xác minh
     },
+   
     group_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Group'},
 });
 
