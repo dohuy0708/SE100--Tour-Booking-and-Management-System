@@ -186,3 +186,70 @@ export const logout = async (req: express.Request, res: express.Response): Promi
         return res.status(400).json({message:'Lỗi trong quá trình đăng xuất'});
     }
 }
+
+export const forgetpassword=async(req:express.Request, res:express.Response):Promise<any>=>{
+    try{
+        const {mail}=req.body;
+        if(!mail){
+            return res.status(400).json({message:'Thiếu thông tin mail'});
+        }
+
+        const user=await getUserByEmail(mail);
+        if(!user){
+            return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
+        }
+
+        const Code=randomCode();
+
+        user.authentication.resetCode=Code;
+        await user.save();
+
+        const subject = 'Đặt lại mật khẩu';
+        const content = 'Xin chào '+ user.user_name+',\n\nBạn đã yêu cầu đặt lại mật khẩu tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\nVui lòng nhập mã này để đặt lại mật khẩu.';
+
+        sendEmail(mail, subject, content).catch(err => {
+            console.error('Lỗi khi gửi email:', err);
+        });
+
+        return res.status(200).json({message:'Gửi mã để đặt lại mật khẩu thành công, vui lòng kiểm tra email'});
+    }
+    catch(error){
+        console.log('Lỗi khi yêu cầu đặt lại mật khẩu: ', error);
+        return res.status(400).json({message:'Lỗi trong quá trình yêu cầu đặt lại mật khẩu'});
+    }
+}
+
+
+export const resetpassword=async(req:express.Request, res:express.Response):Promise<any>=>{
+    try{
+        const {mail, code, pass}=req.body;
+        if(!mail||!code||!pass){
+            return res.status(400).json({message:'Thiếu thông tin'});
+        }
+
+        const user=await getUserByEmail(mail).select('+authentication.resetCode');
+        if(!user){
+            return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
+        }
+
+        if(user.authentication.resetCode!==parseInt(code)){
+            return res.status(403).json({message:'Mã xác thực không đúng'});
+        }
+
+        const salte=random();
+
+
+        user.authentication.salt=salte;  
+        user.authentication.user_password=authentication(salte, pass);
+
+        user.authentication.resetCode=undefined;
+
+        await user.save();
+
+        return res.status(200).json({message:'Đặt lại mật khẩu thành công'});
+    }
+    catch(error){
+        console.log('Lỗi khi đặt lại mật khẩu: ', error);
+        return res.status(400).json({message:'Lỗi trong quá trình đặt lại mật khẩu'});
+    }
+}
