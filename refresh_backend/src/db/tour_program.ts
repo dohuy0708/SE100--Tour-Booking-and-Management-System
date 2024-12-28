@@ -20,3 +20,4 @@ export const deleteProgramById=(program_id:string)=>TourProgramModel.findByIdAnd
 export const getPrograms=()=>TourProgramModel.find();
 
 export const getProgramById=(program_id:string)=>TourProgramModel.findById(program_id);
+export const getProgramsByTourId = (tour_id: string) =>TourProgramModel.find({ tour_id });

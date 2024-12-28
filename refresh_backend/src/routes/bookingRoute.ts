@@ -8,5 +8,5 @@ export default (router: express.Router) => {
     router.delete('/bookings/:id', deleteBooking as any);
     router.get('/bookings', getAllBookings as any);
     router.get('/bookings/:id', getBookingByIdWithTheDetails as any);
-    router.get('/tours/customer/:customer_id', getToursByCustomerId as any);
+    router.get('/bookings/customer/:customer_id', getToursByCustomerId as any);
 }
