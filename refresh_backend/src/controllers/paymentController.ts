@@ -6,7 +6,8 @@ import crypto from 'crypto';
 import requestIp from 'request-ip';
 import { env } from "process";
 import { BookingModel } from "../db/booking";
-import paymentRoute from "routes/paymentRoute";
+import paymentRoute from "../routes/paymentRoute";
+import { sortObject } from "../helpers/sort-object";
 
 
 export const getAllPayments = async (req: express.Request, res: express.Response) => {
@@ -93,70 +94,63 @@ export const deletePayment = async (req: express.Request, res: express.Response)
 }
 export const createPaymentUrl = async (req: express.Request, res: express.Response) => {
     try {
-        const {booking_id}=req.params;  
+        const { booking_id } = req.params;
         process.env.TZ = 'Asia/Ho_Chi_Minh';
 
         const date = new Date();
         const createDate = moment(date).format('YYYYMMDDHHmmss');
-        const ipAddr = req.clientIp
+        const ipAddr = requestIp.getClientIp(req);
 
-        const tmnCode: string = process.env.vnp_TmnCode;
-        const secretKey: string = process.env.vnp_HashSecret;
-        const vnpUrl: string = process.env.vnp_Url;
-        const returnUrl: string = process.env.vnp_ReturnUrl;
+        const tmnCode: string = "ZVG104LV";
+        const secretKey: string = "8UUUT8QXQ8QVSO8F10JIATMID6PM6LHZ";
+        let vnpUrl: string = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        const returnUrl: string = "http://localhost:8080";
 
         const booking = await BookingModel.findById(booking_id);
 
         if (!booking) {
             res.status(404).json({ message: 'Booking not found' });
             return;
-        }        
+        }
+
         const total_price = parseFloat(booking.total_price.toString());
         const currCode = 'VND';
+        let vnp_Params: any = {};
+        vnp_Params['vnp_Version'] = '2.1.0';
+        vnp_Params['vnp_Command'] = 'pay';
+        vnp_Params['vnp_TmnCode'] = tmnCode;
+        vnp_Params['vnp_Locale'] = 'vn';
+         vnp_Params['vnp_CurrCode'] = currCode;
+        vnp_Params['vnp_TxnRef'] = booking_id; ///Day la ma don hang trong db
+        vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + booking_id;
+        vnp_Params['vnp_OrderType'] = 'other';
+        vnp_Params['vnp_Amount'] = total_price * 100;
+        vnp_Params['vnp_ReturnUrl'] = returnUrl; //Thanh toan xong se refirect ve link nay
+        vnp_Params['vnp_IpAddr'] = ipAddr;
+        vnp_Params['vnp_CreateDate'] = createDate;
 
-        const vnp_Params: Record<string, any> = {
-            vnp_Version: '2.1.0',
-            vnp_Command: 'pay',
-            vnp_TmnCode: tmnCode,
-            vnp_Locale: "vn",
-            vnp_CurrCode: currCode,
-            vnp_TxnRef: booking_id,
-            vnp_OrderInfo: `Thanh toan cho ma GD:${booking_id}`,
-            vnp_OrderType: 'other',
-            vnp_Amount: total_price * 100,
-            vnp_ReturnUrl: returnUrl,
-            vnp_IpAddr: ipAddr,
-            vnp_CreateDate: createDate,
-        };
+        vnp_Params = sortObject(vnp_Params);
 
-        const sortedParams = sortObject(vnp_Params);
-        const signData = querystring.stringify(sortedParams, { encode: false });
+        const signData = querystring.stringify(vnp_Params, { encode: false });
         const hmac = crypto.createHmac('sha512', secretKey);
         const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
         vnp_Params['vnp_SecureHash'] = signed;
-
-        const vnpUrlWithParams = `${vnpUrl}?${querystring.stringify(vnp_Params, { encode: false })}`;
+        vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
 
         const payment = new PaymentModel({
-            booking_id: booking._id,  // Lưu ID booking
-            amount_paid: total_price,  // Dùng amount từ booking
-            payment_date: date,  // Thời gian thanh toán
+            booking_id: booking._id,
+            amount_paid: total_price,
+            payment_date: date,
+            payment_method: "BANK_TRANSFER"
         });
 
         await payment.save();
+        console.log('VNP Params:', vnpUrl);  
 
-        res.redirect(vnpUrlWithParams);
+        res.json({ payment_url: vnpUrl });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-const sortObject = (obj: Record<string, any>): Record<string, any> => {
-    const sorted: Record<string, any> = {};
-    Object.keys(obj)
-        .sort()
-        .forEach((key) => {
-            sorted[key] = obj[key];
-        });
-    return sorted;
-};
+

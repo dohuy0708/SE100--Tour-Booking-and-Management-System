@@ -14,11 +14,10 @@ export const getAllBookings = async (req: express.Request, res: express.Response
 }
 
 export const createNewBooking = async (req: express.Request, res: express.Response) =>{
-
     try{
         const {customer, tour,date, price, stt,number_slot}=req.body;
 
-        if(!customer||!tour||!date||!price||!stt||number_slot){
+        if(!customer||!tour||!date||!price||!stt||!number_slot){
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
 
@@ -30,7 +29,6 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             status: stt,
             number_slots: number_slot
         });
-
         return res.status(200).json(booking).end();
     }
     catch(error){
