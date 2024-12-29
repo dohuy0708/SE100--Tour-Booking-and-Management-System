@@ -1,6 +1,9 @@
+import { TourPolicyModel } from "../db/tour_policy";
 import { TourModel } from '../db/tour';
 import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
 import express from "express";
+import { TourProgramModel } from "../db/tour_program";
+import { ScheduleModel } from "../db/schedule";
 
 export const getAllTours = async (req: express.Request, res: express.Response) => {
 
@@ -88,6 +91,41 @@ export const getTourByTourCode = async (req: express.Request, res: express.Respo
         return res.status(400).json({message:'Lỗi'}).end();
     }
 }
+export const getAllTourWithDetail = async (req: express.Request, res: express.Response) => {
+    try {
+        const tours = await TourModel.find().lean();
+
+        // Dùng Promise.all để xử lý bất đồng bộ cho tất cả tours
+        const result = await Promise.all(
+            tours.map(async (tour) => {
+                // Lấy giá tour
+                const price = await TourPolicyModel.findOne({ tour_id: tour._id }).lean();
+
+                // Lấy chương trình tour
+                const programs = await TourProgramModel.find({ tour_id: tour._id }).lean();
+
+                // Lấy lịch trình tour
+                const schedules = await ScheduleModel.find({ tour_id: tour._id }).lean();
+
+                // Gộp thông tin
+                return {
+                    ...tour,
+                    tourPrice: price,
+                    tourPrograms: programs,
+                    tourSchedules: schedules,
+                };
+            })
+        );
+
+        // Trả về toàn bộ kết quả
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error in getAllTourWithDetail:", error);
+        res.status(500).json({ message: "Error fetching tour details" });
+    }
+};
+
+
 export const getTourWithProgram = async (req: express.Request, res: express.Response) => {
     try {
       const tours = await TourModel.find().populate('TourProgram'); 
@@ -98,4 +136,3 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
         return res.sendStatus(400).json({message:'Lỗi'}).end();
     }
   }
-  
