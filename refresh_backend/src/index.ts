@@ -7,6 +7,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';    
 import router from './routes';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const app = express();
 app.use(cors({
     credentials: true,
 }));
+
+app.use('/assets',express.static(path.join(__dirname,'assets')));
 
 app.use(compression());
 app.use(cookieParser());
