@@ -10,9 +10,9 @@ module.exports = {
       },
       spacing: {
         hbanner: "500px",
-        hheader: "4rem",
-        hnavbar: "4rem",
-        mincontent: "calc(100vh - 4rem - 4rem)",
+        hheader: "3rem",
+        hnavbar: "3rem",
+        mincontent: "calc(100vh - 6rem)",
       },
     },
   },

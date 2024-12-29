@@ -48,7 +48,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#ddd]">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex flex-col md:flex-row w-[100%] max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Left Section */}
         <div className="flex-1 flex items-center justify-center bg-blue-200 relative">
@@ -68,6 +68,14 @@ const SignUp = () => {
               navigate("/");
             }}
           />
+          {step > 1 && (
+            <button
+              className="absolute left-4 top-4 h-6 hover:text-main cursor-pointer hover:bg-gray-100"
+              onClick={() => setStep(step - 1)}
+            >
+              Quay lại
+            </button>
+          )}
           {step === 1 && (
             <>
               <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
@@ -238,18 +246,16 @@ const SignUp = () => {
               </div>
             </>
           )}
-          {/* Đã có tài khoản? Đăng nhập */}
-          <div className="mt-4 text-center">
-            <p>
-              Đã có tài khoản?{" "}
-              <button
-                onClick={() => navigate("/login")}
-                className="text-blue-500 hover:underline"
-              >
-                Đăng nhập
-              </button>
-            </p>
-          </div>
+          {/* Đã có tài khoản? */}
+          <p className="mt-4 text-center text-gray-600">
+            Bạn đã có tài khoản?{" "}
+            <button
+              className="text-main hover:underline"
+              onClick={() => navigate("/login")}
+            >
+              Đăng nhập
+            </button>
+          </p>
         </div>
       </div>
     </div>

@@ -35,7 +35,7 @@ const Login = () => {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#ddd] ">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 ">
       <div className="flex flex-col md:flex-row w-[100%] max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Left Section */}
         <div className="flex-1 flex items-center justify-center bg-blue-200 relative">
@@ -122,9 +122,9 @@ const Login = () => {
                   Nhớ mật khẩu
                 </label>
               </div>
-              <a className="ml-2 text-sm text-main hover:underline">
+              <p className="ml-2 text-sm text-main hover:underline">
                 Quên mật khẩu?
-              </a>
+              </p>
             </div>
 
             {/* Submit Button */}

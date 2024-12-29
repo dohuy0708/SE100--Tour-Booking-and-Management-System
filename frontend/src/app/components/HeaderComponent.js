@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   UserCircleIcon,
   UserIcon,
@@ -11,6 +11,7 @@ export default function HeaderComponent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null); // Thêm ref để theo dõi dropdown
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -32,6 +33,21 @@ export default function HeaderComponent() {
     };
   }, []);
 
+  // Đóng dropdown khi nhấp ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
@@ -46,7 +62,7 @@ export default function HeaderComponent() {
           {/* Logo */}
           <div>
             <img
-              className="h-16 mt-1 mb-[-4px] text-white"
+              className="h-10 ml-3 mt-1 mb-[-4px] text-white"
               src="/logo.png"
               alt="logo kaze"
             />
@@ -60,24 +76,24 @@ export default function HeaderComponent() {
                   to={"/signup"}
                   className="border-l-[1px] h-full flex items-center border-white pl-4 pr-6 text-white hover:bg-white/10 transition-colors"
                 >
-                  <UserCircleIcon className="h-8 mr-2" />
+                  <UserCircleIcon className="h-7 mr-2" />
                   <div>Đăng ký</div>
                 </NavLink>
                 <NavLink
                   to={"/login"}
                   className="border-l-[1px] h-full flex items-center border-white pl-4 pr-6 text-white hover:bg-white/10 transition-colors"
                 >
-                  <UserCircleIcon className="h-8 mr-2" />
+                  <UserCircleIcon className="h-7 mr-2" />
                   <div>Đăng nhập</div>
                 </NavLink>
               </>
             ) : (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   className="border-l-[1px] h-full flex items-center border-white pl-4 pr-6 text-white hover:bg-white/10 transition-colors"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
-                  <UserCircleIcon className="h-8 mr-2" />
+                  <UserCircleIcon className="h-7 mr-2" />
                   <span>Tài khoản</span>
                   <ChevronDownIcon
                     className={`h-4 w-4 ml-2 transition-transform duration-200 ${

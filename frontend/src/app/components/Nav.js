@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function Nav() {
   const navItems = [
@@ -16,7 +16,7 @@ export default function Nav() {
             {navItems.map((items) => {
               return (
                 <NavLink to={items.path}>
-                  <li className="px-6 text-lg text-main font-bold cursor-pointer leading-[64px] hover:text-white hover:bg-main ">
+                  <li className="px-6 text-lg text-main font-medium cursor-pointer leading-[48px] hover:text-white hover:bg-main ">
                     {items.name}
                   </li>
                 </NavLink>

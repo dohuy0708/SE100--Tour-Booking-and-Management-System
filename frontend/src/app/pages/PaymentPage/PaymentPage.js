@@ -59,7 +59,9 @@ const PaymentPage = () => {
 
   return (
     <div className="container mx-auto p-6 bg-white">
-      <h1 className="text-2xl font-bold text-center mb-6">ĐẶT TOUR</h1>
+      <h1 className="text-2xl font-bold text-main text-center mb-6">
+        ĐẶT TOUR
+      </h1>
 
       {/* Thanh tiến trình */}
       <StepBar step={step} />
@@ -70,26 +72,30 @@ const PaymentPage = () => {
       {step === 3 && <Step3 />}
 
       {/* Nút điều hướng */}
-      <div className="flex justify-between mt-8">
-        <button
-          className={`px-6 py-2 rounded-lg font-semibold ${
-            step === 1
-              ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-              : "bg-gray-500 text-white"
-          }`}
-          onClick={handlePreviousStep}
-          disabled={step === 1}
-        >
-          Quay lại
-        </button>
+      {step < 3 ? (
+        <div className="flex justify-between mt-8">
+          <button
+            className={`px-6 py-2 rounded-lg font-semibold ${
+              step === 1
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                : "bg-gray-500 text-white"
+            }`}
+            onClick={handlePreviousStep}
+            disabled={step === 1}
+          >
+            Quay lại
+          </button>
 
-        <button
-          className="px-6 py-2 bg-main text-white rounded-lg font-semibold"
-          onClick={handleNextStep}
-        >
-          {step < 3 ? "Tiếp tục" : "Đặt Ngay"}
-        </button>
-      </div>
+          <button
+            className="px-6 py-2 bg-main text-white rounded-lg font-semibold"
+            onClick={handleNextStep}
+          >
+            Tiếp tục
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

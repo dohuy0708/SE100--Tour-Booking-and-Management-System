@@ -43,13 +43,18 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
-      <div className="mx-auto max-w-7xl p-4 flex ">
+    <div className="min-h-mincontent bg-gray-50 ">
+      <div className="mx-auto  max-w-7xl p-4 grid grid-cols-4 gap-2 ">
         {/* Sidebar */}
-        <ProfileTab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+        <div className="col-span-1 ">
+          <ProfileTab
+            selectedTab={selectedTab}
+            setSelectedTab={setSelectedTab}
+          />
+        </div>
 
         {/* Main Content */}
-        <div className="flex-1">{renderContent()}</div>
+        <div className="flex-1 col-span-3 ">{renderContent()}</div>
       </div>
     </div>
   );

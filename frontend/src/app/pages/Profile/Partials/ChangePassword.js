@@ -105,12 +105,12 @@ export default function ChangePassword() {
             value={formData.newPassword}
             onChange={handleChange}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${
-              error.newPassword ? "border-red-500" : "border-gray-300"
+              error.newPassword ? "border-red" : "border-gray-300"
             } bg-transparent`}
           />
         </div>
         {error.newPassword && (
-          <p className="text-red-500 text-sm mt-1">{error.newPassword}</p>
+          <p className="text-red text-sm mt-1">{error.newPassword}</p>
         )}
 
         <div className="flex items-center">
@@ -123,12 +123,12 @@ export default function ChangePassword() {
             value={formData.confirmPassword}
             onChange={handleChange}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${
-              error.confirmPassword ? "border-red-500" : "border-gray-300"
+              error.confirmPassword ? "border-red" : "border-gray-300"
             } bg-transparent`}
           />
         </div>
         {error.confirmPassword && (
-          <p className="text-red-500 text-sm mt-1">{error.confirmPassword}</p>
+          <p className="text-red text-sm mt-1">{error.confirmPassword}</p>
         )}
       </form>
       <div className="text-center mt-8">

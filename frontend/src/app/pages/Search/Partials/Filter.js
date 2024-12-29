@@ -3,11 +3,9 @@ import React, { useState } from "react";
 const Filter = ({ onApplyFilters }) => {
   // State cho từng loại filter
   const [selectedBudget, setSelectedBudget] = useState([]);
-  const [departurePoint, setDeparturePoint] = useState("Tất cả");
   const [destination, setDestination] = useState("Tất cả");
   const [selectedDate, setSelectedDate] = useState("");
   const [tourType, setTourType] = useState([]);
-  const [transport, setTransport] = useState([]);
 
   // Dữ liệu mẫu
   const budgets = [
@@ -17,7 +15,6 @@ const Filter = ({ onApplyFilters }) => {
     "Trên 20 triệu",
   ];
   const tourTypes = ["Trong nước", "Nước ngoài"];
-  const transportTypes = ["Xe", "Máy bay"];
 
   // Hàm toggle chọn nhiều mục
   const handleToggle = (item, state, setState) => {
@@ -32,7 +29,6 @@ const Filter = ({ onApplyFilters }) => {
   const applyFilters = () => {
     const filters = {
       budget: selectedBudget,
-      departurePoint,
       destination,
       date: selectedDate,
       tourType,
@@ -52,7 +48,7 @@ const Filter = ({ onApplyFilters }) => {
               onClick={() =>
                 handleToggle(budget, selectedBudget, setSelectedBudget)
               }
-              className={`px-3 py-2 rounded border ${
+              className={`px-1 py-2 rounded border ${
                 selectedBudget.includes(budget)
                   ? "bg-main text-white"
                   : "bg-gray-100"
@@ -65,7 +61,7 @@ const Filter = ({ onApplyFilters }) => {
       </div>
 
       {/* Điểm khởi hành */}
-      <div>
+      {/* <div>
         <h3 className="font-semibold mb-2">Điểm khởi hành:</h3>
         <select
           value={departurePoint}
@@ -77,7 +73,7 @@ const Filter = ({ onApplyFilters }) => {
           <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
           <option value="Đà Nẵng">Đà Nẵng</option>
         </select>
-      </div>
+      </div> */}
 
       {/* Điểm đến */}
       <div>
@@ -113,7 +109,7 @@ const Filter = ({ onApplyFilters }) => {
             <button
               key={type}
               onClick={() => handleToggle(type, tourType, setTourType)}
-              className={`px-3 py-2 rounded border ${
+              className={`px-1 py-2 rounded border ${
                 tourType.includes(type) ? "bg-main text-white" : "bg-gray-100"
               }`}
             >

@@ -66,11 +66,11 @@ export default function Contact() {
   };
   return (
     <div className="bg-gray-100">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3  h-mincontent py-6 mx-32">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3  min-h-mincontent py-6 mx-32">
         {/* Thông tin liên hệ */}
         <div className=" col-span-1  w-full bg-white rounded-lg shadow-lg p-6 space-y-6">
           <h2 className="text-xl font-bold text-gray-800">
-            Công ty TNHH Một Thành Viên Dịch vụ Lữ hành Saigontourist
+            Công ty TNHH 5H - BANANA
           </h2>
           <div className="space-y-4">
             <div className="flex items-start">
@@ -78,7 +78,7 @@ export default function Contact() {
               <div>
                 <p className="font-semibold text-gray-700">Địa chỉ:</p>
                 <p className="text-gray-600">
-                  45 Lê Thánh Tôn, Phường Bến Nghé, Quận 1, TP.HCM
+                  Khu phố 6, Phường Linh Trung, Quận Thủ Đức, TP.HCM
                 </p>
               </div>
             </div>
@@ -96,13 +96,10 @@ export default function Contact() {
               <div className="text-main text-2xl mr-4">✉️</div>
               <div>
                 <p className="font-semibold text-gray-700">Email:</p>
-                <p className="text-gray-600">info@saigontourist.net</p>
+                <p className="text-gray-600">uit@gmail.com</p>
               </div>
             </div>
           </div>
-          <a className="text-main underline hover:text-orange-700 text-sm">
-            Xem địa chỉ các Văn phòng Chi nhánh Lữ hành Saigontourist
-          </a>
         </div>
 
         <div className="col-span-2 w-full bg-white rounded-lg shadow-lg p-6 space-y-4">

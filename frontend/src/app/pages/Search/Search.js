@@ -9,16 +9,18 @@ export default function Search() {
     // Gọi API hoặc xử lý dữ liệu tại đây
   };
   return (
-    <div className="grid grid-cols-5 w-full">
-      {/* Bộ lọc ở bên trái */}
-      <div className="col-span-1 m-4 rounded-lg">
-        <Filter onApplyFilters={handleFilters} />
-      </div>
+    <div className="min-h-mincontent">
+      <div className="grid grid-cols-5 mx-32">
+        {/* Bộ lọc ở bên trái */}
+        <div className="col-span-1 mt-4 rounded-lg">
+          <Filter onApplyFilters={handleFilters} />
+        </div>
 
-      {/* Kết quả tìm kiếm ở bên phải */}
-      <div className="col-span-4 p-4 ">
-        <SearchBar />
-        <SearchResults />
+        {/* Kết quả tìm kiếm ở bên phải */}
+        <div className="col-span-4 p-4 ">
+          <SearchBar />
+          <SearchResults />
+        </div>
       </div>
     </div>
   );

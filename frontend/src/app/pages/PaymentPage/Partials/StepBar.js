@@ -1,11 +1,16 @@
+import {
+  CheckCircleIcon,
+  CreditCardIcon,
+  DocumentTextIcon,
+} from "@heroicons/react/24/outline";
 import React from "react";
 
 const StepBar = ({ step }) => {
   // Các bước và icon tương ứng
   const steps = [
-    { label: "NHẬP THÔNG TIN", icon: "📋" }, // Thay biểu tượng bằng hình ảnh nếu có
-    { label: "THANH TOÁN", icon: "💳" },
-    { label: "HOÀN TẤT", icon: "✅" },
+    { label: "NHẬP THÔNG TIN", icon: <DocumentTextIcon className="h-6" /> }, // Thay biểu tượng bằng hình ảnh nếu có
+    { label: "THANH TOÁN", icon: <CreditCardIcon className="h-6" /> },
+    { label: "HOÀN TẤT", icon: <CheckCircleIcon className="h-6" /> },
   ];
 
   return (
@@ -14,12 +19,12 @@ const StepBar = ({ step }) => {
         <div key={index} className="flex items-center space-x-2">
           <div
             className={`w-12 h-12 flex items-center justify-center rounded-full border-2 ${
-              step === index + 1 ? "bg-main border-main" : "bg-gray-300"
+              step >= index + 1 ? "bg-main border-main" : "bg-gray-300"
             }`}
           >
             <span
               className={`text-2xl ${
-                step === index + 1 ? "text-white" : "text-gray-600"
+                step >= index + 1 ? "text-white" : "text-gray-600"
               }`}
             >
               {item.icon}
@@ -28,7 +33,7 @@ const StepBar = ({ step }) => {
 
           <div
             className={`text-sm font-semibold ${
-              step === index + 1 ? "text-main" : "text-gray-500"
+              step >= index + 1 ? "text-main" : "text-gray-500"
             }`}
           >
             {item.label}
