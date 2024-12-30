@@ -51,15 +51,20 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
         if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
-
-        const tour= await updateTourById(id, {name, code, type, dura, descri, policy});
+        const tour= await updateTourById(id, {            
+            tour_name: name,
+            tour_code: code,
+            tour_type: type,
+            duration: dura,
+            description: descri,
+            policy_id: policy,});
 
         if(!tour){
             return res.status(400).json({message:'Tour không tồn tại'}).end();
         }
-        await tour.save();
+         tour.save();
 
-        return res.status(200).json(tour).end();
+        return res.status(200).json({message:'Thành công'}).end();
     }
     catch(error){
         console.log(error);
