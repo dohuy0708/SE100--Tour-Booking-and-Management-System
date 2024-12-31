@@ -16,15 +16,15 @@ export const getAllFeedbacks = async (req: express.Request, res: express.Respons
 export const createNewFeedback = async (req: express.Request, res: express.Response) =>{
 
     try{    
-        const {customer, tour, content, date}=req.body;
+        const {customer, schedule, content, date}=req.body;
 
-        if(customer==null||tour==null||content==null||date==null||customer==undefined||tour==undefined||content==undefined||date==undefined){
+        if(customer==null||schedule==null||content==null||date==null||customer==undefined||schedule==undefined||content==undefined||date==undefined){
             return res.status(400).json({message:'Thiếu thông tin Feedback'}).end();
         }
 
         const feedback= await createFeedback({
             customer_id: customer,
-            tour_id: tour,
+            schedule_id: schedule,
             feedback_content: content,
             feedback_date: date,
         });
@@ -40,15 +40,15 @@ export const createNewFeedback = async (req: express.Request, res: express.Respo
 export const updateFeedback = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {customer, tour, content, date}=req.body;
+        const {customer, schedule, content, date}=req.body;
 
-        if(customer==null||tour==null||content==null||date==null||customer==undefined||tour==undefined||content==undefined||date==undefined){
+        if(customer==null||schedule==null||content==null||date==null||customer==undefined||schedule==undefined||content==undefined||date==undefined){
             return res.status(400).json({message:'Thiếu thông tin Feedback'}).end();
         }
 
         const feedback= await updateFeedbackById(id, {
             customer_id: customer,
-            tour_id: tour,
+            tour_id: schedule,
             feedback_content: content,
             feedback_date: date,
         });

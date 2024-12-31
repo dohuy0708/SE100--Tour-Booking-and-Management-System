@@ -8,3 +8,10 @@ export default (router: express.Router) => {
     router.delete('/tour_medias/:id', deleteMedia as any);
     router.get('/tour_medias', getAllMedias as any);
 }
+
+//duong dan tuyet doi: const fullPath = req.protocol + '://' + req.get('host') + '/assets/' + req.file.filename;
+//vi du: http://localhost:8080/assets/123abcxyz.jpg
+
+
+
+//duong dan tuong doi: const fullPath = '/assets/' + req.file.filename; : lay cho front end

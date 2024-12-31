@@ -4,6 +4,7 @@ const TourProgramSchema = new mongooser.Schema({
     tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
     day_number:{type: Number, required: true},
     program_description:{type: String, required: true},
+    image : {type: String, required: true},
 });
 
 
@@ -21,3 +22,5 @@ export const getPrograms=()=>TourProgramModel.find();
 
 export const getProgramById=(program_id:string)=>TourProgramModel.findById(program_id);
 export const getProgramsByTourId = (tour_id: string) =>TourProgramModel.find({ tour_id });
+
+export const deleteProgramByTourId = (tour_id: string) =>TourProgramModel.deleteMany({ tour_id });

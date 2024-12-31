@@ -1,23 +1,28 @@
 import { get } from 'lodash';
 import mongooser from "mongoose";
 
+
+const TourTypes={
+    TRONG_NUOC:'TRONG NƯỚC',
+    QUOC_TE:'QUỐC TẾ',
+};
+
+
 const TourSchema = new mongooser.Schema({
     tour_name:{type: String, required: true},
     tour_code:{type: String, required: true},
     tour_type:{
         type: [String],
-        enum:['DOMESTIC','INTERNATIONAL'],
+        enum:[TourTypes.QUOC_TE, TourTypes.TRONG_NUOC],
         required: true,
     },
-    duration:{type: Number, required: true},
+    duration:{type: String, required: true},
     description:{type: String, required: true},
     policy_id:{type: mongooser.Schema.Types.ObjectId, ref: 'TourPolicy', required: true},
+    cover_image:{type: String, required: true},
 });
 
-export const TourTypes={
-    DOMESTIC:'DOMESTIC',
-    INTERNATIONAL:'INTERNATIONAL',
-};
+
 
 export const TourModel = mongooser.model('Tour', TourSchema);
 

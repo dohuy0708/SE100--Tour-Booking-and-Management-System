@@ -8,6 +8,7 @@ import { env } from "process";
 import { BookingModel } from "../db/booking";
 import paymentRoute from "../routes/paymentRoute";
 import { sortObject } from "../helpers/sort-object";
+import dotenv from 'dotenv';
 
 
 export const getAllPayments = async (req: express.Request, res: express.Response) => {
@@ -101,10 +102,10 @@ export const createPaymentUrl = async (req: express.Request, res: express.Respon
         const createDate = moment(date).format('YYYYMMDDHHmmss');
         const ipAddr = requestIp.getClientIp(req);
 
-        const tmnCode: string = "ZVG104LV";
-        const secretKey: string = "8UUUT8QXQ8QVSO8F10JIATMID6PM6LHZ";
-        let vnpUrl: string = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        const returnUrl: string = "http://localhost:8080";
+        const tmnCode: string = process.env.vnp_TmnCode;
+        const secretKey: string = process.env.vnp_HashSecret;
+        let vnpUrl: string = process.env.vnp_Url;
+        const returnUrl: string = process.env.vnp_returnvnpay;
 
         const booking = await BookingModel.findById(booking_id);
 

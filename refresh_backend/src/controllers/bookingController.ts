@@ -1,4 +1,6 @@
 import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails, BookingModel   } from "../db/booking";
+import { getScheduleById } from "../db/schedule";
+import { getPriceByTourId, TourPriceModel } from "../db/tour_price";
 import express from "express";
 
 export const getAllBookings = async (req: express.Request, res: express.Response) => {
@@ -15,20 +17,42 @@ export const getAllBookings = async (req: express.Request, res: express.Response
 
 export const createNewBooking = async (req: express.Request, res: express.Response) =>{
     try{
-        const {customer, tour,date, price, stt,number_slot}=req.body;
+        const {customer, schedule, date, price, stt, number_slot} = req.body;
 
-        if(!customer||!tour||!date||!price||!stt||!number_slot){
+        if(!customer || !schedule || !date || !price || !stt || !number_slot){
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
 
-        const booking= await createBooking({
+        const scheduledt = await getScheduleById(schedule).populate('tour_id').lean();
+
+        if(!scheduledt){
+            return res.status(400).json({message:'Schedule không tồn tại'}).end();
+        }
+
+
+        const tprice= await TourPriceModel.findOne({tour_id: scheduledt.tour_id});
+
+        if(!tprice){
+            return res.status(400).json({message:'Giá Tour không tồn tại'}).end();
+        }
+
+
+        const bookingData= {
             customer_id: customer,
-            tour_id: tour,
+            schedule_id: schedule,
             booking_date: date,
             total_price: price,
             status: stt,
-            number_slots: number_slot
-        });
+            number_slots: number_slot,
+            schedule_details: scheduledt,
+            tour_details: scheduledt.tour_id,
+            adult_price: tprice.adult_price,
+            children_price: tprice.children_price,
+            infant_price: tprice.infant_price,
+        };
+
+        const booking = await createBooking(bookingData);
+
         return res.status(200).json(booking).end();
     }
     catch(error){
@@ -40,13 +64,13 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
 export const updateBooking = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {customer_id, tour_id,date, price, status}=req.body;
+        const {customer_id, schedule_id,date, price, status}=req.body;
 
-        if(!customer_id||!tour_id||!date||!price||!status){
+        if(!customer_id||!schedule_id||!date||!price||!status){
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
 
-        const booking= await updateBookingById(id, {customer_id, tour_id,date, price, status});
+        const booking= await updateBookingById(id, {customer_id, schedule_id,date, price, status});
 
         if(!booking){
             return res.status(400).json({message:'Booking không tồn tại'}).end();
@@ -90,22 +114,22 @@ export const getBookingByIdWithTheDetails = async (req: express.Request, res: ex
         return res.status(400).json({ message: 'Lỗi' }).end();
     }
 }
-export const getToursByCustomerId = async (req: express.Request, res: express.Response) => {
+export const getSchedulesByCustomerId = async (req: express.Request, res: express.Response) => {
     try {
       const customer_id = req.params.customer_id; 
   
       const bookings = await BookingModel.find({ customer_id })
-        .populate('tour_id'); 
+        .populate('schedule_id'); 
   
       if (bookings.length === 0) {
-        return res.status(404).json({ message: 'Không tìm thấy tour cho khách hàng này' });
+        return res.status(404).json({ message: 'Không tìm thấy Schedule cho khách hàng này' });
       }
   
-      const tours = bookings.map(booking => booking.tour_id);
+      const schedules = bookings.map(booking => booking.schedule_id);
   
-      return res.status(200).json(tours);
+      return res.status(200).json(schedules);
     } catch (error) {
-      console.error('Error in getToursByCustomerId:', error);
-      return res.status(500).json({ message: 'Lỗi khi lấy tour cho khách hàng', error });
+      console.error('Error in getScheduleByCustomerId:', error);
+      return res.status(500).json({ message: 'Lỗi khi lấy Schedule cho khách hàng', error });
     }
   };

@@ -98,6 +98,60 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
     }
 }
 
+
+export const staffregister=async(req:express.Request, res:express.Response):Promise<any>=>{
+    try{
+        const {mail, pass,name, phone, dob}=req.body;
+
+        if(mail==undefined||!pass==undefined||!name==undefined||!phone==undefined||!dob==undefined||mail==null||pass==null||name==null||phone==null||dob==null){
+            return res.status(400).json({message:'Thiếu thông tin'});
+        }
+
+        const existingUser =await getUserByEmail(mail);
+
+        if(existingUser){
+            return res.status(404).json({message:'Email đã tồn tại'});
+        }
+
+        const salte=random();
+        const Code=randomCode();//Ma xac thuc
+
+
+        const user=await createUser({
+            email: mail,
+            user_name: name,
+            phone_number: phone,
+            date_of_birth: dob,
+            authentication:{
+                salt: salte,
+                user_password:authentication(salte, pass),
+                sessionToken:null,
+                verificationCode:Code,
+                isVerified:false,
+            },
+            group_id:"6768b9dd67d4dd30bb05e413",
+        });
+
+        const subject = 'Xác thực tài khoản của bạn';
+        const content = 'Xin chào,' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản nhân viên tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
+
+
+
+        sendEmail(mail, subject, content).catch(err => {
+            console.error('Lỗi khi gửi email:', err); // Log lỗi nếu gửi email thất bại
+        });
+
+        return res.status(200).json({ message: 'Đăng ký thành công, vui lòng kiểm tra email để xác minh tài khoản', userId:user._id });
+    }
+    catch(error){
+        console.log(error, 'Lỗi khi tạo người dùng');
+        return res.status(400);
+    }
+}
+
+
+
+
 export const verifyUser=async(req:express.Request, res:express.Response):Promise<any>=>{
     try{
         const {mail, code}=req.body;
@@ -110,6 +164,41 @@ export const verifyUser=async(req:express.Request, res:express.Response):Promise
 
         if(!user){
             return res.status(404).json({message:'User không tồn tại'});
+        }
+
+        const realcode=parseInt(code);
+
+        if(user.authentication.verificationCode!==realcode){
+            return res.status(403).json({message:user.authentication.verificationCode});
+        }
+
+        user.authentication.isVerified=true;
+        user.authentication.verificationCode=undefined;//Xoa ma xac thuc
+
+        await user.save();
+
+        return res.status(200).json({message:'Xác thực thành công'});
+    }
+    catch(error){
+        console.log(error, 'Lỗi khi xác thực tài khoản');
+        return res.status(400).json({message:'Lỗi trong quá trình xác thực tài khoản'});
+    }
+}
+
+
+
+export const verifyStaff=async(req:express.Request, res:express.Response):Promise<any>=>{
+    try{
+        const {mail, code}=req.body;
+
+        if(mail==undefined||code==undefined||mail==null||code==null){
+            return res.status(400).json({message:'Thiếu thông tin'});
+        }
+
+        const user=await getUserByEmail(mail).select('+authentication.verificationCode');
+
+        if(!user){
+            return res.status(404).json({message:'Staff không tồn tại'});
         }
 
         const realcode=parseInt(code);
@@ -253,3 +342,6 @@ export const resetpassword=async(req:express.Request, res:express.Response):Prom
         return res.status(400).json({message:'Lỗi trong quá trình đặt lại mật khẩu'});
     }
 }
+
+
+

@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, getAllUsers, updateUser } from '../controllers/userController';
+import { deleteUser, getAllUsers, updateUser, createStaff } from '../controllers/userController';
 import { isAuthenticated, isOwner } from '../middleware';
 import { GroupNames } from '../db/group';
 import { authorize } from '../middleware/role_middleware';
@@ -21,4 +21,6 @@ export default (router: express.Router) => {
     router.get('/customer', isAuthenticated, authorize([GroupNames.CUSTOMER]), (req, res) => {
         res.json({ message: 'Welcome Customer' });
     });
+
+    router.post('/createstaff', isAuthenticated, authorize([GroupNames.ADMIN]), createStaff as any);
 }

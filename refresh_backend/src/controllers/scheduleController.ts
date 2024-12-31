@@ -1,4 +1,4 @@
-import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId} from "../db/schedule";
+import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById} from "../db/schedule";
 import express from "express";
 
 export const getAllSchedules = async (req: express.Request, res: express.Response) => {
@@ -43,20 +43,15 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
 export const updateSchedule = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {tour, code, sta, date, time, capa, avail}=req.body;
+        const {sta, capa}=req.body;
 
-        if(tour==null||code==null||sta==null||date==null||time==null||capa==null||avail==null||tour==undefined||code==undefined||sta==undefined||date==undefined||time==undefined||capa==undefined||avail==undefined){
+        if(sta==null||capa==null||sta==undefined||capa==undefined){
             return res.status(400).json({message:'Thiếu thông tin Schedule'}).end();
         }
 
         const schedule= await updateScheduleById(id, {
-            tour_id:tour,
-            schedule_code:code,
             status:sta,
-            departure_date:date,
-            departure_time:time,
             capacity:capa,
-            available_slots:avail,
         });
 
         if(!schedule){
@@ -75,11 +70,18 @@ export const updateSchedule = async (req: express.Request, res: express.Response
 export const deleteSchedule = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;
-        const schedule= await deleteScheduleById(id);
+        const schedule= await getScheduleById(id);
         if(!schedule){
             return res.status(400).json({message:'Schedule không tồn tại'}).end();
         }
-        return res.status(200).json(schedule).end();
+
+        if(!schedule.status.includes('SELLING')){
+            return res.status(400).json({message:'Chỉ có thể xóa Schedule đang bán'}).end();
+        }
+
+        const deletedSchedule=await deleteScheduleById(id);
+
+        return res.status(200).json(deletedSchedule).end();
     }
     catch(error){
         console.log(error);

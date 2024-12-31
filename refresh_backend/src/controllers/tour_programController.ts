@@ -18,7 +18,7 @@ export const createNewProgram = async (req: express.Request, res: express.Respon
     try{
         const {tour, day, descri}=req.body;
 
-        if(tour==null||day==null||descri==null||tour==undefined||day==undefined||descri==undefined){
+        if(tour==null||day==null||descri==null||tour==undefined||day==undefined||descri==undefined||!req.file){
             return res.status(400).json({message:'Thiếu thông tin Program'}).end();
         }
 
@@ -26,6 +26,7 @@ export const createNewProgram = async (req: express.Request, res: express.Respon
             tour_id:tour,
             day_number: day,
             program_description: descri,
+            image: '/assets/'+req.file.filename,
         });
 
         return res.status(200).json(program).end();

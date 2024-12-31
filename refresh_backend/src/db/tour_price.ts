@@ -31,3 +31,5 @@ export const getPrices=()=>TourPriceModel.find();
 
 export const getPriceById=(price_id:string)=>TourPriceModel.findById(price_id);
 export const getPriceByTourId = (tour_id: string) =>TourPriceModel.find({ tour_id });
+
+export const deletePriceByTourId = (tour_id: string) =>TourPriceModel.deleteMany({ tour_id });

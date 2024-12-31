@@ -2,7 +2,7 @@ import mongooser from "mongoose";
 
 const LocationSchema = new mongooser.Schema({
     location_name:{type:String, required: true},
-    address:{type:String, required: true},
+    location_code:{type:String, required: true},
 });
 
 export const LocationModel = mongooser.model('Location', LocationSchema);

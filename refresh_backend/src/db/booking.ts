@@ -2,7 +2,7 @@ import mongooser from "mongoose";
 
 const BookingSchema = new mongooser.Schema({
     customer_id:{type: mongooser.Schema.Types.ObjectId, ref: 'User', required: true},
-    tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
+    schedule_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Schedule', required: true},
     number_slots:{type: Number, required: true},
     booking_date:{type: Date, required: true}, 
     total_price:{type: mongooser.Types.Decimal128,
@@ -10,8 +10,22 @@ const BookingSchema = new mongooser.Schema({
                     get: (value: mongooser.Types.Decimal128) => value ? value.toString() : null, 
                     set: (value: string | number) => mongooser.Types.Decimal128.fromString(value.toString())},
     status : {type: [String],
-             required: true},
-             enum: ['PENDING', 'CONFIRMED', 'CANCELLED'],
+             required: true,
+             enum: ['PENDING', 'CONFIRMED', 'CANCELLED']},
+    schedule_details: {type: Object, required: true},
+    tour_details: {type: Object, required: true},
+    adult_price:{type: mongooser.Types.Decimal128,
+                    required: true,
+                    get: (value: mongooser.Types.Decimal128) => value ? value.toString() : null, 
+                    set: (value: string | number) => mongooser.Types.Decimal128.fromString(value.toString())},
+        children_price:{type: mongooser.Types.Decimal128,
+                    required: true,
+                    get: (value: mongooser.Types.Decimal128) => value ? value.toString() : null, 
+                    set: (value: string | number) => mongooser.Types.Decimal128.fromString(value.toString())}, 
+        infant_price:{type: mongooser.Types.Decimal128,
+                        required: true,
+                        get: (value: mongooser.Types.Decimal128) => value ? value.toString() : null, 
+                        set: (value: string | number) => mongooser.Types.Decimal128.fromString(value.toString())},
 });
 
 export const BookingStatus ={

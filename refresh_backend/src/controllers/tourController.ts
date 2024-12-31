@@ -2,8 +2,9 @@ import { TourPolicyModel } from "../db/tour_policy";
 import { TourModel } from '../db/tour';
 import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
 import express from "express";
-import { TourProgramModel } from "../db/tour_program";
-import { ScheduleModel } from "../db/schedule";
+import { TourProgramModel, deleteProgramByTourId } from "../db/tour_program";
+import { deletePriceByTourId } from "../db/tour_price";
+import { getScheduleByTourId, ScheduleModel } from "../db/schedule";
 
 export const getAllTours = async (req: express.Request, res: express.Response) => {
 
@@ -22,7 +23,7 @@ export const createNewTour = async (req: express.Request, res: express.Response)
     try{
         const {name, code, type, dura, descri, policy}=req.body;
 
-        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
+        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined||!req.file){
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
@@ -33,6 +34,7 @@ export const createNewTour = async (req: express.Request, res: express.Response)
             duration: dura,
             description: descri,
             policy_id: policy,
+            cover_image: '/assets/'+req.file.filename,
         });
 
         return res.status(200).json(tour).end();
@@ -49,7 +51,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
         const {id}=req.params;  
         const {name, code, type, dura, descri, policy}=req.body;
 
-        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
+        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined||!req.file){
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
@@ -71,7 +73,23 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
 export const deleteTour = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;
+
+        const schedules= await getScheduleByTourId(id);
+
+        if(schedules.length>0){
+            return res.status(400).json({message:'Không thể xóa Tour vì đang có Schedule'}).end();
+        }
+
+
+        await deleteProgramByTourId(id);
+        await deletePriceByTourId(id);
+
         const deleteTour= await deleteTourById(id);
+
+        if(!deleteTour){
+            return res.status(400).json({message:'Tour không tồn tại'}).end();
+        }
+        
         return res.status(200).json(deleteTour).end();
     }
     catch(error){

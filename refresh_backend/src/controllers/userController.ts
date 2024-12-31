@@ -1,4 +1,4 @@
-import { deleteUserById, getUserById, getUsers } from '../db/user';
+import { createUser, deleteUserById, getUserById, getUsers } from '../db/user';
 import express from 'express';
 
 export const getAllUsers = async (req: express.Request, res: express.Response)=> {
@@ -43,6 +43,34 @@ export const updateUser=async(req:express.Request, res:express.Response)=>{
         await user.save();
 
         return res.status(200).json(user).end();
+    }
+    catch(error){
+        console.log(error);
+        return res.status(400).json({message:'Lỗi'}).end();
+    }
+}
+
+export const createStaff = async (req: express.Request, res: express.Response) =>{
+    try{
+        const {name, email, phone, dob}=req.body;
+
+        if(name==null||email==null||phone==null||dob==null||name==undefined||email==undefined||phone==undefined||dob==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Staff'}).end();
+        }
+
+        const staff= await createUser({
+            user_name: name,
+            email: email,
+            phone_number: phone,
+            date_of_birth: dob,
+            authentication:{
+                user_password: name+phone+'@123',
+                isVerfiied: true,
+            },
+            group_id: "6768b9dd67d4dd30bb05e413",
+        });
+
+        return res.status(200).json(staff).end();
     }
     catch(error){
         console.log(error);
