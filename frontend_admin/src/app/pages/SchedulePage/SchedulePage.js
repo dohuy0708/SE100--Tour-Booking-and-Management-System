@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import FilterComponent from "../../components/FilterComponent/FilterComponent.js";
 import ScheduleItemComponent from "./partials/ScheduleItemComponent.js";
 import { getScheduleData } from "../../services/Schedule_w_TourService.js";
-import { getScheduleStatus } from "../../services/scheduleStatusService.js";
+
 import { FilterProvider } from "../../context/FilterContext.js";
 import ScheduleModal from "./partials/ScheduleModal.js";
+import { getScheduleStatus } from "./services/getScheduleStatus.js";
 
 export default function SchedulePage() {
   const [schedules, setSchedules] = useState([]);

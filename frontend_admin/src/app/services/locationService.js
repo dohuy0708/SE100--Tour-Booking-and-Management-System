@@ -1,4 +1,5 @@
-export const locationData = [
+import axios from "axios";
+const locationData = [
   {
     locationId: 1,
     locationName: "Phú Yên",
@@ -16,8 +17,14 @@ export const locationData = [
   },
 ];
 
+const API_BASE_URL = "http://localhost:8080";
 export const getLocations = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(locationData), 500); // Mô phỏng thời gian tải
-  });
+  try {
+    const response = await axios.get(`${API_BASE_URL}/locations`);
+    console.log("Response data:", response.data);
+    return response.data; // Giả sử server trả về dữ liệu ở response.data
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    throw error; // Ném lỗi ra để hàm gọi xử lý
+  }
 };

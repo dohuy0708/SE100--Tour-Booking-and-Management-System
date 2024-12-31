@@ -72,7 +72,7 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
           <option value="">Tất cả</option>
           {locations.map((loc) => (
             <option key={loc.id} value={loc.id}>
-              {loc.locationName}
+              {loc.location_name}
             </option>
           ))}
         </select>

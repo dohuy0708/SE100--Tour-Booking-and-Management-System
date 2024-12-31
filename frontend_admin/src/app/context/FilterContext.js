@@ -15,6 +15,8 @@ export const FilterProvider = ({ children }) => {
       try {
         // Giả sử bạn có các API để lấy dữ liệu location
         const locationData = await getLocations(); // Gọi API hoặc fetch dữ liệu cho locations
+
+        console.log("locationData", locationData);
         const tours = await getTourSchedule();
         console.log("Tour Data context:", tours);
         setTourData(tours);

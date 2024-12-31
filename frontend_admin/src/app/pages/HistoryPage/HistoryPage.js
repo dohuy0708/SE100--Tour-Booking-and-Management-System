@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FilterProvider } from "../../context/FilterContext";
 import FilterComponent from "../../components/FilterComponent/FilterComponent";
 import { getScheduleData } from "../../services/Schedule_w_TourService";
-import { getScheduleStatus } from "../../services/scheduleStatusService";
+
 import ScheduleModal from "../SchedulePage/partials/EditScheduleModal";
 import ScheduleItemComponent from "../SchedulePage/partials/ScheduleItemComponent";
 import HistoryItemComponent from "./partials/HistoryItemComponent";
@@ -27,10 +27,9 @@ export default function HistoryPage() {
           page: currentPage,
           limit: recordsPerPage,
         });
-        const statuses = await getScheduleStatus();
+
         setSchedules(fetchedSchedules);
         setFilteredSchedules(fetchedSchedules);
-        setScheduleStatuses(statuses);
 
         console.log("Fetched Schedules:", fetchedSchedules);
       } catch (error) {
