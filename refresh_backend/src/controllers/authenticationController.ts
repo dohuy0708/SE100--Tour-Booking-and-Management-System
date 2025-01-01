@@ -320,7 +320,7 @@ export const resetpassword=async(req:express.Request, res:express.Response):Prom
             return res.status(400).json({message:'Thiếu thông tin'});
         }
 
-        const user=await getUserByEmail(mail).select('+authentication.ủser_password +authentication.salt');
+        const user=await getUserByEmail(mail).select('+authentication.user_password +authentication.salt');
         if(!user){
             return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
         }
@@ -329,7 +329,7 @@ export const resetpassword=async(req:express.Request, res:express.Response):Prom
             return res.status(403).json({message:'Mật khẩu cũ không đúng'});
         }
 
-        
+
 
         const salte=random();
 
