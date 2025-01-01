@@ -29,10 +29,21 @@ export const handleRegister = async (mail, pass, name, phone, dob) => {
       phone,
       dob,
     });
-    console.log("dât: ", response.data);
     return response.data; // Trả về dữ liệu nhận được từ API
   } catch (error) {
     console.error("Error registering user:", error);
+    throw error.response?.data || error.message; // Ném lỗi để xử lý phía trên
+  }
+};
+
+export const resetPasswordApi = async (mail) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/forgot`, {
+      mail,
+    });
+    return response.data; // Trả về dữ liệu nhận được từ API
+  } catch (error) {
+    console.error("Error reset password user:", error);
     throw error.response?.data || error.message; // Ném lỗi để xử lý phía trên
   }
 };

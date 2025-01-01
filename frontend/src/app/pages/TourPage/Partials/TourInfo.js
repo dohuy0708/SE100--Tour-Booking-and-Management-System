@@ -2,27 +2,30 @@ import React from "react";
 import ScheduleTable from "./ScheduleTable";
 import Itinerary from "./Itinerary";
 
-const TourInfo = ({ tour }) => {
+const TourInfo = ({ tour, schedules }) => {
   return (
     <div>
       <h2 className="text-3xl text-main font-semibold mb-4">
         Thông tin về tour
       </h2>
       <div className="bg-[#F9F9F9] p-6 rounded-lg shadow-md">
-        <div className="flex">
+        <div className="">
           <p className="mb-2 mr-10">
             <strong>Thời gian:</strong>{" "}
-            <span className="text-red font-medium"> {tour.duration}</span>
+            <span className="text-red font-medium">
+              {" "}
+              {tour?.duration} ngày {tour?.duration - 1} đêm
+            </span>
           </p>
           <p className="mb-2">
-            <strong>Điểm xuất phát:</strong>{" "}
-            <span className="text-red font-medium"> {tour.startPoint}</span>
+            <strong>Mô tả:</strong>{" "}
+            <span className=" "> {tour?.description}</span>
           </p>
         </div>
 
-        <ScheduleTable scheduleData={tour.days} tour={tour} />
+        {/* <ScheduleTable scheduleData={tour.days} tour={tour} /> */}
       </div>
-      <Itinerary days={tour.scheduleData} />
+      {/* <Itinerary days={tour.scheduleData} /> */}
     </div>
   );
 };

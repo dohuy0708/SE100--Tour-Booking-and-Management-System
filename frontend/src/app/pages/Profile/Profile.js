@@ -29,7 +29,7 @@ export default function Profile() {
       case "bookings":
         return <MyBookings />;
       case "changePassword":
-        return <ChangePassword />;
+        return <ChangePassword email={userData.email} />;
       default:
         return <MyProfile userData={userData} />;
     }

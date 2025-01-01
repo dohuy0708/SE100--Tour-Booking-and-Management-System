@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { handleLoginApi } from "./services/accessService";
+import { resetPasswordApi } from "./services/accessService"; // Import service resetPassword
 
 const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // Thêm trạng thái để lưu lỗi
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showResetModal, setShowResetModal] = useState(false); // state để điều khiển modal
+  const [resetEmail, setResetEmail] = useState(""); // email nhập để reset mật khẩu
+  const [message, setMessage] = useState(""); // thông báo trạng thái
   const navigate = useNavigate();
 
   const handleOnChangeUserName = (event) => {
@@ -20,25 +24,39 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!userName || !password) {
-      setErrorMessage("Vui lòng nhập đầy đủ thông tin đăng nhập!"); // Cảnh báo nếu thiếu thông tin
+      setErrorMessage("Vui lòng nhập đầy đủ thông tin đăng nhập!");
       return;
     }
 
-    setIsLoading(true); // Hiển thị trạng thái đang xử lý
-    setErrorMessage(""); // Reset lỗi trước khi gửi request
+    setIsLoading(true);
+    setErrorMessage("");
     try {
       const userData = await handleLoginApi(userName, password);
       const { _id, user_name, email, phone_number, date_of_birth } = userData;
       localStorage.setItem("user_id", userData._id);
       localStorage.setItem(
         "user",
-        JSON.stringify({ _id, user_name, email, phone_number, date_of_birth }) // Lưu thông tin an toàn
+        JSON.stringify({ _id, user_name, email, phone_number, date_of_birth })
       );
       navigate("/");
     } catch (error) {
-      setErrorMessage(error.message); // Hiển thị lỗi khi đăng nhập thất bại
+      setErrorMessage(error.message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Xử lý gửi email để reset mật khẩu
+  const handleResetPassword = async () => {
+    if (!resetEmail) {
+      setMessage("Vui lòng nhập email để tiếp tục.");
+      return;
+    }
+    try {
+      const res = await resetPasswordApi(resetEmail);
+      setMessage(res.message);
+    } catch (error) {
+      setMessage(error.message);
     }
   };
 
@@ -49,16 +67,8 @@ const Login = () => {
         <div className="flex-1 flex items-center justify-center bg-blue-200 relative">
           <div className="absolute inset-0 opacity-50"></div>
           <div className="relative z-10 flex flex-col items-center">
-            <img
-              src="/logoimg.png" // Thay bằng đường dẫn logo
-              alt="Logo"
-              className="h-32"
-            />
-            <img
-              src="/logo2.png" // Thay bằng đường dẫn logo
-              alt="Logo"
-              className="h-28 mb-4"
-            />
+            <img src="/logoimg.png" alt="Logo" className="h-32" />
+            <img src="/logo2.png" alt="Logo" className="h-28 mb-4" />
           </div>
         </div>
 
@@ -78,7 +88,6 @@ const Login = () => {
           </p>
 
           <div className="space-y-6">
-            {/* Email Input */}
             <div>
               <label
                 htmlFor="email"
@@ -96,7 +105,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password Input */}
             <div>
               <label
                 htmlFor="password"
@@ -116,30 +124,19 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Remember Me */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  className="h-4 w-4 text-main border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="remember"
-                  className="ml-2 block text-sm text-gray-700"
-                >
-                  Nhớ mật khẩu
-                </label>
-              </div>
-              <p className="ml-2 text-sm text-main hover:underline">
+              <p
+                className="ml-2 text-sm text-main hover:underline cursor-pointer"
+                onClick={() => setShowResetModal(true)} // Mở modal khi nhấn "Quên mật khẩu?"
+              >
                 Quên mật khẩu?
               </p>
             </div>
-            {/* Hiển thị thông báo lỗi nếu có */}
+
             {errorMessage && (
               <div className="text-red text-center mb-4">{errorMessage}</div>
             )}
-            {/* Submit Button */}
+
             <div>
               <button
                 className="w-full bg-main text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
@@ -148,7 +145,7 @@ const Login = () => {
                 {isLoading ? "Đang xử lý..." : "Đăng nhập"}
               </button>
             </div>
-            {/* Đã có tài khoản? Đăng nhập */}
+
             <div className="mt-4 text-center">
               <p>
                 Chưa có tài khoản?{" "}
@@ -163,6 +160,44 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Reset Password */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ">
+          <div className="relative">
+            <div className="bg-white p-6 rounded-lg w-96">
+              <h2 className="text-2xl font-bold mb-4">Quên mật khẩu</h2>
+              <p className="mb-4">
+                Hãy nhập email của bạn để nhận hướng dẫn reset mật khẩu.
+              </p>
+              <input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md mb-4"
+                placeholder="Email của bạn"
+              />
+              <button
+                onClick={handleResetPassword}
+                className="w-full bg-main text-white py-2 px-4 rounded-md hover:bg-blue-700"
+              >
+                Gửi
+              </button>
+              {message && (
+                <div className="mt-4 text-center text-sm text-main">
+                  {message}
+                </div>
+              )}
+              <button
+                className="absolute top-2 right-2 text-gray-500"
+                onClick={() => setShowResetModal(false)} // Đóng modal khi ấn "X"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

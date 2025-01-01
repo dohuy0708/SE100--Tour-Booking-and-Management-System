@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import { updateInfo } from "../services/profileService";
 
 export default function MyProfile({ userData }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [error, seterror] = useState("");
+  const [message, setMessage] = useState("");
+
   const [formData, setFormData] = useState({
     user_name: userData?.user_name || "",
     email: userData?.email || "",
@@ -9,7 +13,6 @@ export default function MyProfile({ userData }) {
     gender: userData?.gender || "Nam",
     date_of_birth: userData?.date_of_birth || "",
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -18,8 +21,30 @@ export default function MyProfile({ userData }) {
     }));
   };
 
-  const handleSave = () => {
-    // Lưu dữ liệu tại đây
+  const handleSave = async () => {
+    console.log("form này:", formData);
+    // Lưu dữ liệu tại đ
+    // ây
+    try {
+      const response = await updateInfo(
+        userData._id,
+        formData.name,
+        formData.email,
+        formData.phone_number,
+        formData.date_of_birth
+      );
+      if (response.error) {
+        seterror(response.error);
+        setMessage("");
+      } else {
+        setMessage("Thông tin đã được thay đổi thành công");
+        seterror("");
+      }
+    } catch (error) {
+      seterror("Đã có lỗi xảy ra, vui lòng thử lại");
+      setMessage("");
+    } finally {
+    }
     setIsEditing(false);
   };
 
@@ -98,19 +123,26 @@ export default function MyProfile({ userData }) {
             }`}
           />
         </div>
+        {error && <div className="text-red my-2 text-sm">{error}</div>}
+        {message && (
+          <div className="text-green-600 my-2 text-sm">{message}</div>
+        )}
       </form>
       <div className="text-center mt-8">
         {isEditing ? (
           <button
             onClick={handleSave}
-            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700"
+            className="px-6 py-3 bg-main text-white font-semibold rounded-lg hover:bg-blue-700"
           >
             Lưu Thay Đổi
           </button>
         ) : (
           <button
-            onClick={() => setIsEditing(true)}
-            className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700"
+            onClick={() => {
+              setIsEditing(true);
+              seterror("");
+            }}
+            className="px-6 py-3 bg-main text-white font-semibold rounded-lg hover:bg-blue-700"
           >
             Chỉnh Sửa Hồ Sơ
           </button>

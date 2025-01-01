@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import { resetPassword } from "../services/profileService"; // Import service resetPassword
 
-export default function ChangePassword() {
+export default function ChangePassword({ email }) {
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
   const [error, setError] = useState({
-    confirmPassword: "", // Lỗi cho trường nhập lại mật khẩu
-    newPassword: "", // Lỗi cho trường mật khẩu mới
+    confirmPassword: "",
+    newPassword: "",
   });
+  const [loading, setLoading] = useState(false); // Thêm state để theo dõi trạng thái tải
+  const [message, setMessage] = useState(""); // Để hiển thị thông báo
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,7 +21,6 @@ export default function ChangePassword() {
       [name]: value,
     }));
 
-    // Kiểm tra mật khẩu xác nhận có khớp với mật khẩu mới không
     if (name === "confirmPassword") {
       if (value !== formData.newPassword) {
         setError((prev) => ({
@@ -33,7 +35,6 @@ export default function ChangePassword() {
       }
     }
 
-    // Kiểm tra xem mật khẩu mới có giống mật khẩu cũ không
     if (name === "newPassword") {
       if (value === formData.currentPassword) {
         setError((prev) => ({
@@ -49,7 +50,7 @@ export default function ChangePassword() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (formData.newPassword !== formData.confirmPassword) {
       setError((prev) => ({
         ...prev,
@@ -66,11 +67,23 @@ export default function ChangePassword() {
       return;
     }
 
-    // Xử lý thay đổi mật khẩu tại đây
-    console.log("Mật khẩu đã được thay đổi:", formData);
+    setLoading(true); // Bật loading khi đang gửi yêu cầu
+    setMessage(""); // Reset message trước khi gửi
+
+    try {
+      const response = await resetPassword(
+        email,
+        formData.currentPassword,
+        formData.newPassword
+      );
+      setMessage(response.message || "Mật khẩu đã được thay đổi thành công");
+    } catch (error) {
+      setMessage("Đã có lỗi xảy ra, vui lòng thử lại");
+    } finally {
+      setLoading(false); // Tắt loading sau khi hoàn thành
+    }
   };
 
-  // Kiểm tra có lỗi hay không để vô hiệu hóa nút lưu
   const isFormValid =
     !error.newPassword &&
     !error.confirmPassword &&
@@ -139,10 +152,19 @@ export default function ChangePassword() {
               ? "bg-main text-white"
               : "bg-gray-400 text-gray-200 cursor-not-allowed"
           }`}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
         >
-          Lưu Thay Đổi
+          {loading ? "Đang thay đổi..." : "Lưu Thay Đổi"}
         </button>
+        {message && (
+          <p
+            className={`mt-4 text-sm ${
+              message.includes("thành công") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );
