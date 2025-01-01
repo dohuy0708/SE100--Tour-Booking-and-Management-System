@@ -1,2 +1,2 @@
-import LocationPage from "../LocationPage";
-export default LocationPage;
+import Login from "./LoginPage";
+export default Login;

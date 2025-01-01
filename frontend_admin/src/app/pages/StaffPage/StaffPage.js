@@ -4,19 +4,17 @@ import StaffTableComponent from "./partials/StaffTableComponent";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { notifyError, notifySuccess } from "../../components/Notification";
+import { Navigate, useNavigate } from "react-router-dom";
 export default function StaffPage() {
-  const NotifySuccess = () => {
-    notifySuccess("Thành công!");
-  };
-
-  const NotifyError = () => {
-    notifyError("Không thành công!");
-  };
   const [searchQuery, setSearchQuery] = useState(""); // Trạng thái lưu query tìm kiếm
-
+  const navigate = useNavigate(); // Khai báo useNavigate
   // Hàm xử lý tìm kiếm từ SearchComponent
   const handleSearch = (query) => {
     setSearchQuery(query); // Cập nhật searchQuery
+  };
+
+  const HandleAddStaff = () => {
+    navigate("/signup"); // Điều hướng đến /resetpass
   };
 
   return (
@@ -28,7 +26,7 @@ export default function StaffPage() {
         <SearchComponent onSearch={handleSearch} />
         {/* Nút Thêm */}
         <button
-          onClick={NotifyError}
+          onClick={HandleAddStaff}
           // Open modal
           className="ml-4 px-4 py-2 flex bg-blue-500 gap-2 text-white rounded shadow hover:bg-blue-600"
         >

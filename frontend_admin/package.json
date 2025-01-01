@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@heroicons/react": "^2.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -13,10 +14,12 @@
     "chart.js": "^4.4.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-modal": "^3.16.3",
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "react-signify": "^1.5.2",
     "react-toastify": "^11.0.2",
+    "sweetalert2": "^11.15.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
