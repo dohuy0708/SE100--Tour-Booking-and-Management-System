@@ -290,19 +290,21 @@ export const forgetpassword=async(req:express.Request, res:express.Response):Pro
             return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
         }
 
-        const Code=randomCode();
+        const salte=random();
+        const newpass=randomCode().toString()+'@abczyx';
 
-        user.authentication.resetCode=Code;
+        user.authentication.user_password= authentication(salte, newpass);
+        user.authentication.salt=salte;
         await user.save();
 
         const subject = 'Đặt lại mật khẩu';
-        const content = 'Xin chào '+ user.user_name+',\n\nBạn đã yêu cầu đặt lại mật khẩu tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\nVui lòng nhập mã này để đặt lại mật khẩu.';
+        const content = 'Xin chào '+ user.user_name+',\n\nBạn đã yêu cầu đặt lại mật khẩu tại 5H Tourist. Mật khẩu mới của bạn là: '+newpass+'\n\nVui lòng đăng nhập mới với mật khẩu này';
 
         sendEmail(mail, subject, content).catch(err => {
             console.error('Lỗi khi gửi email:', err);
         });
 
-        return res.status(200).json({message:'Gửi mã để đặt lại mật khẩu thành công, vui lòng kiểm tra email'});
+        return res.status(200).json({message:'Gửi mật khẩu mới thành công, vui lòng kiểm tra email'});
     }
     catch(error){
         console.log('Lỗi khi yêu cầu đặt lại mật khẩu: ', error);
@@ -313,27 +315,27 @@ export const forgetpassword=async(req:express.Request, res:express.Response):Pro
 
 export const resetpassword=async(req:express.Request, res:express.Response):Promise<any>=>{
     try{
-        const {mail, code, pass}=req.body;
-        if(!mail||!code||!pass){
+        const {mail, oldpass, newpass}=req.body;
+        if(mail==null||!oldpass==null||!newpass==null||mail==undefined||oldpass==undefined||newpass==undefined){
             return res.status(400).json({message:'Thiếu thông tin'});
         }
 
-        const user=await getUserByEmail(mail).select('+authentication.resetCode');
+        const user=await getUserByEmail(mail).select('+authentication.ủser_password +authentication.salt');
         if(!user){
             return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
         }
 
-        if(user.authentication.resetCode!==parseInt(code)){
-            return res.status(403).json({message:'Mã xác thực không đúng'});
+        if(user.authentication.user_password!==authentication(user.authentication.salt, oldpass)){
+            return res.status(403).json({message:'Mật khẩu cũ không đúng'});
         }
+
+        
 
         const salte=random();
 
 
         user.authentication.salt=salte;  
-        user.authentication.user_password=authentication(salte, pass);
-
-        user.authentication.resetCode=undefined;
+        user.authentication.user_password=authentication(salte, newpass);
 
         await user.save();
 
