@@ -3,11 +3,11 @@ import React, { useState } from "react";
 export default function MyProfile({ userData }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: userData?.name || "",
+    user_name: userData?.user_name || "",
     email: userData?.email || "",
-    phone: userData?.phone || "",
+    phone_number: userData?.phone_number || "",
     gender: userData?.gender || "Nam",
-    dob: userData?.dob || "",
+    date_of_birth: userData?.date_of_birth || "",
   });
 
   const handleChange = (e) => {
@@ -33,8 +33,8 @@ export default function MyProfile({ userData }) {
           <label className="w-1/4 font-semibold text-gray-600">Họ Tên:</label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="user_name"
+            value={formData.user_name}
             onChange={handleChange}
             disabled={!isEditing}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${
@@ -56,8 +56,8 @@ export default function MyProfile({ userData }) {
           <label className="w-1/4 font-semibold text-gray-600">Số ĐT:</label>
           <input
             type="text"
-            name="phone"
-            value={formData.phone}
+            name="phone_number"
+            value={formData.phone_number}
             onChange={handleChange}
             disabled={!isEditing}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${
@@ -89,8 +89,8 @@ export default function MyProfile({ userData }) {
           </label>
           <input
             type="date"
-            name="dob"
-            value={formData.dob}
+            name="date_of_birth"
+            value={formData.date_of_birth}
             onChange={handleChange}
             disabled={!isEditing}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${

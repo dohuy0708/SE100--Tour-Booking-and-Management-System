@@ -1,6 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { handleRegister } from "./services/accessService"; // Import service handleRegister
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -12,36 +13,44 @@ const SignUp = () => {
   const [dob, setDob] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1); // Để theo dõi bước hiện tại (1: bước 1, 2: bước 2)
+  const [error, setError] = useState(""); // State để lưu thông báo lỗi
   const navigate = useNavigate();
 
   const handleStep1Submit = () => {
     if (!email || !password || !confirmPassword) {
-      alert("Vui lòng điền đầy đủ thông tin đăng ký!");
+      setError("Vui lòng điền đầy đủ thông tin đăng ký!");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Mật khẩu và nhập lại mật khẩu không trùng khớp!");
+      setError("Mật khẩu và nhập lại mật khẩu không trùng khớp!");
       return;
     }
 
+    setError(""); // Xóa lỗi cũ khi bước 1 hợp lệ
     setStep(2); // Chuyển sang bước 2 sau khi nhập email và mật khẩu
   };
 
   const handleSubmit = async () => {
     if (!fullName || !phoneNumber || !gender || !dob) {
-      alert("Vui lòng điền đầy đủ thông tin cá nhân!");
+      setError("Vui lòng điền đầy đủ thông tin cá nhân!");
       return;
     }
 
     setIsLoading(true);
+    setError(""); // Xóa lỗi cũ khi bắt đầu xử lý đăng ký
     try {
-      // Giả lập đăng ký người dùng
-      // Bạn có thể gọi API ở đây để đăng ký người dùng thực sự
-      localStorage.setItem("user", email); // Chỉ ví dụ, có thể lưu ID người dùng sau khi đăng ký thành công
-      navigate("/"); // Chuyển hướng về trang chính sau khi đăng ký
+      const response = await handleRegister(
+        email,
+        password,
+        fullName,
+        phoneNumber,
+        dob
+      );
+      console.log("Đăng ký thành công: ", response);
+      navigate("/login"); // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
     } catch (error) {
-      alert(error.message);
+      setError(error.message || "Đã có lỗi xảy ra!"); // Hiển thị lỗi nếu có
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +70,6 @@ const SignUp = () => {
 
         {/* Right Section */}
         <div className="flex-1 flex flex-col justify-center px-8 py-12 relative">
-          {" "}
           <XMarkIcon
             className="absolute right-4 top-4 h-6 hover:text-main cursor-pointer hover:bg-gray-100"
             onClick={() => {
@@ -242,6 +250,9 @@ const SignUp = () => {
                   >
                     {isLoading ? "Đang xử lý..." : "Đăng ký"}
                   </button>
+                  {error && (
+                    <p className="text-red-500 text-sm mt-2">{error}</p>
+                  )}
                 </div>
               </div>
             </>

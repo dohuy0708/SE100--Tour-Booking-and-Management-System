@@ -34,7 +34,7 @@ export default function ProfileTab({ selectedTab, setSelectedTab }) {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("user_id");
     window.dispatchEvent(new Event("userLogout"));
     navigate("/");
   };

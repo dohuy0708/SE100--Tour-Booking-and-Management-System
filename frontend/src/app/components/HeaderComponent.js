@@ -15,7 +15,7 @@ export default function HeaderComponent() {
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      const user = localStorage.getItem("user");
+      const user = localStorage.getItem("user_id");
       setIsLoggedIn(!!user);
     };
 
@@ -49,7 +49,7 @@ export default function HeaderComponent() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("user_id");
     setIsLoggedIn(false);
     setDropdownOpen(false);
     navigate("/");

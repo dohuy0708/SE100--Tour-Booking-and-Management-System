@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { mockLogin } from "../../Services/authService";
 import { useNavigate } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { handleLoginApi } from "./services/accessService";
 
 const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // Thêm trạng thái để lưu lỗi
   const navigate = useNavigate();
+
   const handleOnChangeUserName = (event) => {
     setUserName(event.target.value);
   };
@@ -18,38 +20,44 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!userName || !password) {
-      alert("Vui lòng nhập đầy đủ thông tin đăng nhập!");
+      setErrorMessage("Vui lòng nhập đầy đủ thông tin đăng nhập!"); // Cảnh báo nếu thiếu thông tin
       return;
     }
 
     setIsLoading(true); // Hiển thị trạng thái đang xử lý
+    setErrorMessage(""); // Reset lỗi trước khi gửi request
     try {
-      const userData = await mockLogin(userName, password);
-
-      localStorage.setItem("user", userData.id);
+      const userData = await handleLoginApi(userName, password);
+      const { _id, user_name, email, phone_number, date_of_birth } = userData;
+      localStorage.setItem("user_id", userData._id);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ _id, user_name, email, phone_number, date_of_birth }) // Lưu thông tin an toàn
+      );
       navigate("/");
     } catch (error) {
-      alert(error.message);
+      setErrorMessage(error.message); // Hiển thị lỗi khi đăng nhập thất bại
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 ">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex flex-col md:flex-row w-[100%] max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Left Section */}
         <div className="flex-1 flex items-center justify-center bg-blue-200 relative">
-          <div className="absolute inset-0  opacity-50"></div>
+          <div className="absolute inset-0 opacity-50"></div>
           <div className="relative z-10 flex flex-col items-center">
             <img
               src="/logoimg.png" // Thay bằng đường dẫn logo
               alt="Logo"
-              className=" h-32 "
+              className="h-32"
             />
             <img
               src="/logo2.png" // Thay bằng đường dẫn logo
               alt="Logo"
-              className=" h-28 mb-4"
+              className="h-28 mb-4"
             />
           </div>
         </div>
@@ -68,6 +76,7 @@ const Login = () => {
           <p className="text-center text-gray-600 mb-8">
             Vui lòng nhập email và mật khẩu để tiếp tục!
           </p>
+
           <div className="space-y-6">
             {/* Email Input */}
             <div>
@@ -126,7 +135,10 @@ const Login = () => {
                 Quên mật khẩu?
               </p>
             </div>
-
+            {/* Hiển thị thông báo lỗi nếu có */}
+            {errorMessage && (
+              <div className="text-red text-center mb-4">{errorMessage}</div>
+            )}
             {/* Submit Button */}
             <div>
               <button
