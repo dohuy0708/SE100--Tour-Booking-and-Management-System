@@ -22,13 +22,14 @@ export const authorize=(requiredRole: string[])=>{
                 return;
             }
 
-            const groupRoles=await GroupRoleModel.find({group_id: user.group_id})
-            .populate<{role_id: {role_description: string}}>('role_id','role_description');
+            // const groupRoles=await GroupRoleModel.find({group_id: user.group_id})
+            // .populate<{role_id: {role_description: string}}>('role_id','role_description');
 
-            const userRoles=groupRoles.map((gr)=>gr.role_id.role_description);
+            // const userRoles=groupRoles.map((gr)=>gr.role_id.role_description);
 
-            const hasRole=requiredRole.some((role)=>userRoles.includes(role));
+            // const hasRole=requiredRole.some((role)=>userRoles.includes(role));
 
+            const hasRole=requiredRole.includes(user.role);
             if(!hasRole){
                 res.status(403).json({message:'Forbidden: You dont have the required permission'}).end();
                 return;

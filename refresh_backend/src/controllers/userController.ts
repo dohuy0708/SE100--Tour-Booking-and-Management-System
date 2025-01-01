@@ -70,7 +70,7 @@ export const createStaff = async (req: express.Request, res: express.Response) =
             date_of_birth: dob,
             authentication:{
                 user_password: authentication(pass, salte),
-                isVerfiied: true,
+                isVerified: true,
                 sessionToken:null,
                 salt: salte,
             },

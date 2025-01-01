@@ -11,7 +11,7 @@ const UserSchema = new mongooser.Schema({
         sessionToken: {type: String, select: false},
         verificationCode: { type: Number, select: false }, // Mã xác thực
         resetCode: { type: Number, select: false }, // Mã reset mật khẩu
-        isVerified: { type: Boolean, default: false }, // Trạng thái xác minh
+        isVerified: { type: Boolean, require:true, default:false}, // Trạng thái xác minh
     },
    role:{type: String, required: true},
     group_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Group'},
