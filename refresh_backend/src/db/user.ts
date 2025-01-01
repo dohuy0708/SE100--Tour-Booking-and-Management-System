@@ -13,7 +13,7 @@ const UserSchema = new mongooser.Schema({
         resetCode: { type: Number, select: false }, // Mã reset mật khẩu
         isVerified: { type: Boolean, default: false }, // Trạng thái xác minh
     },
-   
+   role:{type: String, required: true},
     group_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Group'},
 });
 

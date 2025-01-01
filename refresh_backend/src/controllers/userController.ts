@@ -1,5 +1,6 @@
 import { createUser, deleteUserById, getUserById, getUsers } from '../db/user';
 import express from 'express';
+import { authentication, random } from '../helpers';
 
 export const getAllUsers = async (req: express.Request, res: express.Response)=> {
     try{
@@ -58,16 +59,23 @@ export const createStaff = async (req: express.Request, res: express.Response) =
             return res.status(400).json({message:'Thiếu thông tin Staff'}).end();
         }
 
+         const salte=random();
+
+         const pass=phone+'@123';
+
         const staff= await createUser({
             user_name: name,
             email: email,
             phone_number: phone,
             date_of_birth: dob,
             authentication:{
-                user_password: name+phone+'@123',
+                user_password: authentication(pass, salte),
                 isVerfiied: true,
+                sessionToken:null,
+                salt: salte,
             },
-            group_id: "6768b9dd67d4dd30bb05e413",
+            role:'STAFF',
+            group_id: '6768b9dd67d4dd30bb05e413',
         });
 
         return res.status(200).json(staff).end();

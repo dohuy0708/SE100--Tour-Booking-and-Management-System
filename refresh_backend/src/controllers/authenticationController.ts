@@ -50,9 +50,9 @@ export const login=async(req:express.Request, res:express.Response):Promise<any>
 
 export const register=async(req:express.Request, res:express.Response):Promise<any>=>{
     try{
-        const {mail, pass,name, phone, dob, group}=req.body;
+        const {mail, pass,name, phone, dob}=req.body;
 
-        if(mail==undefined||!pass==undefined||!name==undefined||!phone==undefined||!dob==undefined||group==undefined||mail==null||pass==null||name==null||phone==null||dob==null||group==null){
+        if(mail==undefined||!pass==undefined||!name==undefined||!phone==undefined||!dob==undefined||mail==null||pass==null||name==null||phone==null||dob==null){
             return res.status(400).json({message:'Thiếu thông tin'});
         }
 
@@ -78,7 +78,8 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
                 verificationCode:Code,
                 isVerified:false,
             },
-            group_id:group,
+            role:'CUSTOMER',
+            group_id:'6768b9ca67d4dd30bb05e411',
         });
 
         const subject = 'Xác thực tài khoản của bạn';
@@ -127,13 +128,14 @@ export const staffregister=async(req:express.Request, res:express.Response):Prom
                 user_password:authentication(salte, pass),
                 sessionToken:null,
                 verificationCode:Code,
-                isVerified:false,
+                isVerified:true,
             },
-            group_id:"6768b9dd67d4dd30bb05e413",
+            role:'STAFF',
+            group_id:'6768b9dd67d4dd30bb05e413',
         });
 
-        const subject = 'Xác thực tài khoản của bạn';
-        const content = 'Xin chào,' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản nhân viên tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
+        const subject = 'Tài khoản nhân viên của bạn';
+        const content = 'Xin chào,' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản nhân viên tại 5H Tourist.'// Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
 
 
 
