@@ -1,101 +1,131 @@
-import { createUser, deleteUserById, getAllCustomers, getUserById, getUsers } from '../db/user';
-import express from 'express';
-import { authentication, random } from '../helpers';
+import {
+  createUser,
+  deleteUserById,
+  getUserById,
+  getUsers,
+  listUsers,
+  UserModel,
+} from "../db/user";
+import express from "express";
+import { authentication, random } from "../helpers";
 
-export const getAllUsers = async (req: express.Request, res: express.Response)=> {
-    try{
-        const users=await getUsers();
-        return res.status(200).json(users).end();
+export const getAllUsers = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const role = "CUSTOMER";
+    const users = await listUsers(role);
+    return res.status(200).json(users).end();
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Lỗi" }).end();
+  }
+};
+
+export const getAllStaffs = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const role = "STAFF";
+    const users = await listUsers(role);
+    return res.status(200).json(users).end();
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Lỗi" }).end();
+  }
+};
+
+export const deleteUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const id = req.params.id;
+
+    const deleteUser = await deleteUserById(id);
+    return res.status(200).json(deleteUser).end();
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Lỗi", error }).end();
+  }
+};
+
+export const updateUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    if (name == null || name == undefined) {
+      return res.status(400).json({ message: "Thiếu thông tin User" }).end();
     }
-    catch(error){
-        console.log(error);
-        return res.status(400).json({message:'Lỗi'}).end();
+
+    const user = await getUserById(id);
+
+    if (!user) {
+      return res.status(400).json({ message: "User không tồn tại" }).end();
     }
-}
+    user.user_name = name;
+    await user.save();
 
+    return res.status(200).json(user).end();
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Lỗi" }).end();
+  }
+};
 
-export const deleteUser=async(req:express.Request, res:express.Response)=>{
-    try{
-        const {id}=req.params;
-        const deleteUser= await deleteUserById(id);
-        return res.status(200).json(deleteUser).end();
+export const createStaff = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { name, email, phone, dob } = req.body;
+
+    if (
+      name == null ||
+      email == null ||
+      phone == null ||
+      dob == null ||
+      name == undefined ||
+      email == undefined ||
+      phone == undefined ||
+      dob == undefined
+    ) {
+      return res.status(400).json({ message: "Thiếu thông tin Staff" }).end();
     }
-    catch(error){
-        console.log(error);
-        return res.status(400).json({message:'Lỗi'}).end();
+
+    // Kiểm tra xem email đã tồn tại chưa
+    const existingStaff = await UserModel.findOne({ email });
+    if (existingStaff) {
+      return res.status(400).json({ message: "Email đã tồn tại!" }).end();
     }
-}
+    const salte = random();
 
-export const updateUser=async(req:express.Request, res:express.Response)=>{
-    try{
-        const {id}=req.params;  
-        const {name, phone, dob}=req.body;
+    const pass = phone + "@123";
 
-        if(name==null||name==undefined || phone==null||phone==undefined||dob==null||dob==undefined){
-            return res.status(400).json({message:'Thiếu thông tin User'}).end();
-        }
+    const staff = await createUser({
+      user_name: name,
+      email: email,
+      phone_number: phone,
+      date_of_birth: dob,
+      authentication: {
+        user_password: authentication(pass, salte),
+        isVerified: true,
+        sessionToken: null,
+        salt: salte,
+      },
+      role: "STAFF",
+      group_id: "6768b9dd67d4dd30bb05e413",
+    });
 
-        const user= await getUserById(id);
-
-        if(!user){
-            return res.status(400).json({message:'User không tồn tại'}).end();
-        }
-        user.user_name=name;
-        user.phone_number=phone;
-        user.date_of_birth=dob;
-        await user.save();
-
-        return res.status(200).json(user).end();
-    }
-    catch(error){
-        console.log(error);
-        return res.status(400).json({message:'Lỗi'}).end();
-    }
-}
-
-export const createStaff = async (req: express.Request, res: express.Response) =>{
-    try{
-        const {name, email, phone, dob}=req.body;
-
-        if(name==null||email==null||phone==null||dob==null||name==undefined||email==undefined||phone==undefined||dob==undefined){
-            return res.status(400).json({message:'Thiếu thông tin Staff'}).end();
-        }
-
-         const salte=random();
-
-         const pass=phone+'@123';
-
-        const staff= await createUser({
-            user_name: name,
-            email: email,
-            phone_number: phone,
-            date_of_birth: dob,
-            authentication:{
-                user_password: authentication(pass, salte),
-                isVerified: true,
-                sessionToken:null,
-                salt: salte,
-            },
-            role:'STAFF',
-            group_id: '6768b9dd67d4dd30bb05e413',
-        });
-
-        return res.status(200).json(staff).end();
-    }
-    catch(error){
-        console.log(error);
-        return res.status(400).json({message:'Lỗi'}).end();
-    }
-}
-export const getCustomers= async (req: express.Request, res: express.Response) =>{
-    try {
-        const customers = await getAllCustomers();
-        if (!customers || customers.length === 0) {
-            return res.status(404).json({ message: 'Không tìm thấy khách hàng nào' }).end();
-        }
-        return res.status(200).json(customers).end();
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Lôi',}).end();
-    }
-}
+    return res.status(200).json(staff).end();
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Lỗi" }).end();
+  }
+};
