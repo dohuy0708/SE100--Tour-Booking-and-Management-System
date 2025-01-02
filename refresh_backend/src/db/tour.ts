@@ -22,7 +22,7 @@ const TourSchema = new mongooser.Schema({
     },
     duration:{type: String, required: true},
     description:{type: String, required: true},
-    policy_id:{type: mongooser.Schema.Types.ObjectId, ref: 'TourPolicy', required: true},
+    policy_id:{type: mongooser.Schema.Types.ObjectId, ref: 'TourPolicy', default: null},
     cover_image:{type: String, required: true},
 });
 

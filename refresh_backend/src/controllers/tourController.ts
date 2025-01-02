@@ -190,15 +190,14 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             type==null||
             dura==null||
             descri==null||
-            policy==null||
             name==undefined||
             code==undefined||
             type==undefined||
             dura==undefined||
             descri==undefined||
-            policy==undefined||
             !req.file
         ){
+            console.log(prices);
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
@@ -228,9 +227,21 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
 
         //tao Program
 
+
+
+
+
+
         if(!programs||!Array.isArray(programs)||programs.length===0){
             throw new Error('Thiếu Program');
         }
+
+
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
+        const programImages = files['program_images'] || [];
+
+        let i=0;
 
         for(const program of programs){
             if(program.day_number==null||program.program_description==null||program.day==undefined||program.descri==undefined){
@@ -241,8 +252,9 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
                 tour_id: tour._id,
                 day_number: program.day_number,
                 program_description: program.program_description,
-                image: '/assets/'+req.file.filename,
+                image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
             }, session);
+            i++;
         }
 
         //tao Location
