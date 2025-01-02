@@ -1,11 +1,15 @@
-import { getUserByEmail, createUser, getUserBySessionToken } from "../db/user";
-import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails, BookingModel   } from "../db/booking";
+import { register } from './authenticationController';
+import { Tour } from './../../../backend/src/models/tour_model';
+import { getUserByEmail, createUser, getUserBySessionToken, getUserById } from "../db/user";
+import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails, BookingModel, getBookingById   } from "../db/booking";
 import { getScheduleById } from "../db/schedule";
 import { getPriceByTourId, TourPriceModel } from "../db/tour_price";
 import express from "express";
 import { random, randomCode, authentication } from "../helpers";
 import { sendEmail } from '../helpers/mail_helper';
-import { createPassenger } from "../db/passenger";
+import { createPassenger, PassengerModel } from "../db/passenger";
+import tourRoute from "routes/tourRoute";
+import { getTourById, TourModel } from "../db/tour";
 
 
 export const getAllBookings = async (req: express.Request, res: express.Response) => {
@@ -30,11 +34,13 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         }
 
 
+        let coder=null as Number;
         let user=await getUserByEmail(mail);
         if(!user){
             const salte=random();
             const password=mail+'@123';
             const Code=randomCode();
+            coder=Code;
             const newuser= await createUser({
                 user_name: name,
                 email: mail,
@@ -45,7 +51,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
                     salt: salte,
                     sessionToken: null,
                     verificationCode: Code,
-                    isVerified: false, 
+                    isVerified: true, 
                 },
                 role: "CUSTOMER",
                 group_id:'6768b9ca67d4dd30bb05e411',
@@ -59,11 +65,11 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         }
 
 
-        const sessionToken = req.headers.authorization;
-        const loggedInUser = await getUserBySessionToken(sessionToken);
-        if (!loggedInUser) {
-            return res.status(401).json({ message: "Yêu cầu đăng nhập" }).end();
-        }
+        // const sessionToken = req.headers.authorization;
+        // const loggedInUser = await getUserBySessionToken(sessionToken);
+        // if (!loggedInUser) {
+        //     return res.status(401).json({ message: "Yêu cầu đăng nhập" }).end();
+        // }
 
 
 
@@ -74,6 +80,11 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         if(!scheduledt){
             return res.status(400).json({message:'Schedule không tồn tại'}).end();
         }
+
+        const tour= await TourModel.findById(scheduledt.tour_id);
+
+        const tourname=tour.tour_name;
+        const tourcode=tour.tour_code;
 
         if(number_slot>scheduledt.available_slots){
             return res.status(400).json({message:'Số lượng vé nhiều hơn số chỗ còn lại'}).end();
@@ -100,6 +111,9 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             adult_price: tprice.adult_price,
             children_price: tprice.children_price,
             infant_price: tprice.infant_price,
+            tour_name: tourname,
+            schedule_code:scheduledt.schedule_code,
+            schedule_date:scheduledt.departure_date,
         };
 
         const booking = await createBooking(bookingData);
@@ -123,10 +137,11 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             passengerList.push(passenger);
         }
 
+        
         booking.passengers = passengerList.map((p) => p._id);
         await booking.save();
 
-        return res.status(200).json({ booking, passengers: passengerList }).end();
+        return res.status(200).json({ booking, passengers: passengerList, coder }).end();
     }
     catch(error){
         console.log(error);
@@ -137,13 +152,13 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
 export const updateBooking = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {customer_id, schedule_id,date, price, status}=req.body;
+        const {status}=req.body;
 
-        if(!customer_id||!schedule_id||!date||!price||!status){
+        if(status==null||status==undefined){
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
 
-        const booking= await updateBookingById(id, {customer_id, schedule_id,date, price, status});
+        const booking= await updateBookingById(id, {status});
 
         if(!booking){
             return res.status(400).json({message:'Booking không tồn tại'}).end();
@@ -177,11 +192,25 @@ export const deleteBooking = async (req: express.Request, res: express.Response)
 export const getBookingByIdWithTheDetails = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
-        const booking = await getBookingByIdWithDetails(id) ;
-        if (booking==undefined||booking==null) {
+        const booking = await getBookingById(id);
+        if (!booking) {
             return res.status(404).json({ message: 'Booking không tồn tại' }).end();
         }
-        return res.status(200).json(booking).end();
+
+        const customer= await getUserById(booking.customer_id.toString());
+
+        const schdule= await getScheduleById(booking.schedule_id.toString());
+
+        const passengers= await PassengerModel.find({booking_id: booking._id});
+
+        const result={
+            ...booking.toObject(),
+            customer,
+            schdule,
+            passengers,
+        }
+
+        return res.status(200).json(result).end();
     } catch (error) {
         console.log(error);
         return res.status(400).json({ message: 'Lỗi' }).end();

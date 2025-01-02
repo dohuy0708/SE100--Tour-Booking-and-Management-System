@@ -26,7 +26,10 @@ const BookingSchema = new mongooser.Schema({
                         required: true,
                         get: (value: mongooser.Types.Decimal128) => value ? value.toString() : null, 
                         set: (value: string | number) => mongooser.Types.Decimal128.fromString(value.toString())},
-        passengers: [{ type: mongooser.Schema.Types.ObjectId, ref: "Passenger" }],
+    passengers: [{ type: mongooser.Schema.Types.ObjectId, ref: "Passenger" }],
+    tour_name: {type: String, required: true},
+    schedule_code: {type: String, required: true},
+    schedule_date: {type: Date, required: true},
 });
 
 export const BookingStatus ={

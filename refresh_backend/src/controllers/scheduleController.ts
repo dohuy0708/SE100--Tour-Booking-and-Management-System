@@ -1,3 +1,4 @@
+import { getTourById } from "../db/tour";
 import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel, filterSchedules, searchSchedules} from "../db/schedule";
 import express from "express";
 
@@ -22,6 +23,11 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
             return res.status(400).json({message:'Thiếu thông tin Schedule'}).end();
         }
 
+        const tourr=await getTourById(tour);
+        if(!tourr){
+            return res.status(400).json({message:'Tour không tồn tại'}).end();
+        }
+
         const schedule= await createSchedule({
             tour_id:tour,
             schedule_code:code,
@@ -30,6 +36,8 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
             departure_time:time,
             capacity:capa,
             available_slots:capa,
+            tour_name:tourr.tour_name,
+            tour_code:tourr.tour_code,
         });
 
         return res.status(200).json(schedule).end();
