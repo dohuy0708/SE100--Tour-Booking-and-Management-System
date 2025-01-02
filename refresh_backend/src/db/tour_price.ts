@@ -20,9 +20,10 @@ const TourPriceSchema = new mongooser.Schema({
 
 export const TourPriceModel = mongooser.model('TourPrice', TourPriceSchema);
 
-export const createPrice=(values: Record<string, any>)=> new TourPriceModel(values)
-.save().then((price)=>price.toObject());
-
+export const createPrice=(values: Record<string, any>, session?:mongooser.ClientSession)=>{
+    const price=new TourPriceModel(values);
+    return price.save({session}).then((price)=>price.toObject());
+}
 export const updatePriceById=(price_id:string, values: Record<string, any>)=> TourPriceModel.findByIdAndUpdate(price_id, values);
 
 export const deletePriceById=(price_id:string)=>TourPriceModel.findByIdAndDelete({_id: price_id});

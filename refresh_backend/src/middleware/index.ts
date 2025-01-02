@@ -9,7 +9,7 @@ export const isAuthenticated=async(req:express.Request, res:express.Response,nex
             res.status(401).json({message:'Chưa từng đăng nhập'}).end();
             return;
         }
-        const exitstingUser=await getUserBySessionToken(sessionToken);
+        const exitstingUser=await getUserBySessionToken(sessionToken); 
         if(!exitstingUser){
             res.status(403).json({message:'Phiên đăng nhập không hợp lệ'}).end();
             return

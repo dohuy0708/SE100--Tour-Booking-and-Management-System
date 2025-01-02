@@ -8,9 +8,9 @@ const TourLocationSchema = new mongooser.Schema({
 
 export const TourLocationModel = mongooser.model('TourLocation', TourLocationSchema);
 
-export const createTourLocation=async(tourId:string, locationId:string)=>{
+export const createTourLocation=async(tourId:string, locationId:string, session?:mongooser.ClientSession)=>{
     try{
-        const existingTourLocation = await TourLocationModel.findOne({tour_id: tourId, location_id: locationId});
+        const existingTourLocation = await TourLocationModel.findOne({tour_id: tourId, location_id: locationId}).session(session);
         if(existingTourLocation){
             return {message: 'Đã tồn tại Location này trong Tour này', status:'existed'};
         }
@@ -18,7 +18,7 @@ export const createTourLocation=async(tourId:string, locationId:string)=>{
         //neu chua co
         const newTourLocation = new TourLocationModel({tour_id: tourId, location_id: locationId});
 
-        await newTourLocation.save();
+        await newTourLocation.save({session});
         return {message: 'Tạo Location trong Tour này thành công', status:'success'};
     }
     catch(error){

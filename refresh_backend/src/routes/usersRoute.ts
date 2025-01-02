@@ -7,7 +7,7 @@ import { authorize } from '../middleware/role_middleware';
 
 export default (router: express.Router) => {
     router.get('/users',isAuthenticated, authorize([GroupNames.ADMIN, GroupNames.STAFF]),getAllUsers as any);
-    router.delete('/users/:id',isAuthenticated,isOwner, deleteUser as any);
+    router.delete('/users/:id',isAuthenticated,isOwner||authorize([GroupNames.ADMIN]), deleteUser as any);
     router.patch('/users/:id',isAuthenticated,isOwner, updateUser as any);
 
     router.get('/admin', isAuthenticated, authorize([GroupNames.ADMIN]), (req, res) => {

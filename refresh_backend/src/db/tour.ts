@@ -26,8 +26,11 @@ const TourSchema = new mongooser.Schema({
 
 export const TourModel = mongooser.model('Tour', TourSchema);
 
-export const createTour=(values: Record<string, any>)=> new TourModel(values)
-.save().then((tour)=>tour.toObject());
+export const createTour=(values: Record<string, any>, session?:mongooser.ClientSession)=>
+{
+    const tour=new TourModel(values);
+    return tour.save({session}).then((tour)=>tour.toObject());
+}
 
 export const updateTourById=(tour_id:string, values: Record<string, any>)=> TourModel.findByIdAndUpdate(tour_id, values);
 

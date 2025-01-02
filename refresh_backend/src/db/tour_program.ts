@@ -11,8 +11,10 @@ const TourProgramSchema = new mongooser.Schema({
 
 export const TourProgramModel = mongooser.model('TourProgram', TourProgramSchema);
 
-export const createProgram=(values: Record<string, any>)=> new TourProgramModel(values)
-.save().then((program)=>program.toObject());
+export const createProgram=(values: Record<string, any>, session?:mongooser.ClientSession)=> {
+    const program=new TourProgramModel(values);
+    return program.save({session}).then((program)=>program.toObject());
+}
 
 export const updateProgramById=(program_id:string, values: Record<string, any>)=> TourProgramModel.findByIdAndUpdate(program_id, values);
 
