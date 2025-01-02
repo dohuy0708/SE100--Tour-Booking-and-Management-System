@@ -1,5 +1,5 @@
 import express from 'express';
-import { deleteUser, getAllUsers, updateUser, createStaff } from '../controllers/userController';
+import { deleteUser, getAllUsers, updateUser, createStaff, getCustomers } from '../controllers/userController';
 import { isAuthenticated, isOwner } from '../middleware';
 import { GroupNames } from '../db/group';
 import { authorize } from '../middleware/role_middleware';
@@ -23,4 +23,6 @@ export default (router: express.Router) => {
     });
 
     router.post('/createstaff', isAuthenticated, authorize([GroupNames.ADMIN]), createStaff as any);
+    router.get("/customers",getCustomers as any)
+
 }

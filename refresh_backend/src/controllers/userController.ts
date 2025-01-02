@@ -1,4 +1,4 @@
-import { createUser, deleteUserById, getUserById, getUsers } from '../db/user';
+import { createUser, deleteUserById, getAllCustomers, getUserById, getUsers } from '../db/user';
 import express from 'express';
 import { authentication, random } from '../helpers';
 
@@ -83,5 +83,17 @@ export const createStaff = async (req: express.Request, res: express.Response) =
     catch(error){
         console.log(error);
         return res.status(400).json({message:'Lỗi'}).end();
+    }
+}
+export const getCustomers= async (req: express.Request, res: express.Response) =>{
+    try {
+        const customers = await getAllCustomers();
+        if (!customers || customers.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy khách hàng nào' }).end();
+        }
+        return res.status(200).json(customers).end();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Lôi',}).end();
     }
 }

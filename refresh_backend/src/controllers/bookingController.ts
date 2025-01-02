@@ -133,3 +133,25 @@ export const getSchedulesByCustomerId = async (req: express.Request, res: expres
       return res.status(500).json({ message: 'Lỗi khi lấy Schedule cho khách hàng', error });
     }
   };
+  export const getBookingByCustomerId = async (req: express.Request, res: express.Response) => {
+    try {
+      const customer_id = req.params.customer_id; 
+  
+      const bookings = await BookingModel.find({ customer_id })
+      .populate({
+        path: 'schedule_id',
+        populate: {
+            path: 'tour_id', 
+        },
+    });
+  
+      if (bookings.length === 0) {
+        return res.status(404).json({ message: 'Không tìm thấy Booking cho khách hàng này' });
+      }
+  
+      return res.status(200).json(bookings);
+    } catch (error) {
+      console.error('Error in getScheduleByCustomerId:', error);
+      return res.status(500).json({ message: 'Lỗi khi lấy Booking cho khách hàng', error });
+    }
+  };
