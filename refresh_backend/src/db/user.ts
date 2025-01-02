@@ -33,3 +33,8 @@ export const deleteUserById = (user_id: string) =>
   UserModel.findByIdAndDelete({ _id: user_id });
 export const updateUserById = (user_id: string, values: Record<string, any>) =>
   UserModel.findByIdAndUpdate(user_id, values);
+export const getAllCustomers = () =>
+  UserModel.find({ role: "CUSTOMER" }).populate({
+    path: "group_id",
+    select: "group_name",
+  });
