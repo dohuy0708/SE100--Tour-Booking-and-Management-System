@@ -7,7 +7,7 @@ import { Request } from 'express';
 //cau hinh multer
 const storage=multer.diskStorage({
     destination:(req,file,cb)=>{
-        cb(null,path.join(__dirname,'../assets'));//luu file vao thu muc assets
+        cb(null,path.join(__dirname, '../../../public/assets/' + req.file.filename));//luu file vao thu muc assets
     },
     filename:(req,file,cb)=>{
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

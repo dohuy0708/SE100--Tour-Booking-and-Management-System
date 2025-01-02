@@ -211,7 +211,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             duration : dura,
             description: descri,
             policy_id: policy,
-        //    cover_image: '/assets/'+req.file.filename,
+        //    cover_image: 'public/assets/'+req.file.filename,
         }, session);
 
         //tao Price
@@ -254,7 +254,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
                 tour_id: tour._id,
                 day_number: program.day_number,
                 program_description: program.program_description,
-                // image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
+                // image: 'public/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
             }, session);
             i++;
         }

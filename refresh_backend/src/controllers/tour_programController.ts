@@ -26,7 +26,7 @@ export const createNewProgram = async (req: express.Request, res: express.Respon
             tour_id:tour,
             day_number: day,
             program_description: descri,
-            image: '/assets/'+req.file.filename,
+            image: 'public/assets/'+req.file.filename,
         });
 
         return res.status(200).json(program).end();

@@ -25,7 +25,7 @@ export const createNewMedia = async (req: express.Request, res: express.Response
 
         const media= await createMedia({
             tour_id:tour,
-            cover:'/assets/'+req.file.filename,
+            cover:'public/assets/'+req.file.filename,
         });
 
         return res.status(200).json(media).end();
@@ -48,7 +48,7 @@ export const updateMedia = async (req: express.Request, res: express.Response) =
         const values:Record<string, any>={tour_id:tour};
 
         if(req.file){
-            values.cover='/assets/'+req.file.filename;//lay duong dan file anh neu co
+            values.cover='public/assets/'+req.file.filename;//lay duong dan file anh neu co
         }
 
         const media= await updateMediaById(id, values);
