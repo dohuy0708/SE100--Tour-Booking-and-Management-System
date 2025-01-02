@@ -42,7 +42,10 @@ export const deleteTourById=(tour_id:string)=>TourModel.findByIdAndDelete({_id: 
 
 export const getTours=()=>TourModel.find();
 
-export const getTourById=(tour_id:string)=>TourModel.findById(tour_id);
+export const getTourById=async (id:string)=>
+    {
+        return await TourModel.findById(id).lean();
+    };
 
 export const getTourByCode=(tour_code:string)=>TourModel.findOne({tour_code});
 export const searchTours = async (searchString: string) => {

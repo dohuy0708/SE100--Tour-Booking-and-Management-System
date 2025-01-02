@@ -2,7 +2,7 @@ import { TourPolicyModel } from "../db/tour_policy";
 import { filterTours, searchTours, TourModel } from '../db/tour';
 import { TourPriceModel } from '../db/tour_price';
 import { TourLocationModel } from '../db/tour_location';
-import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
+import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, getTourById} from "../db/tour";
 import express from "express";
 import { TourProgramModel, deleteProgramByTourId } from "../db/tour_program";
 import { deletePriceByTourId } from "../db/tour_price";
@@ -276,37 +276,32 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
 
 export const getTourWithAllDetailsById = async (req: express.Request, res: express.Response) => {
     try {
-        const { tourId } = req.params;
-
-        // Kiểm tra ID có hợp lệ không
-        if (!mongooser.Types.ObjectId.isValid(tourId)) {
-            return res.status(400).json({ message: 'ID Tour không hợp lệ' }).end();
+       const { id } = req.params;
+        // Lấy thông tin tour
+        const tourDetails = await getTourById(id);
+        if (!tourDetails) {
+            return res.status(404).json({ message: 'Không tìm thấy tour' }).end();
         }
+        // Lấy thông tin giá tour
+           // Lấy giá tour
+           const price = await TourPriceModel.findOne({ tour_id: tourDetails._id }).lean();
 
-        // Truy vấn Tour chính
-        const tour = await TourModel.findById(tourId).populate('policy_id', 'policy_name policy_description');
-        if (!tour) {
-            return res.status(404).json({ message: 'Không tìm thấy Tour' }).end();
-        }
+           // Lấy chương trình tour
+           const programs = await TourProgramModel.find({ tour_id: tourDetails._id }).lean();
 
-        // Truy vấn giá liên quan
-        const prices = await TourPriceModel.find({ tour_id: tourId });
-        // Truy vấn chương trình liên quan
-        const programs = await TourProgramModel.find({ tour_id: tourId });
+           // Lấy lịch trình tour
+           const schedules = await ScheduleModel.find({ tour_id: tourDetails._id }).lean();
 
-        // Truy vấn địa điểm liên quan và kết hợp với thông tin địa điểm
-        const locations = await TourLocationModel.find({ tour_id: tourId }).populate('location_id', 'location_name location_code');
-
-        // Tổng hợp dữ liệu
-        const tourDetails = {
-            ...tour.toObject(),
-            prices: prices.map(price => price.toObject()),
-            programs: programs.map(program => program.toObject()),
-            locations: locations.map(location => location.toObject()),
-        };
+              // Gộp thông tin
+            const result = {
+                ...tourDetails,
+                tourPrice: price,
+                tourPrograms: programs,
+                tourSchedules: schedules,
+            }
 
         // Trả về kết quả
-        return res.status(200).json(tourDetails).end();
+        return res.status(200).json(result).end();
     } catch (error) {
         console.error('Error in getTourWithAllDetailsById:', error);
         return res.status(500).json({ message: 'Lỗi hệ thống', error: error.message }).end();

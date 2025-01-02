@@ -2,6 +2,18 @@ import express from 'express';
 import {get, merge} from 'lodash';
 import {getUserBySessionToken} from '../db/user';
 
+
+declare global {
+    namespace Express {
+      interface Request {
+        user?: {
+          _id: string;
+          role: string;
+        };
+      }
+    }
+}
+
 export const isAuthenticated=async(req:express.Request, res:express.Response,next: express.NextFunction)=>{
     try{
         const sessionToken=req.cookies['5H-AUTH'];
@@ -26,7 +38,7 @@ export const isAuthenticated=async(req:express.Request, res:express.Response,nex
 export const isOwner=async(req:express.Request, res:express.Response, next: express.NextFunction)=>{
     try{
         const {id}=req.params;
-        const currentUserId=get(req, 'indentity._id') as string;
+        const currentUserId=req.user?._id  as String;
 
         if(!currentUserId){
             res.status(403).json({message:'Chưa đăng nhập'}).end();
