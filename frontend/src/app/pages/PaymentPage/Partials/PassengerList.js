@@ -2,7 +2,7 @@ import React from "react";
 import PassengerInfo from "./PassengerInfo"; // Import component đã có
 import { sPayment } from "../paymentStore";
 
-const PassengerList = ({ day }) => {
+const PassengerList = ({ price }) => {
   // Lấy danh sách hành khách từ Signify store
   const sPassengers = sPayment.slice((n) => n.passengers).use();
 
@@ -15,12 +15,18 @@ const PassengerList = ({ day }) => {
 
   // Tăng số lượng hành khách
   const handleIncrement = (type) => {
+    console.log("giasL: ", price);
     sPayment.set((state) => {
       state.value.passengers.push({ type, name: "", gender: "Nam", dob: "" });
     });
-    var iN = type === "adult" ? 0 : type === "child" ? 1 : 2;
+    var iN =
+      type === "adult"
+        ? "adult_price"
+        : type === "child"
+        ? "children_price"
+        : "infant_price";
     sPayment.set((pre) => {
-      pre.value.price += day.tickets[iN].price;
+      pre.value.price += parseFloat(price[iN].$numberDecimal);
     });
   };
 
@@ -30,9 +36,14 @@ const PassengerList = ({ day }) => {
       const index = state.value.passengers.findIndex((p) => p.type === type);
       if (index > -1) state.value.passengers.splice(index, 1);
     });
-    var iN = type === "adult" ? 0 : type === "child" ? 1 : 2;
+    var iN =
+      type === "adult"
+        ? "adult_price"
+        : type === "child"
+        ? "children_price"
+        : "infant_price";
     sPayment.set((pre) => {
-      pre.value.price -= day.tickets[iN].price;
+      pre.value.price -= parseFloat(price[iN].$numberDecimal);
     });
   };
 
@@ -95,6 +106,8 @@ const PassengerList = ({ day }) => {
         <h3 className="text-lg font-semibold mb-4">Thông tin hành khách</h3>
         {sPassengers.map((detail, index) => (
           <PassengerInfo
+            type={detail.type}
+            price={price}
             key={index}
             typeLabel={passengerTypes[detail.type].label}
             index={index}

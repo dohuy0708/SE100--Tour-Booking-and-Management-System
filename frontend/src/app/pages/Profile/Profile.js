@@ -20,7 +20,7 @@ export default function Profile() {
       }
     }
     setLoading(false);
-  });
+  }, []);
 
   const renderContent = () => {
     switch (selectedTab) {
