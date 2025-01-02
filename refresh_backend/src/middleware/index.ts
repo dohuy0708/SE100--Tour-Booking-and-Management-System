@@ -33,7 +33,7 @@ export const isOwner = async (
 ) => {
   try {
     const { id } = req.params;
-    const currentUserId = get(req, "indentity._id") as string;
+    const currentUserId = get(req, "identity._id") as string;
 
     if (!currentUserId) {
       res.status(403).json({ message: "Chưa đăng nhập" }).end();
