@@ -14,7 +14,6 @@ export const isAuthenticated = async (
       return;
     }
     const exitstingUser = await getUserBySessionToken(sessionToken);
-    console.log(exitstingUser);
     if (!exitstingUser) {
       res.status(403).json({ message: "Phiên đăng nhập không hợp lệ" }).end();
       return;

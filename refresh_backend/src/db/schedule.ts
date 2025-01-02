@@ -1,5 +1,7 @@
 import { get } from 'lodash';
 import mongooser from "mongoose";
+import { TourPriceModel } from './tour_price';
+import { LocationModel } from './location';
 
 const ScheduleSchema = new mongooser.Schema({
     tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
@@ -45,3 +47,83 @@ export const getScheduleById=(schedule_id:string)=>ScheduleModel.findById(schedu
 export const getScheduleByCode=(schedule_code:string)=>ScheduleModel.findOne({schedule_code});
 
 export const getScheduleByTourId=(tour_id:string)=>ScheduleModel.find({tour_id});
+export const searchSchedules = async (searchString: string) => {
+   
+    if (!searchString) {
+        return await ScheduleModel.find().populate('tour_id').exec();
+    }
+
+    const scheduleResults = await ScheduleModel.find({
+        schedule_code: new RegExp(searchString, 'i'),
+    }).populate('tour_id').exec();
+
+    if (scheduleResults.length > 0) {
+        return scheduleResults;
+    }
+
+    const schedulesByTour = await ScheduleModel.find()
+        .populate({
+            path: 'tour_id',
+            match: {
+                $or: [
+                    { tour_code: new RegExp(searchString, 'i') },
+                    { tour_name: new RegExp(searchString, 'i') },
+                ],
+            },
+        })
+        .exec();
+
+    const filteredSchedules = schedulesByTour.filter(
+        (schedule: any) => schedule.tour_id !== null
+    );
+
+    return filteredSchedules;
+};
+
+
+export const filterSchedules = async (filters: any) => {
+    const { departure_date, status, location_name, min_price, max_price } = filters;
+
+    let query: any = {};
+
+    // Lọc theo ngày bắt đầu
+    if (departure_date) {
+        query['departure_date'] = { $gte: new Date(departure_date) };
+    }
+
+    // Lọc theo tình trạng
+    if (status) {
+        query['status'] = { $in: status };
+    }
+
+    // Lọc theo địa điểm (location_name)
+    if (location_name) {
+        // Tìm kiếm các tour_id liên quan đến location_name
+        const locations = await LocationModel.find({ location_name: { $regex: location_name, $options: 'i' } }).exec();
+        const locationIds = locations.map((location) => location._id);
+        query['tour_id'] = { $in: locationIds };
+    }
+
+    // Lọc theo giá
+    if (min_price || max_price) {
+        const priceFilter: any = {};
+        if (min_price) priceFilter.$gte = min_price;
+        if (max_price) priceFilter.$lte = max_price;
+
+        const tourPrices = await TourPriceModel.find({
+            $or: [
+                { adult_price: priceFilter },
+                { children_price: priceFilter },
+                { infant_price: priceFilter },
+            ],
+        }).exec();
+
+        const priceTourIds = tourPrices.map((price) => price.tour_id.toString());
+        query['tour_id'] = { $in: priceTourIds };
+    }
+
+    // Lấy các schedule đã được lọc
+    const schedules = await ScheduleModel.find(query).populate('tour_id').exec();
+
+    return schedules;
+};
