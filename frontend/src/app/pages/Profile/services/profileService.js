@@ -17,12 +17,16 @@ export const resetPassword = async (mail, oldpass, newpass) => {
 
 export const updateInfo = async (id, name, email, phone, dob) => {
   try {
-    const response = await axios.patch(`${API_BASE_URL}/users/${id}`, {
-      name,
-      email,
-      phone,
-      dob,
-    });
+    const response = await axios.patch(
+      `${API_BASE_URL}/users/${id}`,
+      {
+        name,
+        email,
+        phone,
+        dob,
+      },
+      { withCredentials: true }
+    );
     return response.data; // Giả sử response trả về dữ liệu về trạng thái thành công hoặc thất bại
   } catch (error) {
     console.error("Lỗi khi thay đổi thông tin:", error);

@@ -4,7 +4,7 @@ export default function Banner({ tour }) {
   return (
     <div className="h-[400px] relative">
       <img
-        src={tour.img}
+        src={tour.img ? tour.img : "/img3.png"}
         alt="Ảnh đại diện tour"
         className="h-full w-full object-cover"
       />

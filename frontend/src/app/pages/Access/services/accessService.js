@@ -10,9 +10,10 @@ export const handleLoginApi = async (email, password) => {
         headers: {
           "Content-Type": "application/json", // Sử dụng JSON format cho body
         },
+        withCredentials: true,
       }
     );
-
+    console.log("res đn: ", response);
     return response.data;
   } catch (error) {
     console.log("lỗi: ", error);

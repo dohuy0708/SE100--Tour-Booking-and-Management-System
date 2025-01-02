@@ -23,7 +23,7 @@ const Itinerary = ({ days }) => {
       </div>
       <div>
         <h3 className="font-semibold text-lg mb-2">Ngày {activeTab + 1}</h3>
-        <p className=" mb-4">{days[activeTab].description}</p>
+        <p className=" mb-4">{days[activeTab].program_description}</p>
         {days[activeTab].image && (
           <img
             src={days[activeTab].image}

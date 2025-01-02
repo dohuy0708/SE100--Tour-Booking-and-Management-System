@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { updateInfo } from "../services/profileService";
 
 export default function MyProfile({ userData }) {
@@ -6,6 +6,7 @@ export default function MyProfile({ userData }) {
   const [error, seterror] = useState("");
   const [message, setMessage] = useState("");
 
+  useEffect(() => {});
   const [formData, setFormData] = useState({
     user_name: userData?.user_name || "",
     email: userData?.email || "",
@@ -28,7 +29,7 @@ export default function MyProfile({ userData }) {
     try {
       const response = await updateInfo(
         userData._id,
-        formData.name,
+        formData.user_name,
         formData.email,
         formData.phone_number,
         formData.date_of_birth
@@ -37,8 +38,19 @@ export default function MyProfile({ userData }) {
         seterror(response.error);
         setMessage("");
       } else {
-        setMessage("Thông tin đã được thay đổi thành công");
-        seterror("");
+        const storedUser = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
+        if (storedUser && storedUser._id === userData._id) {
+          // Kiểm tra ID để đảm bảo đúng user
+          const updatedUser = {
+            ...storedUser, // Giữ nguyên các giá trị cũ
+            user_name: formData.user_name, // Thay đổi tên
+            phone_number: formData.phone_number, // Thay đổi số điện thoại
+            date_of_birth: formData.date_of_birth, // Thay đổi ngày sinh
+          };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          setMessage("Thông tin đã được thay đổi thành công");
+          seterror("");
+        }
       }
     } catch (error) {
       seterror("Đã có lỗi xảy ra, vui lòng thử lại");

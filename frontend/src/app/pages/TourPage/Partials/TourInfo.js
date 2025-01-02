@@ -2,7 +2,7 @@ import React from "react";
 import ScheduleTable from "./ScheduleTable";
 import Itinerary from "./Itinerary";
 
-const TourInfo = ({ tour, schedules }) => {
+const TourInfo = ({ tour }) => {
   return (
     <div>
       <h2 className="text-3xl text-main font-semibold mb-4">
@@ -23,9 +23,9 @@ const TourInfo = ({ tour, schedules }) => {
           </p>
         </div>
 
-        {/* <ScheduleTable scheduleData={tour.days} tour={tour} /> */}
+        <ScheduleTable tour={tour} />
       </div>
-      {/* <Itinerary days={tour.scheduleData} /> */}
+      <Itinerary days={tour.tourPrograms} />
     </div>
   );
 };
