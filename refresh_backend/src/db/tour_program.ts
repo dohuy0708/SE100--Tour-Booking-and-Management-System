@@ -4,7 +4,7 @@ const TourProgramSchema = new mongooser.Schema({
     tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
     day_number:{type: Number, required: true},
     program_description:{type: String, required: true},
-    image : {type: String, required: true},
+    image : {type: String, required: false},
 });
 
 

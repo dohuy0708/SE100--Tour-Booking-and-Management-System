@@ -1,7 +1,12 @@
+import { getUserByEmail, createUser, getUserBySessionToken } from "../db/user";
 import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails, BookingModel   } from "../db/booking";
 import { getScheduleById } from "../db/schedule";
 import { getPriceByTourId, TourPriceModel } from "../db/tour_price";
 import express from "express";
+import { random, randomCode, authentication } from "../helpers";
+import { sendEmail } from '../helpers/mail_helper';
+import { createPassenger } from "../db/passenger";
+
 
 export const getAllBookings = async (req: express.Request, res: express.Response) => {
 
@@ -17,11 +22,51 @@ export const getAllBookings = async (req: express.Request, res: express.Response
 
 export const createNewBooking = async (req: express.Request, res: express.Response) =>{
     try{
-        const {customer, schedule, date, price, stt, number_slot} = req.body;
+        const {name, phone, mail, addr, schedule, date, price, stt, number_slot, method, passengers} = req.body;
 
-        if(!customer || !schedule || !date || !price || !stt || !number_slot){
+        if(name==null||phone==null||mail==null||addr==null||schedule==null||date==null||price==null||stt==null||number_slot==null||name==undefined||phone==undefined
+            ||mail==undefined||addr==undefined||schedule==undefined||date==undefined||price==undefined||stt==undefined||number_slot==undefined||method==null||method==undefined||passengers==null||passengers==undefined){
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
+
+        let user=await getUserByEmail(mail);
+        if(!user){
+            const salte=random();
+            const password=mail+'@123';
+            const Code=randomCode();
+            const newuser= await createUser({
+                user_name: name,
+                email: mail,
+                phone_number: phone,
+                address: addr,
+                authentication: {
+                    user_password: authentication(password, salte),
+                    salt: salte,
+                    sessionToken: null,
+                    verificationCode: Code,
+                    isVerified: false, 
+                },
+                role: "CUSTOMER",
+                group_id:'6768b9ca67d4dd30bb05e411',
+            });
+            const subject = 'Xác thực tài khoản của bạn';
+        const content = 'Xin chào, ' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist với mật khẩu là: '+password+'. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình tạo tài khoản và đặt Schedule.';
+        sendEmail(mail, subject, content).catch(err => {
+                    console.error('Lỗi khi gửi email:', err); // Log lỗi nếu gửi email thất bại
+                });
+                return res.status(200).json({ message: 'Tạo tài khoản thành công, vui lòng kiểm tra email để xác minh tài khoản', userId:user._id });
+        }
+
+
+        const sessionToken = req.headers.authorization;
+        const loggedInUser = await getUserBySessionToken(sessionToken);
+        if (!loggedInUser) {
+            return res.status(401).json({ message: "Yêu cầu đăng nhập" }).end();
+        }
+
+
+
+
 
         const scheduledt = await getScheduleById(schedule).populate('tour_id').lean();
 
@@ -38,7 +83,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
 
 
         const bookingData= {
-            customer_id: customer,
+            
             schedule_id: schedule,
             booking_date: date,
             total_price: price,
@@ -53,7 +98,27 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
 
         const booking = await createBooking(bookingData);
 
-        return res.status(200).json(booking).end();
+
+        const passengerList = [];
+        for (let i = 0; i < number_slot; i++) {
+            const passengerData = passengers[i]; // Giả định client gửi danh sách passengers
+            if (!passengerData) {
+                return res.status(400).json({ message: "Thiếu thông tin hành khách" }).end();
+            }
+            const passenger = await createPassenger({
+                booking_id: booking._id,
+                passenger_name: passengerData.name,
+                passenger_age: passengerData.age,
+                passenger_type: passengerData.type,
+                passport_number: passengerData.passport || null,
+            });
+            passengerList.push(passenger);
+        }
+
+        booking.passengers = passengerList.map((p) => p._id);
+        await booking.save();
+
+        return res.status(200).json({ booking, passengers: passengerList }).end();
     }
     catch(error){
         console.log(error);

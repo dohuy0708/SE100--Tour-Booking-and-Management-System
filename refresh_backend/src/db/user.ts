@@ -4,7 +4,8 @@ const UserSchema = new mongooser.Schema({
   user_name: { type: String, required: true },
   email: { type: String, required: true },
   phone_number: { type: String, required: true },
-  date_of_birth: { type: Date, required: true },
+  date_of_birth: { type: Date},
+  address: { type: String },
   authentication: {
     user_password: { type: String, required: true, select: false },
     salt: { type: String, select: false },

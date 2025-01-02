@@ -83,7 +83,7 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
         });
 
         const subject = 'Xác thực tài khoản của bạn';
-        const content = 'Xin chào,' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
+        const content = 'Xin chào, ' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình đăng ký.';
 
 
 

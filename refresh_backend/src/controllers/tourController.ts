@@ -11,6 +11,7 @@ import mongooser from "mongoose";
 import { createPrice } from "../db/tour_price";
 import { createProgram } from "../db/tour_program";
 import { createTourLocation } from "../db/tour_location";
+import { LocationModel } from "../db/location";
 
 
 
@@ -43,7 +44,7 @@ export const createNewTour = async (req: express.Request, res: express.Response)
             duration: dura,
             description: descri,
             policy_id: policy,
-            cover_image: '/assets/'+req.file.filename,
+            //cover_image: '/assets/'+req.file.filename,
         });
 
         return res.status(200).json(tour).end();
@@ -195,9 +196,10 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             type==undefined||
             dura==undefined||
             descri==undefined||
-            !req.file
+           !req.file
         ){
-            console.log(prices);
+            console.log('Request body:', req.body);
+
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
@@ -209,7 +211,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             duration : dura,
             description: descri,
             policy_id: policy,
-            cover_image: '/assets/'+req.file.filename,
+           cover_image: '/assets/'+req.file.filename,
         }, session);
 
         //tao Price
@@ -244,7 +246,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
         let i=0;
 
         for(const program of programs){
-            if(program.day_number==null||program.program_description==null||program.day==undefined||program.descri==undefined){
+            if(program.day_number==null||program.program_description==null||program.day_number==undefined||program.program_description==undefined){
                 throw new Error('Thiếu thông tin Program');
             }
 
@@ -263,11 +265,17 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
         }
 
         for(const location of locations){
+
             if(location.location==null||location.location==undefined){
                 throw new Error('Thiếu thông tin Location');
             }
 
-            await createTourLocation(tour._id.toString(), location.location, session);
+            const foundLocation = await LocationModel.findOne({ location_name: location.location }).lean();
+            if (!foundLocation) {
+                throw new Error('Không tìm thấy Location: '+location.location);
+            }
+            //Tạo TourLocation với ID của Location
+            await createTourLocation(tour._id.toString(), foundLocation._id.toString(), session);
         }
 
         //commit transaction    
