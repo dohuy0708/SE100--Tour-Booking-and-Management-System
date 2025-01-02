@@ -108,7 +108,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             const passenger = await createPassenger({
                 booking_id: booking._id,
                 passenger_name: passengerData.name,
-                passenger_age: passengerData.age,
+                passenger_date: passengerData.date,
                 passenger_type: passengerData.type,
                 passport_number: passengerData.passport || null,
             });
