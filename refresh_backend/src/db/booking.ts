@@ -1,7 +1,7 @@
 import mongooser from "mongoose";
 
 const BookingSchema = new mongooser.Schema({
-    customer_id:{type: mongooser.Schema.Types.ObjectId, ref: 'User', required: true},
+    customer_id:{type: mongooser.Schema.Types.ObjectId, ref: 'User', },
     schedule_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Schedule', required: true},
     number_slots:{type: Number, required: true},
     booking_date:{type: Date, required: true}, 

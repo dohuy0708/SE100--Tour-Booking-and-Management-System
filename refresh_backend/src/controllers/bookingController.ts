@@ -83,7 +83,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
 
 
         const bookingData= {
-            
+            customer_id: user._id,
             schedule_id: schedule,
             booking_date: date,
             total_price: price,
