@@ -29,9 +29,9 @@ export const deleteUser=async(req:express.Request, res:express.Response)=>{
 export const updateUser=async(req:express.Request, res:express.Response)=>{
     try{
         const {id}=req.params;  
-        const {name}=req.body;
+        const {name, phone, dob}=req.body;
 
-        if(name==null||name==undefined){
+        if(name==null||name==undefined || phone==null||phone==undefined||dob==null||dob==undefined){
             return res.status(400).json({message:'Thiếu thông tin User'}).end();
         }
 
@@ -41,6 +41,8 @@ export const updateUser=async(req:express.Request, res:express.Response)=>{
             return res.status(400).json({message:'User không tồn tại'}).end();
         }
         user.user_name=name;
+        user.phone_number=phone;
+        user.date_of_birth=dob;
         await user.save();
 
         return res.status(200).json(user).end();
