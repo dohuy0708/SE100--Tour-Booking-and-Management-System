@@ -1,4 +1,4 @@
-import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById} from "../db/schedule";
+import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel} from "../db/schedule";
 import express from "express";
 
 export const getAllSchedules = async (req: express.Request, res: express.Response) => {
@@ -105,6 +105,19 @@ export const getScheduleByTheTourId = async (req: express.Request, res: express.
 
         return res.status(200).json(schedules).end();
     } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Lỗi hệ thống' }).end();
+    }
+}
+export const getEndSchedule = async (req: express.Request, res: express.Response) =>{
+    try{
+        const schedules = await ScheduleModel.find({status: "END"})
+
+        if (!schedules.length) {
+            return res.status(404).json({ message: 'Không tìm thấy schedule' }).end();
+        }
+        return res.status(200).json(schedules).end();
+    }catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Lỗi hệ thống' }).end();
     }
