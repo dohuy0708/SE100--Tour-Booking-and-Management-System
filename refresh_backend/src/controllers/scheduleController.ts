@@ -1,4 +1,4 @@
-import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel} from "../db/schedule";
+import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel, filterSchedules, searchSchedules} from "../db/schedule";
 import express from "express";
 
 export const getAllSchedules = async (req: express.Request, res: express.Response) => {
@@ -122,3 +122,35 @@ export const getEndSchedule = async (req: express.Request, res: express.Response
         return res.status(500).json({ message: 'Lỗi hệ thống' }).end();
     }
 }
+export const scheduleSearchAndFilter = async (req: express.Request, res: express.Response) => {
+    try {
+        const { searchString, filters } = req.body;
+
+        // Tìm kiếm schedule theo mã schedule, mã tour, hoặc tên tour
+        let searchResults = [];
+        if (searchString) {
+            searchResults = await searchSchedules(searchString);
+        } else {
+            // Nếu không có searchString, lấy tất cả schedules
+            searchResults = await ScheduleModel.find().populate('tour_id').exec();
+        }
+
+        // Nếu không có filters, trả về toàn bộ kết quả tìm kiếm
+        if (!filters || Object.keys(filters).length === 0) {
+            return res.status(200).json(searchResults);
+        }
+
+        // Áp dụng filter
+        const filteredSchedules = await filterSchedules(filters);
+
+        // Kết hợp kết quả search và filter
+        const finalSchedules = searchResults.filter((schedule: any) =>
+            filteredSchedules.some((filtered: any) => filtered._id.toString() === schedule._id.toString())
+        );
+        console.log
+        return res.status(200).json(finalSchedules);
+    } catch (error) {
+        console.error('Error in scheduleSearchAndFilter:', error);
+        return res.status(500).json({ message: 'Lỗi server', error });
+    }
+};
