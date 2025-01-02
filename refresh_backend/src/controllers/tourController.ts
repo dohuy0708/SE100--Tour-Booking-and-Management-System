@@ -195,8 +195,8 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             code==undefined||
             type==undefined||
             dura==undefined||
-            descri==undefined||
-           !req.file
+            descri==undefined
+          // !req.file
         ){
             console.log('Request body:', req.body);
 
@@ -211,7 +211,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             duration : dura,
             description: descri,
             policy_id: policy,
-           cover_image: '/assets/'+req.file.filename,
+        //    cover_image: '/assets/'+req.file.filename,
         }, session);
 
         //tao Price
@@ -239,9 +239,9 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
         }
 
 
-        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
-        const programImages = files['program_images'] || [];
+        // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        // const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
+        // const programImages = files['program_images'] || [];
 
         let i=0;
 
@@ -254,7 +254,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
                 tour_id: tour._id,
                 day_number: program.day_number,
                 program_description: program.program_description,
-                image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
+                // image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
             }, session);
             i++;
         }
