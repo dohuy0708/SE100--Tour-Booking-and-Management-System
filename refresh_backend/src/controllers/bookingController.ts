@@ -29,6 +29,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
 
+
         let user=await getUserByEmail(mail);
         if(!user){
             const salte=random();
@@ -74,6 +75,11 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             return res.status(400).json({message:'Schedule không tồn tại'}).end();
         }
 
+        if(number_slot>scheduledt.available_slots){
+            return res.status(400).json({message:'Số lượng vé nhiều hơn số chỗ còn lại'}).end();
+        }
+
+        scheduledt.available_slots=scheduledt.available_slots-number_slot;
 
         const tprice= await TourPriceModel.findOne({tour_id: scheduledt.tour_id});
 
@@ -97,6 +103,8 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         };
 
         const booking = await createBooking(bookingData);
+
+
 
 
         const passengerList = [];

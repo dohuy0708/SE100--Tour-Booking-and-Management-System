@@ -25,4 +25,6 @@ export const getPrograms=()=>TourProgramModel.find();
 export const getProgramById=(program_id:string)=>TourProgramModel.findById(program_id);
 export const getProgramsByTourId = (tour_id: string) =>TourProgramModel.find({ tour_id });
 
-export const deleteProgramByTourId = (tour_id: string) =>TourProgramModel.deleteMany({ tour_id });
+export const deleteProgramByTourId = (tour_id: string, options: { session?: any } = {}) => {
+    return TourProgramModel.deleteMany({ tour_id }, options);
+};

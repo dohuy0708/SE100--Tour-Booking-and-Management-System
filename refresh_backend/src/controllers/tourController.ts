@@ -12,6 +12,7 @@ import { createPrice } from "../db/tour_price";
 import { createProgram } from "../db/tour_program";
 import { createTourLocation } from "../db/tour_location";
 import { LocationModel } from "../db/location";
+import { abort } from "process";
 
 
 
@@ -64,6 +65,15 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
         const {id}=req.params;  
         const {name, code, type, dura, descri, policy}=req.body;
 
+        const schedules= await getScheduleByTourId(id);
+
+        if(schedules.length>0){
+            const canUpdate=schedules.every(schedule=>schedule.status.includes('SELLING')||schedule.status.includes('END'));
+            if(!canUpdate){
+                return res.status(400).json({message:'Không thể cập nhật Tour vì đang có Schedule đang hoặc chờ diễn ra'}).end();
+            }
+        }
+
         if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
@@ -84,24 +94,33 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
 }
 
 export const deleteTour = async (req: express.Request, res: express.Response) =>{
+    const session=await mongooser.startSession();
+    session.startTransaction();
     try{
         const {id}=req.params;
 
-        const schedules= await getScheduleByTourId(id);
+        const schedules= await getScheduleByTourId(id).session(session);
 
         if(schedules.length>0){
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({message:'Không thể xóa Tour vì đang có Schedule'}).end();
         }
 
 
-        await deleteProgramByTourId(id);
-        await deletePriceByTourId(id);
+        await deleteProgramByTourId(id, {session});
+        await deletePriceByTourId(id, {session});
 
-        const deleteTour= await deleteTourById(id);
+        const deleteTour= await deleteTourById(id).session(session);
 
         if(!deleteTour){
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({message:'Tour không tồn tại'}).end();
         }
+
+        await session.commitTransaction();  
+        session.endSession();
         
         return res.status(200).json(deleteTour).end();
     }
@@ -321,12 +340,21 @@ export const getTourWithAllDetailsById = async (req: express.Request, res: expre
            // Lấy lịch trình tour
            const schedules = await ScheduleModel.find({ tour_id: tourDetails._id }).lean();
 
+
+           // Lấy thông tin location
+
+           const tourlocations= await TourLocationModel.find({tour_id: tourDetails._id}).lean();
+           const locationId=tourlocations.map(location=>location.location_id);
+
+           const locations= await LocationModel.find({_id:{$in:locationId}}).lean();
+
               // Gộp thông tin
             const result = {
                 ...tourDetails,
                 tourPrice: price,
                 tourPrograms: programs,
                 tourSchedules: schedules,
+                tourLocations: locations,
             }
 
         // Trả về kết quả

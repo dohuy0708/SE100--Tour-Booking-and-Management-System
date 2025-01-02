@@ -46,7 +46,9 @@ export const getScheduleById=(schedule_id:string)=>ScheduleModel.findById(schedu
 
 export const getScheduleByCode=(schedule_code:string)=>ScheduleModel.findOne({schedule_code});
 
-export const getScheduleByTourId=(tour_id:string)=>ScheduleModel.find({tour_id});
+export const getScheduleByTourId = (tour_id: string, filter: any = {}) => {
+    return ScheduleModel.find({ tour_id, ...filter }).lean();
+};
 export const searchSchedules = async (searchString: string) => {
    
     if (!searchString) {

@@ -16,9 +16,9 @@ export const getAllSchedules = async (req: express.Request, res: express.Respons
 export const createNewSchedule = async (req: express.Request, res: express.Response) =>{
 
     try{
-        const {tour, code, sta, date, time, capa, avail}=req.body;
+        const {tour, code, sta, date, time, capa}=req.body;
 
-        if(tour==null||code==null||sta==null||date==null||time==null||capa==null||avail==null||tour==undefined||code==undefined||sta==undefined||date==undefined||time==undefined||capa==undefined||avail==undefined){
+        if(tour==null||code==null||sta==null||date==null||time==null||capa==null||tour==undefined||code==undefined||sta==undefined||date==undefined||time==undefined||capa==undefined){
             return res.status(400).json({message:'Thiếu thông tin Schedule'}).end();
         }
 
@@ -29,7 +29,7 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
             departure_date:date,
             departure_time:time,
             capacity:capa,
-            available_slots:avail,
+            available_slots:capa,
         });
 
         return res.status(200).json(schedule).end();
@@ -43,15 +43,14 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
 export const updateSchedule = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {sta, capa}=req.body;
+        const {sta}=req.body;
 
-        if(sta==null||capa==null||sta==undefined||capa==undefined){
+        if(sta==null||sta==undefined){
             return res.status(400).json({message:'Thiếu thông tin Schedule'}).end();
         }
 
         const schedule= await updateScheduleById(id, {
             status:sta,
-            capacity:capa,
         });
 
         if(!schedule){
@@ -97,7 +96,11 @@ export const getScheduleByTheTourId = async (req: express.Request, res: express.
             return res.status(400).json({ message: 'Thiếu tour_id' }).end();
         }
 
-        const schedules = await getScheduleByTourId(tour);
+        const currentDate=new Date();
+        const schedules = await getScheduleByTourId(tour, {
+            departure_date: { $gt: currentDate}
+        });
+
 
         if (!schedules.length) {
             return res.status(404).json({ message: 'Không tìm thấy schedule nào cho tour này' }).end();
