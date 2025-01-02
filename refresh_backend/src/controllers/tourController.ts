@@ -44,7 +44,7 @@ export const createNewTour = async (req: express.Request, res: express.Response)
             duration: dura,
             description: descri,
             policy_id: policy,
-            //cover_image: '/assets/'+req.file.filename,
+            cover_image: '/assets/'+req.file.filename,
         });
 
         return res.status(200).json(tour).end();
@@ -64,7 +64,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
         const {id}=req.params;  
         const {name, code, type, dura, descri, policy}=req.body;
 
-        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined||!req.file){
+        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
@@ -196,13 +196,21 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             type==undefined||
             dura==undefined||
             descri==undefined
-          // !req.file
+          //!req.file
         ){
             console.log('Request body:', req.body);
 
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
+        // Xu li file upload
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
+        const programImages = files['program_images'] || [];
+
+        if(!coverImage){
+            return res.status(400).json({message:'Thiếu ảnh bìa'}).end();
+        }
         //tao Tour
         const tour=await createTour({
             tour_name: name,
@@ -211,11 +219,12 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             duration : dura,
             description: descri,
             policy_id: policy,
-        //    cover_image: 'public/assets/'+req.file.filename,
+            cover_image: '/assets/'+coverImage.filename,
         }, session);
 
         //tao Price
         if(prices==null||prices==undefined||prices.adult_price==null||prices.children_price==null||prices.infant_price==null||prices.adult_price==undefined||prices.children_price==undefined||prices.infant_price==undefined){
+            console.log('Prices:', prices);
             throw new Error('Thiếu thông tin Price');
         }
 
@@ -235,13 +244,12 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
 
 
         if(!programs||!Array.isArray(programs)||programs.length===0){
+            console.log('Programs:', programs);
             throw new Error('Thiếu Program');
         }
 
 
-        // const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        // const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
-        // const programImages = files['program_images'] || [];
+       
 
         let i=0;
 
@@ -254,13 +262,14 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
                 tour_id: tour._id,
                 day_number: program.day_number,
                 program_description: program.program_description,
-                // image: 'public/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
+                image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),//neu khong co anh cho program thi lay anh cua tour
             }, session);
             i++;
         }
 
         //tao Location
         if(!locations||!Array.isArray(locations)||locations.length===0){
+            console.log('Locations:', locations);
             throw new Error('Thiếu Location');
         }
 
@@ -282,7 +291,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
         await session.commitTransaction();
         session.endSession();
 
-        return res.status(200).json('Tạo tour và các dữ liệu liên quan thành công').end();
+        return res.status(200).json('Tạo tour và các dữ liệu liên quan thành công!').end();
     }
     catch(error){
         await session.abortTransaction();

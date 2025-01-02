@@ -18,7 +18,7 @@ app.use(cors({
     origin: "http://localhost:3000"
 }));
 
-app.use('/assets',express.static(path.join(__dirname,'assets')));
+app.use('/assets',express.static(path.join(process.cwd(),'public/assets')));
 
 app.use(compression());
 app.use(cookieParser());
