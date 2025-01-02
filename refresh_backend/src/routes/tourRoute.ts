@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewTour, updateTour, deleteTour, getAllTours, getTourByTourCode, getAllTourWithDetail, createTourWithAllDependencies, getTourWithAllDetailsById } from '../controllers/tourController';
+import { createNewTour, updateTour, deleteTour, getAllTours, getTourByTourCode, getAllTourWithDetail, createTourWithAllDependencies, getTourWithAllDetailsById, tourSearchAndFilter } from '../controllers/tourController';
 import upload from '../middleware/upload_middleware';
 
 
@@ -11,4 +11,5 @@ export default (router: express.Router) => {
     router.get('/tours/findbytour_code', getTourByTourCode as any);
     router.get('/tours/detail',getAllTourWithDetail as any);
     router.get('/tours/:id', getTourWithAllDetailsById as any);
+    router.get('/tours/searchandfilter', tourSearchAndFilter as any);
 }

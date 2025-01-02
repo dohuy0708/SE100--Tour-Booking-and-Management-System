@@ -1,5 +1,5 @@
 import { TourPolicyModel } from "../db/tour_policy";
-import { TourModel } from '../db/tour';
+import { filterTours, searchTours, TourModel } from '../db/tour';
 import { TourPriceModel } from '../db/tour_price';
 import { TourLocationModel } from '../db/tour_location';
 import { createTour, deleteTourById, updateTourById, getTourByCode, getTours} from "../db/tour";
@@ -311,5 +311,38 @@ export const getTourWithAllDetailsById = async (req: express.Request, res: expre
     } catch (error) {
         console.error('Error in getTourWithAllDetailsById:', error);
         return res.status(500).json({ message: 'Lỗi hệ thống', error: error.message }).end();
+    }
+};
+export const tourSearchAndFilter = async (req: express.Request, res: express.Response) => {
+    try {
+        const { searchString, filters } = req.body; 
+
+        let searchResults = [];
+        if (searchString) {
+            searchResults = await searchTours(searchString);
+        } else {
+            searchResults = await TourModel.find().exec(); 
+        }
+        if (searchResults.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy tour' }).end();
+        }
+
+        let filteredTours = searchResults;
+        if (filters) {
+            const filteredTourIds = await filterTours(filters);
+filteredTours = searchResults.filter((tour: any) =>
+    filteredTourIds.some((filteredId: any) => filteredId.toString() === tour._id.toString())
+);
+
+        }
+        if (filteredTours.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy tour' }).end();
+        }
+
+        return res.status(200).json(filteredTours);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Lỗi', error });
     }
 };
