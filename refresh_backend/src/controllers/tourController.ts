@@ -129,7 +129,7 @@ export const getAllTourWithDetail = async (req: express.Request, res: express.Re
         const result = await Promise.all(
             tours.map(async (tour) => {
                 // Lấy giá tour
-                const price = await TourPolicyModel.findOne({ tour_id: tour._id }).lean();
+                const price = await TourPriceModel.findOne({ tour_id: tour._id }).lean();
 
                 // Lấy chương trình tour
                 const programs = await TourProgramModel.find({ tour_id: tour._id }).lean();
@@ -291,7 +291,6 @@ export const getTourWithAllDetailsById = async (req: express.Request, res: expre
 
         // Truy vấn giá liên quan
         const prices = await TourPriceModel.find({ tour_id: tourId });
-
         // Truy vấn chương trình liên quan
         const programs = await TourProgramModel.find({ tour_id: tourId });
 
