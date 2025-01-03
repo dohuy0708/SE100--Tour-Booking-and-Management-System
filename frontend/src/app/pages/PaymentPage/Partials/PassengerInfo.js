@@ -54,7 +54,7 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
   return (
     <div
       className={`border rounded-lg p-4 mb-4 shadow-sm ${
-        errors.name ? "border-red" : "border-gray-300"
+        errors.name ? "border-thrd" : "border-gray-300"
       }`}
     >
       <div className="flex justify-between items-center">
@@ -62,7 +62,7 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
           {typeLabel} {index + 1}
         </h4>
         <XMarkIcon
-          className="h-4 cursor-pointer hover:text-red mb-4"
+          className="h-4 cursor-pointer hover:text-thrd mb-4"
           onClick={() => handleDeletePassenger(index)}
         />
       </div>
@@ -77,12 +77,12 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
             value={detail.name}
             onChange={(e) => onChange("name", e.target.value)}
             className={`mt-1 p-2 block w-full rounded-md shadow-sm ${
-              errors.name ? "border-red" : "border-gray-300"
+              errors.name ? "border-thrd" : "border-gray-300"
             }`}
             placeholder="Nhập họ tên"
           />
           {errors.name && (
-            <p className="text-red text-sm mt-1">{errors.name}</p>
+            <p className="text-thrd text-sm mt-1">{errors.name}</p>
           )}
         </div>
 
@@ -95,7 +95,7 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
             value={detail.gender}
             onChange={(e) => onChange("gender", e.target.value)}
             className={`mt-1 p-2 block w-full rounded-md shadow-sm ${
-              errors.gender ? "border-red" : "border-gray-300"
+              errors.gender ? "border-thrd" : "border-gray-300"
             }`}
           >
             <option value="">Chọn giới tính</option>
@@ -103,7 +103,7 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
             <option value="Nữ">Nữ</option>
           </select>
           {errors.gender && (
-            <p className="text-red text-sm mt-1">{errors.gender}</p>
+            <p className="text-thrd text-sm mt-1">{errors.gender}</p>
           )}
         </div>
 
@@ -117,11 +117,11 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
             value={detail.date}
             onChange={(e) => onChange("date", e.target.value)}
             className={`mt-1 p-2 block w-full rounded-md shadow-sm ${
-              errors.date ? "border-red" : "border-gray-300"
+              errors.date ? "border-thrd" : "border-gray-300"
             }`}
           />
           {errors.date && (
-            <p className="text-red text-sm mt-1">{errors.date}</p>
+            <p className="text-thrd text-sm mt-1">{errors.date}</p>
           )}
         </div>
       </div>

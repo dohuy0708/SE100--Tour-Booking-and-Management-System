@@ -59,7 +59,13 @@ const Login = () => {
       setMessage(error.message);
     }
   };
-
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang đăng nhập...</span>
+      </div>
+    );
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex flex-col md:flex-row w-[100%] max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
@@ -134,7 +140,7 @@ const Login = () => {
             </div>
 
             {errorMessage && (
-              <div className="text-red text-center mb-4">{errorMessage}</div>
+              <div className="text-thrd text-center mb-4">{errorMessage}</div>
             )}
 
             <div>
@@ -142,7 +148,7 @@ const Login = () => {
                 className="w-full bg-main text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
                 onClick={handleLogin}
               >
-                {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+                Đăng nhập
               </button>
             </div>
 

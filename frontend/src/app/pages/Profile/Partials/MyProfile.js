@@ -135,7 +135,7 @@ export default function MyProfile({ userData }) {
             }`}
           />
         </div>
-        {error && <div className="text-red my-2 text-sm">{error}</div>}
+        {error && <div className="text-thrd my-2 text-sm">{error}</div>}
         {message && (
           <div className="text-green-600 my-2 text-sm">{message}</div>
         )}

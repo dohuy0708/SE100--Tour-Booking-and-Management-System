@@ -42,8 +42,15 @@ const Filter = ({ onApplyFilters }) => {
   // Hàm đặt lại bộ lọc
   const resetFilters = () => {
     setPriceRange([0, 10000000]); // Đặt lại khoảng giá
-    setDestination("Tất cả"); // Đặt lại điểm đến
+    setDestination(""); // Đặt lại điểm đến
     setSelectedDate(""); // Đặt lại ngày đi
+    const filters = {
+      departure_date: selectedDate,
+      location_name: destination,
+      min_price: priceRange[0],
+      max_price: priceRange[1],
+    };
+    onApplyFilters(filters); // Truyền dữ liệu bộ lọc ra component cha
   };
 
   return (

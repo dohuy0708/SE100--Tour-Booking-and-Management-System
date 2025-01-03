@@ -40,31 +40,31 @@ const Step2 = ({ tour, schedule }) => {
           <div className="grid grid-cols-2 gap-4 font-medium">
             <p>
               <span className="font-medium">Người đặt:</span>{" "}
-              <span className="text-red"> {paymentData.info.name}</span>
+              <span className="text-thrd"> {paymentData.info.name}</span>
             </p>
             <p>
               <span className="font-medium">Email:</span>{" "}
-              <span className="text-red"> {paymentData.info.email}</span>
+              <span className="text-thrd"> {paymentData.info.email}</span>
             </p>
             <p>
               <span className="font-medium">SĐT:</span>{" "}
-              <span className="text-red"> {paymentData.info.phone}</span>
+              <span className="text-thrd"> {paymentData.info.phone}</span>
             </p>
             <p>
               <span className="font-medium">Địa chỉ:</span>{" "}
-              <span className="text-red"> {paymentData.info.address}</span>
+              <span className="text-thrd"> {paymentData.info.address}</span>
             </p>
             <p>
               <span className="font-medium">Mã tour:</span>{" "}
-              <span className="text-red"> {tour.tour_code}</span>
+              <span className="text-thrd"> {tour.tour_code}</span>
             </p>
             <p>
               <span className="font-medium">Hình thức thanh toán:</span>{" "}
-              <span className="text-red"> {paymentData.paymentMethod}</span>
+              <span className="text-thrd"> {paymentData.paymentMethod}</span>
             </p>
             <p>
               <span className="font-medium">Trị giá booking:</span>{" "}
-              <span className="text-red">
+              <span className="text-thrd">
                 {" "}
                 {paymentData.price.toLocaleString()} đ
               </span>
@@ -78,7 +78,7 @@ const Step2 = ({ tour, schedule }) => {
             </p> */}
             <p>
               <span className="font-medium">Thời hạn thanh toán:</span>{" "}
-              <span className="text-red">{paymentDeadline}</span>
+              <span className="text-thrd">{paymentDeadline}</span>
             </p>
           </div>
           <p className="text-sm text-gray-500 mt-2">
@@ -123,7 +123,7 @@ const Step2 = ({ tour, schedule }) => {
             </table>
             <div className="text-right font-semibold mt-2 text-lg">
               Tổng cộng:{" "}
-              <span className=" text-red">
+              <span className=" text-thrd">
                 {paymentData.price.toLocaleString()} đ
               </span>
             </div>

@@ -118,12 +118,12 @@ export default function ChangePassword({ email }) {
             value={formData.newPassword}
             onChange={handleChange}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${
-              error.newPassword ? "border-red" : "border-gray-300"
+              error.newPassword ? "border-thrd" : "border-gray-300"
             } bg-transparent`}
           />
         </div>
         {error.newPassword && (
-          <p className="text-red text-sm mt-1">{error.newPassword}</p>
+          <p className="text-thrd text-sm mt-1">{error.newPassword}</p>
         )}
 
         <div className="flex items-center">
@@ -136,12 +136,12 @@ export default function ChangePassword({ email }) {
             value={formData.confirmPassword}
             onChange={handleChange}
             className={`flex-1 text-gray-800 px-4 py-2 rounded-md border ${
-              error.confirmPassword ? "border-red" : "border-gray-300"
+              error.confirmPassword ? "border-thrd" : "border-gray-300"
             } bg-transparent`}
           />
         </div>
         {error.confirmPassword && (
-          <p className="text-red text-sm mt-1">{error.confirmPassword}</p>
+          <p className="text-thrd text-sm mt-1">{error.confirmPassword}</p>
         )}
       </form>
       <div className="text-center mt-8">
@@ -159,7 +159,7 @@ export default function ChangePassword({ email }) {
         {message && (
           <p
             className={`mt-4 text-sm ${
-              message.includes("thành công") ? "text-green-600" : "text-red-600"
+              message.includes("thành công") ? "text-green-600" : "text-thrd"
             }`}
           >
             {message}

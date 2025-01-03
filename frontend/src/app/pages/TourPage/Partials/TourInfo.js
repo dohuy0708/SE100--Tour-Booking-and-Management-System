@@ -12,7 +12,7 @@ const TourInfo = ({ tour }) => {
         <div className="">
           <p className="mb-2 mr-10">
             <strong>Thời gian:</strong>{" "}
-            <span className="text-red font-medium"> {tour?.duration} </span>
+            <span className="text-thrd font-medium"> {tour?.duration} </span>
           </p>
           <p className="mb-2">
             <strong>Mô tả:</strong>{" "}

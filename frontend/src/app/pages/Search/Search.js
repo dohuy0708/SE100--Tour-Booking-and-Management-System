@@ -14,41 +14,44 @@ export default function Search() {
   const [filters, setFilters] = useState({
     min_price: 0,
     max_price: 10000000,
-    destination: "Tất cả", // Điểm đến mặc định
-    selectedDate: "", // Ngày đi mặc định
+    location_name: "", // Điểm đến mặc định
+    departure_date: "", // Ngày đi mặc định
   });
 
-  // Hàm xử lý thay đổi từ khóa tìm kiếm
   const handleSearchChange = (keyword) => {
     setSearchKeyword(keyword);
   };
 
-  // Hàm áp dụng bộ lọc
   const handleFilters = (filters) => {
-    setFilters(filters);
+    if (filters.location_name === "Tất cả") {
+      filters.location_name = ""; // Thay đổi giá trị của destination trực tiếp trong filters
+    }
+    setFilters({ ...filters }); // Cập nhật state filters
   };
 
   useEffect(() => {
     const fetchTours = async () => {
       try {
         const response = await getTourDetailsBySearch(searchKeyword, filters);
-        if (response) {
-          setTours(response);
+        if (response && response.data) {
+          setTours(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch tour details:", error);
+        setTours([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTours();
-  }, []); // Gọi lại API khi searchKeyword hoặc filters thay đổi
+  }, [filters, searchKeyword]); // Gọi lại API khi searchKeyword hoặc filters thay đổi
 
   if (loading)
     return (
-      <div className="min-h-mincontent">
-        <p>Đang tải...</p>
+      <div className="flex min-h-mincontent justify-center items-center py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang tải...</span>
       </div>
     );
   if (!tours)

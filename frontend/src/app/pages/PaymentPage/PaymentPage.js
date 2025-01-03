@@ -4,7 +4,7 @@ import Step1 from "./Partials/Step1";
 import Step2 from "./Partials/Step2";
 import Step3 from "./Partials/Step3";
 import { useLocation } from "react-router-dom";
-import { getTourDetails } from "../TourPage/tourService";
+import { getTourById, getTourDetails } from "../TourPage/tourService";
 import { ToastContainer, toast } from "react-toastify";
 import { sPayment } from "./paymentStore";
 import { handleCreateBooking } from "./services/paymentService";
@@ -31,9 +31,9 @@ const PaymentPage = () => {
   useEffect(() => {
     const fetchTourInfo = async () => {
       try {
-        const fetchedTour = await getTourDetails(tourId);
-        setTour(fetchedTour[0]);
-        const fetchedDay = fetchedTour[0]?.tourSchedules?.find(
+        const fetchedTour = await getTourById(tourId);
+        setTour(fetchedTour);
+        const fetchedDay = fetchedTour?.tourSchedules?.find(
           (day) => day._id === dayId
         );
         console.log("ngày: ", fetchedDay);
@@ -93,6 +93,10 @@ const PaymentPage = () => {
     });
     if (passengerList.length === 0) {
       toast.error("Chưa có hành khách nào");
+      isValid = false;
+    }
+    if (!sBooking.paymentMethod) {
+      toast.error("Vui lòng chọn phương thức thanh toán!");
       isValid = false;
     }
     return isValid;
@@ -187,7 +191,7 @@ const PaymentPage = () => {
       {step === 3 && <Step3 tour={tour} />}
 
       {/* Nút điều hướng */}
-      {step < 4 ? (
+      {step < 3 ? (
         <div className="flex justify-between mt-8">
           <button
             className={`px-6 py-2 rounded-lg font-semibold ${

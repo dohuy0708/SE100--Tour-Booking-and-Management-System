@@ -12,7 +12,7 @@ const TourCard = ({ tour }) => {
       <div className="col-span-2 ">
         <img
           src={tour?.cover_image} // Thay đổi với link ảnh thật
-          alt="Tour"
+          alt={tour.tour_name}
           className="h-[16rem] w-full object-cover rounded-lg"
         />
       </div>
@@ -21,15 +21,15 @@ const TourCard = ({ tour }) => {
       <div className=" col-span-3 p-4 flex flex-col justify-between">
         <h3 className="font-semibold text-xl ">{tour?.tour_name}</h3>
 
-        {/* <p className=" font-semibold">
-          Xuất phát:{" "}
-          <span className="font-semibold bg-white text-red">
-            {tour?.departure_date}
+        <p className=" font-semibold">
+          Mã tour:{" "}
+          <span className="font-semibold bg-white text-thrd">
+            {tour?.tour_code}
           </span>
-        </p> */}
+        </p>
         <p className=" font-semibold">
           Thời gian:{" "}
-          <span className="font-semibold bg-white text-red">
+          <span className="font-semibold bg-white text-thrd">
             {tour?.duration}
           </span>
         </p>
@@ -37,11 +37,11 @@ const TourCard = ({ tour }) => {
         <div className=" font-semibold flex items-center">
           <span className="mr-2 bg-white">Ngày khởi hành:</span>
           <div className="flex space-x-2 overflow-hidden">
-            {tour?.tourSchedules?.length > 0 ? (
-              tour?.tourSchedules.map((date) => (
+            {tour?.schedule?.length > 0 ? (
+              tour?.schedule.map((date) => (
                 <span
                   key={date._id}
-                  className="px-4 py-0.5 rounded-lg text-red border-2 border-red"
+                  className="px-4 py-0.5 rounded-lg text-thrd border-2 border-thrd"
                 >
                   {new Date(date.departure_date).toLocaleDateString("vi-VN", {
                     day: "2-digit",
@@ -51,7 +51,7 @@ const TourCard = ({ tour }) => {
                 </span>
               ))
             ) : (
-              <p className="text-red font-medium">chưa có lịch</p>
+              <p className="text-thrd font-medium">chưa có lịch</p>
             )}
           </div>
         </div>
@@ -59,17 +59,14 @@ const TourCard = ({ tour }) => {
         <div className="flex justify-between items-end">
           <div>
             <span className="bg-white font-semibold">Giá từ:</span>
-            <p className="text-red-500 text-2xl font-semibold text-red">
-              {parseFloat(
-                tour?.tourPrice?.infant_price?.$numberDecimal
-              ).toLocaleString()}{" "}
-              đ
+            <p className=" text-2xl font-semibold text-thrd">
+              {parseFloat(tour?.price?.infant_price).toLocaleString()} đ
             </p>
           </div>
           {/* Nút Đặt chỗ */}
           <div>
             <button
-              className="bg-red text-white py-2 px-6 rounded-lg "
+              className="bg-thrd text-white py-2 px-6 rounded-lg "
               onClick={() => handleToTourPage(tour?._id)}
             >
               Đặt chỗ

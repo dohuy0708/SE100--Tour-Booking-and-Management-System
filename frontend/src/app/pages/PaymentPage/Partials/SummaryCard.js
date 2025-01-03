@@ -89,7 +89,7 @@ export default function SummaryCard({ tour, schedule }) {
         <div className="mt-6 text-right">
           <p className="text-xl font-bold  mb-2">
             Tổng tiền:{" "}
-            <span className="text-red">{sPrice.toLocaleString()} đ</span>
+            <span className="text-thrd">{sPrice.toLocaleString()} đ</span>
           </p>
           <button
             className="w-full bg-main hover:bg-blue-700 text-white font-bold py-2 rounded-lg"

@@ -8,9 +8,11 @@ function SearchResults({ tours }) {
         Kết quả tìm kiếm cho "Hạ Long"
       </h2> */}
       <div className="space-y-4">
-        {tours.map((tour) => (
-          <TourCard key={tour._id} tour={tour} />
-        ))}
+        {tours.length > 0 ? (
+          tours.map((tour) => <TourCard key={tour._id} tour={tour} />)
+        ) : (
+          <div className="p-3">Không tìm thấy tour tương ứng</div>
+        )}
       </div>
     </div>
   );

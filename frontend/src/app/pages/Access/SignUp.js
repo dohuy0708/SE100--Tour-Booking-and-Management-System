@@ -146,7 +146,7 @@ const SignUp = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
-                {error && <p className="text-red text-sm mt-2">{error}</p>}
+                {error && <p className="text-thrd text-sm mt-2">{error}</p>}
                 {/* Submit Button */}
                 <div>
                   <button
@@ -250,7 +250,7 @@ const SignUp = () => {
                   >
                     {isLoading ? "Đang xử lý..." : "Đăng ký"}
                   </button>
-                  {error && <p className="text-red text-sm mt-2">{error}</p>}
+                  {error && <p className="text-thrd text-sm mt-2">{error}</p>}
                 </div>
               </div>
             </>

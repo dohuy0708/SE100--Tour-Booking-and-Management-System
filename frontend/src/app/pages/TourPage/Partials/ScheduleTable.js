@@ -46,7 +46,7 @@ const ScheduleTable = ({ tour }) => {
                     }
                   )}
                 </td>
-                <td className=" text-red">
+                <td className=" text-thrd">
                   <p>
                     {new Intl.NumberFormat("vi-VN").format(
                       ticketTypes?.adult_price.$numberDecimal
@@ -54,7 +54,7 @@ const ScheduleTable = ({ tour }) => {
                     VND
                   </p>
                 </td>
-                <td className=" text-red">
+                <td className=" text-thrd">
                   <p>
                     {new Intl.NumberFormat("vi-VN").format(
                       ticketTypes?.children_price.$numberDecimal
@@ -62,7 +62,7 @@ const ScheduleTable = ({ tour }) => {
                     VND
                   </p>
                 </td>
-                <td className=" text-red">
+                <td className=" text-thrd">
                   <p>
                     {new Intl.NumberFormat("vi-VN").format(
                       ticketTypes?.infant_price.$numberDecimal
@@ -70,7 +70,7 @@ const ScheduleTable = ({ tour }) => {
                     VND
                   </p>
                 </td>
-                <td className=" text-red text-center">
+                <td className=" text-thrd text-center">
                   {schedule.available_slots}
                 </td>
                 <td className=" text-center">
@@ -83,21 +83,20 @@ const ScheduleTable = ({ tour }) => {
                         Mua vé
                       </button>
                     ) : (
-                      <button className="bg-gray-400 cursor-default text-white px-4 py-2 rounded ">
+                      <button className="bg-gray-400 cursor-default text-white  rounded ">
                         Hết chỗ
                       </button>
                     )
                   ) : (
-                    <button className="bg-gray-400 text-white cursor-default font-medium px-2 py-1 rounded-2xl ">
-                      Đã kết thúc
+                    <button className="bg-gray-400 text-white cursor-default font-medium px-4 py-2 rounded ">
+                      Đã qua
                     </button>
                   )}
                 </td>
-                ;
               </tr>
             ))
           ) : (
-            <div className="p-3 font-medium text-red">
+            <div className="p-3 font-medium text-thrd">
               Hện không có lịch trình cho tour này.
             </div>
           )}

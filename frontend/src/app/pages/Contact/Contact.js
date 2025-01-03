@@ -115,12 +115,12 @@ export default function Contact() {
                 placeholder="Họ & tên"
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.name
-                    ? "border-red focus:ring-red"
+                    ? "border-thrd focus:ring-thrd"
                     : "border-gray-300 focus:ring-main"
                 }`}
               />
               {errors.name && (
-                <p className="text-red text-sm mt-1">{errors.name}</p>
+                <p className="text-thrd text-sm mt-1">{errors.name}</p>
               )}
             </div>
 
@@ -134,12 +134,12 @@ export default function Contact() {
                 placeholder="Email"
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.email
-                    ? "border-red focus:ring-red"
+                    ? "border-thrd focus:ring-thrd"
                     : "border-gray-300 focus:ring-main"
                 }`}
               />
               {errors.email && (
-                <p className="text-red text-sm mt-1">{errors.email}</p>
+                <p className="text-thrd text-sm mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -153,12 +153,12 @@ export default function Contact() {
                 placeholder="Điện thoại"
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.phone
-                    ? "border-red focus:ring-red"
+                    ? "border-thrd focus:ring-thrd"
                     : "border-gray-300 focus:ring-main"
                 }`}
               />
               {errors.phone && (
-                <p className="text-red text-sm mt-1">{errors.phone}</p>
+                <p className="text-thrd text-sm mt-1">{errors.phone}</p>
               )}
             </div>
 
@@ -172,12 +172,12 @@ export default function Contact() {
                 placeholder="Địa chỉ"
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.address
-                    ? "border-red focus:ring-red"
+                    ? "border-thrd focus:ring-thrd"
                     : "border-gray-300 focus:ring-main"
                 }`}
               />
               {errors.address && (
-                <p className="text-red text-sm mt-1">{errors.address}</p>
+                <p className="text-thrd text-sm mt-1">{errors.address}</p>
               )}
             </div>
 
@@ -191,12 +191,12 @@ export default function Contact() {
                 rows="5"
                 className={`w-full p-2 border rounded-lg focus:ring-2 focus:outline-none ${
                   errors.message
-                    ? "border-red focus:ring-red"
+                    ? "border-thrd focus:ring-thrd"
                     : "border-gray-300 focus:ring-main"
                 }`}
               ></textarea>
               {errors.message && (
-                <p className="text-red text-sm mt-1">{errors.message}</p>
+                <p className="text-thrd text-sm mt-1">{errors.message}</p>
               )}
             </div>
 

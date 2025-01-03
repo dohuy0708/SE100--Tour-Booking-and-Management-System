@@ -13,12 +13,11 @@ export const getTourDetails = async () => {
 };
 export const getTourDetailsBySearch = async (searchString, filters) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/tours/searchandfilter`, {
+    const response = await axios.post(`${API_BASE_URL}/tours/searchandfilter`, {
       searchString, // Từ khóa tìm kiếm
       filters, // Các bộ lọc (priceRange, destination, selectedDate, ...)
     });
-
-    return response.data;
+    return response;
   } catch (error) {
     console.log("lỗi khi lấy thông tin tour: ", error);
     throw error.response ? error.response.data : error;
