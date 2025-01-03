@@ -11,7 +11,7 @@ const TourCard = ({ tour }) => {
       {/* Hình ảnh tour */}
       <div className="col-span-2 ">
         <img
-          src={tour?.cover_image} // Thay đổi với link ảnh thật
+          src={`http://localhost:8080${tour?.cover_image}`} // Thay đổi với link ảnh thật
           alt={tour.tour_name}
           className="h-[16rem] w-full object-cover rounded-lg"
         />
@@ -23,13 +23,13 @@ const TourCard = ({ tour }) => {
 
         <p className=" font-semibold">
           Mã tour:{" "}
-          <span className="font-semibold bg-white text-thrd">
+          <span className="font-semibold bg-white text-main">
             {tour?.tour_code}
           </span>
         </p>
         <p className=" font-semibold">
           Thời gian:{" "}
-          <span className="font-semibold bg-white text-thrd">
+          <span className="font-semibold bg-white text-main">
             {tour?.duration}
           </span>
         </p>
@@ -41,7 +41,7 @@ const TourCard = ({ tour }) => {
               tour?.schedule.map((date) => (
                 <span
                   key={date._id}
-                  className="px-4 py-0.5 rounded-lg text-thrd border-2 border-thrd"
+                  className="px-4 py-0.5 rounded-lg text-main border-2 border-main"
                 >
                   {new Date(date.departure_date).toLocaleDateString("vi-VN", {
                     day: "2-digit",
@@ -51,7 +51,7 @@ const TourCard = ({ tour }) => {
                 </span>
               ))
             ) : (
-              <p className="text-thrd font-medium">chưa có lịch</p>
+              <p className="text-main font-medium">chưa có lịch</p>
             )}
           </div>
         </div>
@@ -66,7 +66,7 @@ const TourCard = ({ tour }) => {
           {/* Nút Đặt chỗ */}
           <div>
             <button
-              className="bg-thrd text-white py-2 px-6 rounded-lg "
+              className="bg-main text-white py-2 px-6 font-medium rounded-lg "
               onClick={() => handleToTourPage(tour?._id)}
             >
               Đặt chỗ

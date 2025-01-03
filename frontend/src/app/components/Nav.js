@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 export default function Nav() {
   const navItems = [
     { name: "Trang chủ", path: "/" },
-    { name: "Tour trong nước", path: "/search" },
-    { name: "Tour nước ngoài", path: "/search" },
+    { name: "Tour trong nước", path: "/search?type=domestic" },
+    { name: "Tour nước ngoài", path: "/search?type=abroad" },
     { name: "Liên hệ", path: "/contact" },
   ];
   return (

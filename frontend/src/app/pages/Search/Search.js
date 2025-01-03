@@ -6,11 +6,17 @@ import {
   getTourDetails,
   getTourDetailsBySearch,
 } from "./services/searchService";
+import { useLocation } from "react-router-dom";
 
 export default function Search() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialKeyword = queryParams.get("keyword") || ""; // Lấy từ khóa từ URL
+  const type = queryParams.get("type"); // Lấy type từ URL (domestic hoặc abroad)
+
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchKeyword, setSearchKeyword] = useState(""); // Từ khóa tìm kiếm
+  const [searchKeyword, setSearchKeyword] = useState(initialKeyword); // Từ khóa tìm kiếm
   const [filters, setFilters] = useState({
     min_price: 0,
     max_price: 10000000,
@@ -34,7 +40,19 @@ export default function Search() {
       try {
         const response = await getTourDetailsBySearch(searchKeyword, filters);
         if (response && response.data) {
-          setTours(response.data);
+          let filteredTours = response.data; // Tạo bản sao của mảng dữ liệu
+
+          if (type === "domestic") {
+            filteredTours = filteredTours.filter(
+              (tour) => tour.tour_type[0] === "TRONG NƯỚC"
+            );
+          } else if (type === "abroad") {
+            filteredTours = filteredTours.filter(
+              (tour) => tour.tour_type[0] === "NƯỚC NGOÀI"
+            );
+          }
+          console.log("đấy: ", filteredTours);
+          setTours(filteredTours); // Gán giá trị mảng đã lọc vào state
         }
       } catch (error) {
         console.error("Failed to fetch tour details:", error);
@@ -45,7 +63,7 @@ export default function Search() {
     };
 
     fetchTours();
-  }, [filters, searchKeyword]); // Gọi lại API khi searchKeyword hoặc filters thay đổi
+  }, [filters, searchKeyword, type]); // Gọi lại API khi searchKeyword hoặc filters thay đổi
 
   if (loading)
     return (
@@ -71,7 +89,17 @@ export default function Search() {
 
         {/* Kết quả tìm kiếm ở bên phải */}
         <div className="col-span-4 p-4 ">
-          <SearchBar onSearchChange={handleSearchChange} />
+          {/* Hiển thị dòng thông báo */}
+          {type === "domestic" && (
+            <p className="text-xl font-bold text-main mb-4">Tour trong nước</p>
+          )}
+          {type === "abroad" && (
+            <p className="text-xl font-bold text-main mb-4">Tour nước ngoài</p>
+          )}
+          <SearchBar
+            onSearchChange={handleSearchChange}
+            initialValue={searchKeyword}
+          />
           <SearchResults tours={tours} />
         </div>
       </div>

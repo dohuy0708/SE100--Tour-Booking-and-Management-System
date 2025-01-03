@@ -9,8 +9,16 @@ import {
   getNewTours,
 } from "../../Services/userService";
 import FavoriteDestinations from "./Partials/FavoriteDestinations ";
-
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 export default function HomePage() {
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    navigate(`/search?keyword=${encodeURIComponent(searchKeyword)}`);
+  };
+
   const [bannerTours, setBannerTours] = useState([]);
   const [newTours, setNewTours] = useState([]);
   const [domestricTours, setDomestricTours] = useState([]);
@@ -68,7 +76,23 @@ export default function HomePage() {
       <div className="relative">
         <Slider tours={bannerTours} />
         <div className="absolute w-1/2 bottom-[-22px] left-1/2 transform -translate-x-1/2">
-          <SearchBar />
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Tìm kiếm tour..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch(); // Thực hiện tìm kiếm khi nhấn Enter
+                }
+              }}
+              className="w-full px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:ring-main"
+            />
+            <button onClick={handleSearch} className="absolute top-2 right-2">
+              <MagnifyingGlassIcon className="h-6 hover:text-main" />
+            </button>
+          </div>
         </div>
       </div>
       <div className="mx-32">
