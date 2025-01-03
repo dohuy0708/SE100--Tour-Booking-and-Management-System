@@ -15,6 +15,6 @@ export default (router: express.Router) => {
     router.get('/tours', getAllTours as any);
     router.get('/tours/findbytour_code', getTourByTourCode as any);
     router.get('/tours/detail',getAllTourWithDetail as any);
-    router.get('/tours/searchandfilter', tourSearchAndFilter as any);
+    router.post('/tours/searchandfilter', tourSearchAndFilter as any);
     router.get('/tours/:id', getTourWithAllDetailsById as any);
 }

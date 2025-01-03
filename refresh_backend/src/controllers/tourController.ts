@@ -389,11 +389,18 @@ export const tourSearchAndFilter = async (req: express.Request, res: express.Res
         if (searchResults.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy tour' }).end();
         }
-
-        let filteredTours = searchResults;
-        if (filteredTours.length === 0) {
+        let filterResults = [];
+        if (filters) {
+        filterResults = await filterTours(filters);
+        } else{
+            filterResults =  await TourModel.find().exec(); 
+        }
+        if (filterResults.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy tour' }).end();
         }
+        const filteredTours = searchResults.filter((searchTour) =>
+            filterResults.some((filterTour) => filterTour._id.toString() === searchTour._id.toString())
+        );      
         
         const tourIds = filteredTours.map((tour: any) => tour._id);
         

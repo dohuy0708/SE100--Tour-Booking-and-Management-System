@@ -163,7 +163,6 @@ export const scheduleSearchAndFilter = async (req: express.Request, res: express
         const finalSchedules = searchResults.filter((schedule: any) =>
             filteredSchedules.some((filtered: any) => filtered._id.toString() === schedule._id.toString())
         );
-        console.log
         return res.status(200).json(finalSchedules);
     } catch (error) {
         console.error('Error in scheduleSearchAndFilter:', error);
