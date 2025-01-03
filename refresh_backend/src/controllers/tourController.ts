@@ -391,19 +391,41 @@ export const tourSearchAndFilter = async (req: express.Request, res: express.Res
         }
 
         let filteredTours = searchResults;
-        if (filters) {
-            const filteredTourIds = await filterTours(filters);
-filteredTours = searchResults.filter((tour: any) =>
-    filteredTourIds.some((filteredId: any) => filteredId.toString() === tour._id.toString())
-);
-
-        }
         if (filteredTours.length === 0) {
             return res.status(404).json({ message: 'Không tìm thấy tour' }).end();
         }
-
-        return res.status(200).json(filteredTours);
-
+        
+        const tourIds = filteredTours.map((tour: any) => tour._id);
+        
+        const [tourPrices, programs, schedules] = await Promise.all([
+            TourPriceModel.find({ tour_id: { $in: tourIds } }).lean(),
+            TourProgramModel.find({ tour_id: { $in: tourIds } }).lean(),
+            ScheduleModel.find({ tour_id: { $in: tourIds } }).lean(),
+        ]);
+        console.log(tourPrices)
+        
+        // Kết hợp dữ liệu từ tourPrices, programs, schedules vào filteredTours
+        const Tours = filteredTours.map((tour: any) => {
+            const price = tourPrices.find((p: any) => p.tour_id.toString() === tour._id.toString());
+            const program = programs.find((p: any) => p.tour_id.toString() === tour._id.toString());
+            const schedule = schedules.find((s: any) => s.tour_id.toString() === tour._id.toString());
+        
+            return {
+                ...tour.toObject(),
+                price: price
+                    ? {
+                          adult_price: price.adult_price?.toString(),
+                          children_price: price.children_price?.toString(),
+                          infant_price: price.infant_price?.toString(),
+                      }
+                    : null,
+                program: program || null,
+                schedule: schedule || null,
+            };
+        });
+        
+        return res.status(200).json(Tours);
+        
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Lỗi', error });
