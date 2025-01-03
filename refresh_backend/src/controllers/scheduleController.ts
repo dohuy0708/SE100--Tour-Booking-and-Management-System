@@ -43,6 +43,7 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
             available_slots:capa,
             tour_name:tourr.tour_name,
             tour_code:tourr.tour_code,
+            tour_image:tourr.cover_image
         });
 
         return res.status(200).json(schedule).end();

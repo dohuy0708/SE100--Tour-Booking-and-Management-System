@@ -30,6 +30,7 @@ const ScheduleSchema = new mongooser.Schema({
     available_slots:{type: Number, required: true},
     tour_name:{type: String, required: true},
     tour_code:{type: String, required: true},
+    tour_image:{type: String, default: null},
 });
 
 
