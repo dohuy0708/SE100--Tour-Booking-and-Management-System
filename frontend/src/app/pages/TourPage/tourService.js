@@ -3,7 +3,7 @@ const API_BASE_URL = "http://localhost:8080";
 
 export const getTourById = async (id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/tours?id=${id}`);
+    const response = await axios.get(`${API_BASE_URL}/tours/${id}`);
 
     return response.data;
   } catch (error) {

@@ -14,6 +14,7 @@ const Step2 = ({ tour, schedule }) => {
   useEffect(() => {
     const calculateDeadline = () => {
       const now = new Date();
+      sPayment.set((pre) => (pre.value.date = now));
       now.setDate(now.getDate() + 1); // Cộng thêm 1 ngày
       const formattedDate = now.toLocaleString("vi-VN", {
         hour: "2-digit",
@@ -105,7 +106,7 @@ const Step2 = ({ tour, schedule }) => {
                 {passengers.map((p, index) => (
                   <tr key={index} className="border-b">
                     <td className="px-4 py-2">{p.name}</td>
-                    <td className="px-4 py-2">{p.dob}</td>
+                    <td className="px-4 py-2">{p.date}</td>
                     <td className="px-4 py-2">{p.gender}</td>
                     <td className="px-4 py-2">
                       {p.type === "adult"

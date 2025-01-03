@@ -16,10 +16,9 @@ const TourPage = () => {
   useEffect(() => {
     const fetchTourDetail = async () => {
       try {
-        const response = await getTourDetails();
-        console.log(response[0]);
+        const response = await getTourById(id);
         if (response) {
-          setTourDetail(response[0]);
+          setTourDetail(response);
         }
         const domestricRes = await getDomestricTours();
         if (domestricRes) setDomestricTours(domestricRes);
@@ -33,8 +32,18 @@ const TourPage = () => {
     fetchTourDetail();
   }, [id]);
 
-  if (loading) return <p>Đang tải...</p>;
-  if (!tourDetail) return <p>Không tìm thấy thông tin tour!</p>;
+  if (loading)
+    return (
+      <div className="min-h-mincontent">
+        <p>Đang tải...</p>;
+      </div>
+    );
+  if (!tourDetail)
+    return (
+      <div className="min-h-mincontent">
+        <p>Không tìm thấy thông tin tour!</p>
+      </div>
+    );
 
   return (
     <div>

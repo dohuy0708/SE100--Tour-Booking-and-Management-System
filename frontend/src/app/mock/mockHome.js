@@ -122,7 +122,7 @@ const paymentMethods = [
     ),
   },
   {
-    id: "BANK",
+    id: "BANK_TRANSFER",
     label: "Chuyển khoản",
     details: (
       <>
@@ -148,7 +148,7 @@ const paymentMethods = [
     ),
   },
   {
-    id: "credit",
+    id: "CREDIT_CARD",
     label: "Thẻ tín dụng",
     details: (
       <p>

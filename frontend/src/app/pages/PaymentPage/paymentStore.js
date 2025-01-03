@@ -8,6 +8,7 @@ export const sPayment = signify({
     phone: "",
     address: "",
   },
+  date: null,
   passengers: [], // Danh sách hành khách
   price: 0,
   note: "",

@@ -33,7 +33,7 @@ const Itinerary = ({ days }) => {
         )} */}
 
         <img
-          src={"/img2.png"}
+          src={`/img${activeTab + 1}.png`}
           alt={`Ngày ${activeTab + 1}`}
           className="w-full rounded-lg shadow-md"
         />

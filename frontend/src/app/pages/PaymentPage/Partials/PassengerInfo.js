@@ -5,10 +5,10 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
   const [errors, setErrors] = useState({});
 
   // Hàm kiểm tra tính hợp lệ của ngày sinh
-  const validateDob = (dob) => {
-    if (!dob) return false;
+  const validatedate = (date) => {
+    if (!date) return false;
     const currentYear = new Date().getFullYear();
-    const birthYear = new Date(dob).getFullYear();
+    const birthYear = new Date(date).getFullYear();
     const age = currentYear - birthYear;
 
     if (typeLabel === "Người lớn" && age < 12) return false;
@@ -24,8 +24,8 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
 
     if (!detail.name) newErrors.name = "Vui lòng nhập họ tên.";
     if (!detail.gender) newErrors.gender = "Vui lòng chọn giới tính.";
-    if (!detail.dob || !validateDob(detail.dob)) {
-      newErrors.dob = "Ngày sinh không phù hợp với loại hành khách.";
+    if (!detail.date || !validatedate(detail.date)) {
+      newErrors.date = "Ngày sinh không phù hợp với loại hành khách.";
     }
 
     setErrors(newErrors);
@@ -42,9 +42,9 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
     });
 
     var iN =
-      type === "adult"
+      type === "ADULT"
         ? "adult_price"
-        : type === "child"
+        : type === "CHILDREN"
         ? "children_price"
         : "infant_price";
     sPayment.set((pre) => {
@@ -114,13 +114,15 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
           </label>
           <input
             type="date"
-            value={detail.dob}
-            onChange={(e) => onChange("dob", e.target.value)}
+            value={detail.date}
+            onChange={(e) => onChange("date", e.target.value)}
             className={`mt-1 p-2 block w-full rounded-md shadow-sm ${
-              errors.dob ? "border-red" : "border-gray-300"
+              errors.date ? "border-red" : "border-gray-300"
             }`}
           />
-          {errors.dob && <p className="text-red text-sm mt-1">{errors.dob}</p>}
+          {errors.date && (
+            <p className="text-red text-sm mt-1">{errors.date}</p>
+          )}
         </div>
       </div>
     </div>

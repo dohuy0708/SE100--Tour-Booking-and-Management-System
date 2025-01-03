@@ -9,7 +9,7 @@ const ScheduleTable = ({ tour }) => {
     setTicketPrice(tour.tourPrice);
     setSchedules(
       tour.tourSchedules.filter((item) => {
-        return item.status[0] !== "END";
+        return item.status !== "";
       })
     );
   }, [tour]);
@@ -74,8 +74,7 @@ const ScheduleTable = ({ tour }) => {
                   {schedule.available_slots}
                 </td>
                 <td className=" text-center">
-                  {new Date(schedule.departure_date).getTime() <
-                  new Date().getTime() ? (
+                  {schedule.status !== "ĐÃ KẾT THÚC" ? (
                     schedule.available_slots > 0 ? (
                       <button
                         onClick={() => handleByTckets(tour._id, schedule._id)}
@@ -94,7 +93,7 @@ const ScheduleTable = ({ tour }) => {
                     </button>
                   )}
                 </td>
-                ; 
+                ;
               </tr>
             ))
           ) : (

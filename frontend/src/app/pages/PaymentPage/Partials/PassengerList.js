@@ -8,21 +8,21 @@ const PassengerList = ({ price }) => {
 
   // Định nghĩa loại hành khách
   const passengerTypes = {
-    adult: { label: "Người lớn", description: "Từ 12 trở lên" },
-    child: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
-    baby: { label: "Em bé", description: "Dưới 3 tuổi" },
+    ADULT: { label: "Người lớn", description: "Từ 12 trở lên" },
+    CHILDREN: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
+    INFANT: { label: "Em bé", description: "Dưới 3 tuổi" },
   };
 
   // Tăng số lượng hành khách
   const handleIncrement = (type) => {
     console.log("giasL: ", price);
     sPayment.set((state) => {
-      state.value.passengers.push({ type, name: "", gender: "Nam", dob: "" });
+      state.value.passengers.push({ type, name: "", gender: "Nam", date: "" });
     });
     var iN =
-      type === "adult"
+      type === "ADULT"
         ? "adult_price"
-        : type === "child"
+        : type === "CHILDREN"
         ? "children_price"
         : "infant_price";
     sPayment.set((pre) => {
@@ -37,9 +37,9 @@ const PassengerList = ({ price }) => {
       if (index > -1) state.value.passengers.splice(index, 1);
     });
     var iN =
-      type === "adult"
+      type === "ADULT"
         ? "adult_price"
-        : type === "child"
+        : type === "CHILDREN"
         ? "children_price"
         : "infant_price";
     sPayment.set((pre) => {
