@@ -1,11 +1,16 @@
-import { getTourById } from "../db/tour";
+import { getTourById, TourModel } from "../db/tour";
 import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel, filterSchedules, searchSchedules, ScheduleStatus} from "../db/schedule";
 import express from "express";
+import { TourMedia } from "../../../backend/src/models/tourmedia_model";
 
 export const getAllSchedules = async (req: express.Request, res: express.Response) => {
 
     try{
-            const schedules=await getSchedules();
+            const schedules=await getSchedules().populate({
+                path: 'tour_id',
+                select: 'cover_image'
+            }).lean();
+            
             return res.status(200).json(schedules).end();
         }
         catch(error){
