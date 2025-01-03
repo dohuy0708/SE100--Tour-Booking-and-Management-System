@@ -18,7 +18,8 @@ export const getAllBookings = async (req: express.Request, res: express.Response
     try{
             const bookings=await getBookings().populate('customer_id').populate({
                 path: 'schedule_id',
-                select: 'tour_code',
+                select: 'tour_code tour_image',
+
             }).lean();
             const passengerList=await PassengerModel.find({
                 booking_id: { $in: bookings.map((b) => b._id) },
