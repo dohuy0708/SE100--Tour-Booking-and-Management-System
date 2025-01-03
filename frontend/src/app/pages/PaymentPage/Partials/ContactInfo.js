@@ -42,13 +42,13 @@ const ContactInfo = () => {
         />
       </div>
       <div>
-        <label className="block font-semibold mb-2">Địa chỉ:</label>
+        <label className="block font-semibold mb-2">Ngày sinh:</label>
         <input
-          type="text"
+          type="date"
           placeholder="Nhập địa chỉ"
           className="w-full border rounded-lg p-2"
-          value={info.address}
-          onChange={(event) => handleOnChangeInput(event, "address")}
+          value={info.dob}
+          onChange={(event) => handleOnChangeInput(event, "dob")}
         />
       </div>
     </div>

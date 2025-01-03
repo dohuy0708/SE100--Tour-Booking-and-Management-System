@@ -62,7 +62,7 @@ export default function SummaryCard({ tour, schedule }) {
                   var displayType =
                     item.type === "ADULT"
                       ? "Người lớn"
-                      : item.type === "CHILDREN"
+                      : item.type === "CHILD"
                       ? "Trẻ em"
                       : item.type === "INFANT"
                       ? "Em bé"
@@ -71,7 +71,7 @@ export default function SummaryCard({ tour, schedule }) {
                 var iN =
                   item.type === "ADULT"
                     ? "adult_price"
-                    : item.type === "CHILDREN"
+                    : item.type === "CHILD"
                     ? "children_price"
                     : "infant_price";
                 var displayPrice = parseFloat(

@@ -51,8 +51,8 @@ const Step2 = ({ tour, schedule }) => {
               <span className="text-thrd"> {paymentData.info.phone}</span>
             </p>
             <p>
-              <span className="font-medium">Địa chỉ:</span>{" "}
-              <span className="text-thrd"> {paymentData.info.address}</span>
+              <span className="font-medium">Ngày sinh:</span>{" "}
+              <span className="text-thrd"> {paymentData.info.dob}</span>
             </p>
             <p>
               <span className="font-medium">Mã tour:</span>{" "}
@@ -109,11 +109,11 @@ const Step2 = ({ tour, schedule }) => {
                     <td className="px-4 py-2">{p.date}</td>
                     <td className="px-4 py-2">{p.gender}</td>
                     <td className="px-4 py-2">
-                      {p.type === "adult"
+                      {p.type === "ADULT"
                         ? "Người lớn (trên 12 tuổi)"
-                        : p.type === "children"
+                        : p.type === "CHILD"
                         ? "Trẻ em (từ 3 đến 11 tuổi)"
-                        : p.type === "baby"
+                        : p.type === "INFANT"
                         ? "Em bé (dưới 3 tuổi)"
                         : "Khác"}
                     </td>

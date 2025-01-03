@@ -64,8 +64,8 @@ const PaymentPage = () => {
       toast.error("Số điện thoại không hợp lệ!");
       isValid = false;
     }
-    if (!bookingInfo.address.trim()) {
-      toast.error("Địa chỉ không được để trống!");
+    if (!bookingInfo.dob.trim()) {
+      toast.error("Ngày sinh không được để trống!");
       isValid = false;
     }
 
@@ -105,7 +105,7 @@ const PaymentPage = () => {
   const isValidDob = (dob, type) => {
     const age = calculateAge(new Date(dob));
     if (type === "ADULT" && age < 12) return false;
-    if (type === "CHILDREN" && (age < 3 || age > 11)) return false;
+    if (type === "CHILD" && (age < 3 || age > 11)) return false;
     if (type === "INFANT" && age >= 3) return false;
     return true;
   };
@@ -147,7 +147,7 @@ const PaymentPage = () => {
         bookingInfo.name,
         bookingInfo.phone,
         bookingInfo.email,
-        bookingInfo.address,
+        bookingInfo.dob,
         dayId,
         sBooking.date,
         sBooking.price,

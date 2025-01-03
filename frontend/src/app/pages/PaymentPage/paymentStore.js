@@ -6,7 +6,7 @@ export const sPayment = signify({
     name: "",
     email: "",
     phone: "",
-    address: "",
+    dob: "",
   },
   date: null,
   passengers: [], // Danh sách hành khách

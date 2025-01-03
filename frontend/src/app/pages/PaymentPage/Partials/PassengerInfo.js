@@ -44,7 +44,7 @@ const PassengerInfo = ({ type, price, typeLabel, index, detail, onChange }) => {
     var iN =
       type === "ADULT"
         ? "adult_price"
-        : type === "CHILDREN"
+        : type === "CHILD"
         ? "children_price"
         : "infant_price";
     sPayment.set((pre) => {

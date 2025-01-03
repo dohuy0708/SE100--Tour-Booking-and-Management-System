@@ -9,7 +9,7 @@ const PassengerList = ({ price }) => {
   // Định nghĩa loại hành khách
   const passengerTypes = {
     ADULT: { label: "Người lớn", description: "Từ 12 trở lên" },
-    CHILDREN: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
+    CHILD: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
     INFANT: { label: "Em bé", description: "Dưới 3 tuổi" },
   };
 
@@ -22,7 +22,7 @@ const PassengerList = ({ price }) => {
     var iN =
       type === "ADULT"
         ? "adult_price"
-        : type === "CHILDREN"
+        : type === "CHILD"
         ? "children_price"
         : "infant_price";
     sPayment.set((pre) => {
@@ -39,7 +39,7 @@ const PassengerList = ({ price }) => {
     var iN =
       type === "ADULT"
         ? "adult_price"
-        : type === "CHILDREN"
+        : type === "CHILD"
         ? "children_price"
         : "infant_price";
     sPayment.set((pre) => {

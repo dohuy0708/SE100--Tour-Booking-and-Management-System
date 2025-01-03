@@ -50,6 +50,7 @@ export default function HeaderComponent() {
 
   const handleLogout = () => {
     localStorage.removeItem("user_id");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
     setDropdownOpen(false);
     navigate("/");
