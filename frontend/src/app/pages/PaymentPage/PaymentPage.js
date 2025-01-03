@@ -169,7 +169,12 @@ const PaymentPage = () => {
   };
 
   if (isLoading) {
-    return <div>Đang tải thông tin tour...</div>;
+    return (
+      <div className="flex justify-center items-center h-mincontent py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang tải...</span>
+      </div>
+    );
   }
 
   if (error) {

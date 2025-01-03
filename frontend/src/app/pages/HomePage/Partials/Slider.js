@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Slider({ tours }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoPlay, setAutoPlay] = useState(null);
-
+  const navigate = useNavigate();
   // Xử lý tự động chuyển slide
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,24 +25,31 @@ function Slider({ tours }) {
       <div className="relative h-96">
         {tours.map((tour, index) => (
           <div
-            key={tour.id}
+            key={tour?._id}
             className={`absolute inset-0 transition-opacity duration-700 ${
               index === currentSlide ? "opacity-100" : "opacity-0"
             }`}
           >
             <img
-              src={tour.image}
-              alt={tour.title}
+              src={
+                tour.cover_image
+                  ? `http://localhost:8080${tour?.cover_image}`
+                  : `/img${index + 1}.png`
+              }
+              alt={tour?.tour_name}
               className="w-full h-96 object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-white">
               <h1 className="text-4xl font-bold text-center mb-2">
-                {tour.place.toUpperCase()}
+                {tour?.tour_name.toUpperCase()}
               </h1>
-              <h1 className="text-4xl font-bold text-center mb-4">
-                {tour.title.toUpperCase()}
-              </h1>
-              <button className="mt-4 px-6 py-2 bg-main rounded">
+              {/* <h1 className="text-4xl font-bold text-center mb-4">
+                {tour?.description.toUpperCase()}
+              </h1> */}
+              <button
+                className="mt-4 px-6 py-2 bg-main rounded"
+                onClick={() => navigate(`/tour/${tour._id}`)}
+              >
                 Xem thêm
               </button>
             </div>

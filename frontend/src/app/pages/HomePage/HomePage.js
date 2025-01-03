@@ -11,8 +11,11 @@ import {
 import FavoriteDestinations from "./Partials/FavoriteDestinations ";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import { getTourHome } from "./services/tourService";
+
 export default function HomePage() {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // Thêm isLoading
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -27,50 +30,61 @@ export default function HomePage() {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const bannerRes = await getBannerTours();
-        if (bannerRes) setBannerTours(bannerRes);
-        //
-        const newRes = await getNewTours();
-        if (newRes) setNewTours(newRes);
-        //
-        const domestricRes = await getDomestricTours();
-        if (domestricRes) setDomestricTours(domestricRes);
-        //
-        const abroadRes = await getAbroadTours();
-        if (abroadRes) setAbroadTours(abroadRes);
+        setIsLoading(true); // Bắt đầu loading
+
+        // Lấy tất cả các tour
+        let allTours = await getTourHome();
+
+        //banner tour
+        const banRes = allTours
+          .filter((tour) => tour.tourSchedules.length > 0)
+          .slice(0, 3);
+        setBannerTours(banRes);
+
+        // Lọc và lấy 3 tour đầu tiên
+        const newRes = allTours
+          .filter((tour) => tour.tourSchedules.length > 0)
+          .slice(-3);
+        setNewTours(newRes);
+
+        // Lọc và lấy 3 tour có tour_type="TRONG NƯỚC" và có ít nhất một lịch trình
+        const domestricRes = allTours
+          .filter(
+            (tour) =>
+              tour.tour_type[0] === "TRONG NƯỚC" &&
+              tour.tourSchedules.length > 0
+          )
+          .slice(0, 3);
+        setDomestricTours(domestricRes);
+
+        // Lọc và lấy 3 tour có tour_type="NƯỚC NGOÀI" và có ít nhất một lịch trình
+        const abroadRes = allTours
+          .filter(
+            (tour) =>
+              tour.tour_type[0] === "NƯỚC NGOÀI" &&
+              tour.tourSchedules.length > 0
+          )
+          .slice(0, 3);
+        setAbroadTours(abroadRes);
       } catch (error) {
         console.error("Failed to fetch tours:", error);
+      } finally {
+        setIsLoading(false); // Kết thúc loading
       }
     };
 
     fetchTours();
   }, []);
-  const destinations = [
-    {
-      name: "Quảng Ninh",
-      image: "/img1.png",
-    },
-    {
-      name: "Hà Giang",
-      image: "/img2.png",
-    },
-    {
-      name: "Lào Cai",
-      image: "/img3.png",
-    },
-    {
-      name: "Ninh Bình",
-      image: "/tour1.png",
-    },
-    {
-      name: "Yên Bái",
-      image: "/img1.png",
-    },
-    // {
-    //   name: "Sơn La",
-    //   image: "/img2.png",
-    // },
-  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-mincontent py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang tải...</span>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="relative">
@@ -100,7 +114,7 @@ export default function HomePage() {
         <TourSection title="Tour trong nước nổi bật" tours={domestricTours} />
         <TourSection title="Tour nước ngoài nổi bật" tours={abroadTours} />
       </div>
-      <FavoriteDestinations destinations={destinations} />
+      {/* <FavoriteDestinations destinations={destinations} /> */}
     </div>
   );
 }

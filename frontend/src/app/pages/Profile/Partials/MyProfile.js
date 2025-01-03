@@ -7,13 +7,17 @@ export default function MyProfile({ userData }) {
   const [message, setMessage] = useState("");
 
   useEffect(() => {});
-  const [formData, setFormData] = useState({
-    user_name: userData?.user_name || "",
-    email: userData?.email || "",
-    phone_number: userData?.phone_number || "",
-    gender: userData?.gender || "Nam",
-    date_of_birth: userData?.date_of_birth || "",
-  });
+  const [formData, setFormData] = useState(
+    {
+      user_name: userData?.user_name || "",
+      email: userData?.email || "",
+      phone_number: userData?.phone_number || "",
+      gender: userData?.gender || "Nam",
+      date_of_birth:
+        new Date(userData?.date_of_birth).toISOString().split("T")[0] || "",
+    },
+    []
+  );
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({

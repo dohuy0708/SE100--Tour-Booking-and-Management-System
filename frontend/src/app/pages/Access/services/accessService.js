@@ -13,7 +13,6 @@ export const handleLoginApi = async (email, password) => {
         withCredentials: true,
       }
     );
-    console.log("res đn: ", response);
     return response.data;
   } catch (error) {
     console.log("lỗi: ", error);

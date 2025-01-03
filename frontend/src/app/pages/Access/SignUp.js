@@ -47,7 +47,6 @@ const SignUp = () => {
         phoneNumber,
         dob
       );
-      console.log("Đăng ký thành công: ", response);
       navigate("/login"); // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
     } catch (error) {
       setError(error.message || "Đã có lỗi xảy ra!"); // Hiển thị lỗi nếu có
