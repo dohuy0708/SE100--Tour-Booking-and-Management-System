@@ -41,10 +41,10 @@ export const getAllBookings = async (req: express.Request, res: express.Response
 
 export const createNewBooking = async (req: express.Request, res: express.Response) =>{
     try{
-        const {name, phone, mail, addr, schedule, date, price, stt, number_slot, method, passengers} = req.body;
+        const {name, phone, mail, dob, schedule, date, price, stt, number_slot, method, passengers} = req.body;
 
-        if(name==null||phone==null||mail==null||addr==null||schedule==null||date==null||price==null||stt==null||number_slot==null||name==undefined||phone==undefined
-            ||mail==undefined||addr==undefined||schedule==undefined||date==undefined||price==undefined||stt==undefined||number_slot==undefined||method==null||method==undefined||passengers==null||passengers==undefined){
+        if(name==null||phone==null||mail==null||dob==null||schedule==null||date==null||price==null||stt==null||number_slot==null||name==undefined||phone==undefined
+            ||mail==undefined||dob==undefined||schedule==undefined||date==undefined||price==undefined||stt==undefined||number_slot==undefined||method==null||method==undefined||passengers==null||passengers==undefined){
             return res.status(400).json({message:'Thiếu thông tin Booking'}).end();
         }
 
@@ -62,7 +62,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
                 user_name: name,
                 email: mail,
                 phone_number: phone,
-                address: addr,
+                date_of_birth: dob,
                 authentication: {
                     user_password: authentication(password, salte),
                     salt: salte,
