@@ -67,7 +67,6 @@ export const updateSchedule = async (req: express.Request, res: express.Response
         });
 
         if(!schedule){
-            console.log(schedule);
             return res.status(400).json({message:'Schedule không tồn tại'}).end();
         }
         await schedule.save();

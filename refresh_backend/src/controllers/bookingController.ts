@@ -34,6 +34,8 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         }
 
 
+        const bookingCode=randomCode();
+
         let coder=null as Number;
         let user=await getUserByEmail(mail);
         if(!user){
@@ -57,11 +59,11 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
                 group_id:'6768b9ca67d4dd30bb05e411',
             });
             const subject = 'Xác thực tài khoản của bạn';
-        const content = 'Xin chào, ' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist với mật khẩu là: '+password+'. Mã xác thực của bạn là: '+Code+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình tạo tài khoản và đặt Schedule.';
+        const content = 'Xin chào, ' +name+'\n\n'+'Cảm ơn bạn đã đăng ký tài khoản tại 5H Tourist với mật khẩu là: '+password+'. Mã xác thực đặt lịch của bạn là: '+bookingCode+'\n\n'+'Vui lòng nhập mã này để hoàn tất quá trình tạo tài khoản và đặt Schedule.';
         sendEmail(mail, subject, content).catch(err => {
                     console.error('Lỗi khi gửi email:', err); // Log lỗi nếu gửi email thất bại
                 });
-                return res.status(200).json({ message: 'Tạo tài khoản thành công, vui lòng kiểm tra email để xác minh tài khoản', userId:user._id });
+                return res.status(200).json({ message: 'Đặt lịch trình thành công, vui lòng kiểm tra email để nhận tài khoản và mã xác thực đặt lịch', userId:user._id });
         }
 
 
@@ -141,7 +143,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         booking.passengers = passengerList.map((p) => p._id);
         await booking.save();
 
-        return res.status(200).json({ booking, passengers: passengerList, coder }).end();
+        return res.status(200).json({ booking, passengers: passengerList, bookingCode }).end();
     }
     catch(error){
         console.log(error);
