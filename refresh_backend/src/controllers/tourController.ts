@@ -6,7 +6,7 @@ import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, ge
 import express from "express";
 import { TourProgramModel, deleteProgramByTourId } from "../db/tour_program";
 import { deletePriceByTourId } from "../db/tour_price";
-import { getScheduleByTourId, ScheduleModel } from "../db/schedule";
+import { getScheduleByTourId, ScheduleModel, ScheduleStatus } from "../db/schedule";
 import mongooser from "mongoose";
 import { createPrice } from "../db/tour_price";
 import { createProgram } from "../db/tour_program";
@@ -80,7 +80,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
         const schedules= await getScheduleByTourId(id);
 
         if(schedules.length>0){
-            const canUpdate=schedules.every(schedule=>schedule.status.includes('SELLING')||schedule.status.includes('END'));
+            const canUpdate=schedules.every(schedule=>schedule.status.includes(ScheduleStatus.END)||schedule.status.includes(ScheduleStatus.SELLING));
             if(!canUpdate){
                 return res.status(400).json({message:'Không thể cập nhật Tour vì đang có Schedule đang hoặc chờ diễn ra'}).end();
             }

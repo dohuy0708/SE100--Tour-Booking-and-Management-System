@@ -3,11 +3,19 @@ import mongooser from "mongoose";
 import { TourPriceModel } from './tour_price';
 import { LocationModel } from './location';
 
+export const ScheduleStatus={
+    SELLING:'ĐANG BÁN',
+    WAITING_FOR_PROGRESS:'CHỜ DIỄN RA',
+    IN_PROGRESS:'ĐANG DIỄN RA',
+    END:'ĐÃ KẾT THÚC',
+};
+
+
 const ScheduleSchema = new mongooser.Schema({
     tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
     schedule_code:{type: String, required: true},
     status:{type: String,
-        enum:['SELLING','WAITING_FOR_PROGRESS','IN_PROGRESS','END'],
+        enum:[ScheduleStatus.SELLING, ScheduleStatus.WAITING_FOR_PROGRESS, ScheduleStatus.IN_PROGRESS, ScheduleStatus.END],
         required: true,
     },
     departure_date:{type: Date, required: true},
@@ -25,12 +33,7 @@ const ScheduleSchema = new mongooser.Schema({
 });
 
 
-export const ScheduleStatus={
-    SELLING:'SELLING',
-    WAITING_FOR_PROGRESS:'WAITING_FOR_PROGRESS',
-    IN_PROGRESS:'IN_PROGRESS',
-    END:'END',
-};
+
 
 
 export const ScheduleModel = mongooser.model('Schedule', ScheduleSchema);

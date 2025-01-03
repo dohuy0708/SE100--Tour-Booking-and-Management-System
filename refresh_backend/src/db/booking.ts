@@ -1,5 +1,12 @@
 import mongooser from "mongoose";
 
+
+export const BookingStatus ={
+    PENDING: 'CHỜ XÁC NHẬN',
+    CONFIRMED: 'ĐÃ XÁC NHẬN',
+    CANCELLED: 'ĐÃ HỦY',
+}
+
 const BookingSchema = new mongooser.Schema({
     customer_id:{type: mongooser.Schema.Types.ObjectId, ref: 'User', },
     schedule_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Schedule', required: true},
@@ -11,7 +18,7 @@ const BookingSchema = new mongooser.Schema({
                     set: (value: string | number) => mongooser.Types.Decimal128.fromString(value.toString())},
     status : {type: String,
              required: true,
-             enum: ['PENDING', 'CONFIRMED', 'CANCELLED']},
+             enum: [BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.CANCELLED],},
     schedule_details: {type: Object, required: true},
     tour_details: {type: Object, required: true},
     adult_price:{type: mongooser.Types.Decimal128,
@@ -32,11 +39,7 @@ const BookingSchema = new mongooser.Schema({
     schedule_date: {type: Date, required: true},
 });
 
-export const BookingStatus ={
-    PENDING: 'PENDING',
-    CONFIRMED: 'CONFIRMED',
-    CANCELLED: 'CANCELLED',
-}
+
 
 
 export const BookingModel = mongooser.model('Booking', BookingSchema);

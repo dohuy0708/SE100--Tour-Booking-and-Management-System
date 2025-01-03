@@ -1,5 +1,5 @@
 import { getTourById } from "../db/tour";
-import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel, filterSchedules, searchSchedules} from "../db/schedule";
+import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel, filterSchedules, searchSchedules, ScheduleStatus} from "../db/schedule";
 import express from "express";
 
 export const getAllSchedules = async (req: express.Request, res: express.Response) => {
@@ -122,7 +122,7 @@ export const getScheduleByTheTourId = async (req: express.Request, res: express.
 }
 export const getEndSchedule = async (req: express.Request, res: express.Response) =>{
     try{
-        const schedules = await ScheduleModel.find({status: "END"})
+        const schedules = await ScheduleModel.find({status: ScheduleStatus.END}).exec();
 
         if (!schedules.length) {
             return res.status(404).json({ message: 'Không tìm thấy schedule' }).end();
