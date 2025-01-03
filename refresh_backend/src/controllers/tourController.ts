@@ -21,34 +21,19 @@ import { Decimal128 } from "mongodb";
 export const getAllTours = async (req: express.Request, res: express.Response) => {
 
     try{
-            const tours=await getTours();
-            const tourIds=tours.map(tour=>tour._id);
-            const tourPrices= await TourPriceModel.find({tour_id:{$in:tourIds}}).lean();
-
+            const tours=await getTours().lean();
+            const tourPrices= await TourPriceModel.find().select('tour_id adult_price').lean();
            
-             // Định nghĩa kiểu cho priceMap
-        const priceMap: Record<string, number | null> = {};
-
-        tourPrices.forEach(price => {
-            let adultPrice: number | null = null;
-
-            // Kiểm tra và chuyển đổi kiểu Decimal128
-            if (price.adult_price) {
-                if (price.adult_price instanceof Decimal128) {
-                    adultPrice = parseFloat(price.adult_price.toString());
-                } else {
-                    adultPrice = price.adult_price as number;
+            const TourWithAdultPrice=tours.map(tour=>{
+                const price=tourPrices.find(price=>price.tour_id.toString()===tour._id.toString());
+                return {
+                    ...tour,
+                    adult_price: price?.adult_price,
                 }
-            }
+            });
 
-            priceMap[price.tour_id.toString()] = adultPrice;
-        });
-
-        // Gắn adult_price vào mỗi tour
-        const toursWithPrice = tours.map(tour => ({
-            ...tour.toObject(),
-            adult_price: priceMap[tour._id.toString()] || null
-        }));
+            return res.status(200).json(TourWithAdultPrice).end();
+       
         }
         catch(error){
             console.log(error);
