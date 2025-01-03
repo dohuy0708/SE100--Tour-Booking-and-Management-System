@@ -402,14 +402,14 @@ export const tourSearchAndFilter = async (req: express.Request, res: express.Res
             TourProgramModel.find({ tour_id: { $in: tourIds } }).lean(),
             ScheduleModel.find({ tour_id: { $in: tourIds } }).lean(),
         ]);
-        console.log(tourPrices)
         
         // Kết hợp dữ liệu từ tourPrices, programs, schedules vào filteredTours
         const Tours = filteredTours.map((tour: any) => {
             const price = tourPrices.find((p: any) => p.tour_id.toString() === tour._id.toString());
             const program = programs.find((p: any) => p.tour_id.toString() === tour._id.toString());
-            const schedule = schedules.find((s: any) => s.tour_id.toString() === tour._id.toString());
-        
+            const schedule = schedules.filter((s: any) => s.tour_id.toString() === tour._id.toString());
+            console.log(schedule)
+
             return {
                 ...tour.toObject(),
                 price: price
