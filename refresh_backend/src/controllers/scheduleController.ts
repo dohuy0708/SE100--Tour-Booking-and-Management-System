@@ -55,10 +55,10 @@ export const createNewSchedule = async (req: express.Request, res: express.Respo
 
 export const updateSchedule = async (req: express.Request, res: express.Response) =>{
     try{
-        const {id}=req.params;  
+        const {id}=req.body;  
         const {sta}=req.body;
 
-        if(sta==null||sta==undefined){
+        if(sta==null||sta==undefined || id==null||id==undefined){
             return res.status(400).json({message:'Thiếu thông tin Schedule'}).end();
         }
 
@@ -67,11 +67,12 @@ export const updateSchedule = async (req: express.Request, res: express.Response
         });
 
         if(!schedule){
+            console.log(schedule);
             return res.status(400).json({message:'Schedule không tồn tại'}).end();
         }
         await schedule.save();
 
-        return res.status(200).json(schedule).end();
+        return res.status(200).json("Success").end();
     }
     catch(error){
         console.log(error);
