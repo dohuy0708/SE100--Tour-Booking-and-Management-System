@@ -19,8 +19,6 @@ const BookingSchema = new mongooser.Schema({
     status : {type: String,
              required: true,
              enum: [BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.CANCELLED],},
-    schedule_details: {type: Object, required: true},
-    tour_details: {type: Object, required: true},
     adult_price:{type: mongooser.Types.Decimal128,
                     required: true,
                     get: (value: mongooser.Types.Decimal128) => value ? value.toString() : null, 

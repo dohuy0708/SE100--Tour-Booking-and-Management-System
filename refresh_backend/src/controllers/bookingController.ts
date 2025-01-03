@@ -1,3 +1,4 @@
+import { searchSchedules } from './../db/schedule';
 import { register } from './authenticationController';
 import { Tour } from './../../../backend/src/models/tour_model';
 import { getUserByEmail, createUser, getUserBySessionToken, getUserById } from "../db/user";
@@ -15,8 +16,22 @@ import { getTourById, TourModel } from "../db/tour";
 export const getAllBookings = async (req: express.Request, res: express.Response) => {
 
     try{
-            const bookings=await getBookings();
-            return res.status(200).json(bookings).end();
+            const bookings=await getBookings().populate('customer_id').populate({
+                path: 'schedule_id',
+                select: 'tour_code',
+            }).lean();
+            const passengerList=await PassengerModel.find({
+                booking_id: { $in: bookings.map((b) => b._id) },
+            }).lean();
+
+
+            const bookingWithPeople=bookings.map((booking)=>({
+                ...booking,
+                passengers: passengerList.filter((p) => p.booking_id.toString() === booking._id.toString())
+            }));
+
+
+            return res.status(200).json(bookingWithPeople).end();
         }
         catch(error){
             console.log(error);
@@ -108,8 +123,6 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
             total_price: price,
             status: stt,
             number_slots: number_slot,
-            schedule_details: scheduledt,
-            tour_details: scheduledt.tour_id,
             adult_price: tprice.adult_price,
             children_price: tprice.children_price,
             infant_price: tprice.infant_price,
