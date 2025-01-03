@@ -6,7 +6,7 @@ import { LocationModel } from './location';
 const ScheduleSchema = new mongooser.Schema({
     tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
     schedule_code:{type: String, required: true},
-    status:{type: [String],
+    status:{type: String,
         enum:['SELLING','WAITING_FOR_PROGRESS','IN_PROGRESS','END'],
         required: true,
     },
