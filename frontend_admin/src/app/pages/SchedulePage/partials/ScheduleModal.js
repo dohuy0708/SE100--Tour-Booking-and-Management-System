@@ -1,40 +1,108 @@
 import React, { useState } from "react";
 import { useFilterContext } from "../../../context/FilterContext.js";
+import { ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 
-export default function ScheduleModal({ isOpen, onClose, statuses }) {
+import "react-toastify/dist/ReactToastify.css";
+import { notifyError, notifySuccess } from "../../../components/Notification";
+
+export default function ScheduleModal({
+  isOpen,
+  onClose,
+  statuses,
+  refreshData,
+}) {
   const { tourData } = useFilterContext(); // Lấy dữ liệu từ context
-
-  // Kiểm tra tourData có được lấy không
-  console.log("Tour Data Modal:", tourData);
-
   const [selectedTour, setSelectedTour] = useState("");
   const [startDate, setStartDate] = useState("");
   const [guestCount, setGuestCount] = useState(1);
   const [scheduleCode, setScheduleCode] = useState("");
-  const [status, setStatus] = useState("Planned"); // Default status value
+  const [status, setStatus] = useState("ĐANG BÁN"); // Default status value
 
   // Kiểm tra nếu modal không mở
   if (!isOpen) return null;
 
   const handleTourChange = (e) => {
-    const tour = tourData.find((t) => t.tourId === parseInt(e.target.value));
+    const tour = tourData.find((t) => t._id === e.target.value);
     setSelectedTour(tour);
   };
 
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async () => {
     if (!selectedTour || !startDate || !guestCount || !scheduleCode) {
-      alert("Vui lòng điền đầy đủ thông tin!");
+      Swal.fire({
+        icon: "info",
+        title: "Vui lòng nhập đầy đủ thông tin ",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      });
       return;
     }
-    alert("Đặt tour thành công!");
-    console.log({
-      scheduleCode,
-      selectedTour,
-      startDate,
-      guestCount,
-      status,
-    });
-    onClose(); // Đóng modal sau khi đặt tour thành công
+    // Format the `startDate` into the required format
+    const [date, time] = startDate.split("T");
+
+    // Prepare the data payload
+    const payload = {
+      tour: selectedTour._id, // Assuming `_id` is the correct field for the tour ID
+      code: scheduleCode,
+      sta: status,
+      date,
+      time,
+      capa: guestCount, // Ensure it's sent as a number
+    };
+
+    console.log(payload);
+    // Gửi gửi liệu cho server
+    try {
+      const response = await fetch("http://localhost:8080/schedules", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tour: selectedTour._id, // Assuming `_id` is the correct field for the tour ID
+          code: scheduleCode,
+          sta: status,
+          date,
+          time,
+          capa: guestCount,
+        }),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Thêm chuyến đi thành công",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#3085d6",
+        }).then(() => {
+          refreshData();
+          // Reset states and close modal
+          setSelectedTour("");
+          setStartDate("");
+          setGuestCount(1);
+          setScheduleCode("");
+          setStatus("ĐANG BÁN");
+          onClose();
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Thêm chuyến đi thất bại",
+          text: "Vui lòng thử lại sau!",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#3085d6",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting tour:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Thêm chuyến đi thất bại",
+        text: "Vui lòng thử lại sau!",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      });
+    }
   };
 
   return (
@@ -77,15 +145,15 @@ export default function ScheduleModal({ isOpen, onClose, statuses }) {
                 <h4 className="font-semibold  text-blue-500">Chọn tour:</h4>
                 <select
                   className="mt-2 w-full p-2 border rounded"
-                  value={selectedTour ? selectedTour.tourId : ""}
+                  value={selectedTour ? selectedTour._id : ""}
                   onChange={handleTourChange}
                 >
                   <option value="" disabled>
                     -- Chọn tour --
                   </option>
                   {tourData.map((tour) => (
-                    <option key={tour.tourId} value={tour.tourId}>
-                      {tour.tourName}
+                    <option key={tour._id} value={tour._id}>
+                      {tour.tour_name}
                     </option>
                   ))}
                 </select>
@@ -113,7 +181,7 @@ export default function ScheduleModal({ isOpen, onClose, statuses }) {
                     Ngày khởi hành:
                   </h4>
                   <input
-                    type="date"
+                    type="datetime-local"
                     className="mt-2 w-full p-2 border rounded"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
@@ -145,7 +213,7 @@ export default function ScheduleModal({ isOpen, onClose, statuses }) {
                     onChange={(e) => setStatus(e.target.value)}
                   >
                     {statuses.map((s) => (
-                      <option key={s.id} value={s.name}>
+                      <option key={s.id} value={s.name} disabled>
                         {s.name} {/* Dùng thuộc tính 'name' ở đây */}
                       </option>
                     ))}
@@ -167,7 +235,7 @@ export default function ScheduleModal({ isOpen, onClose, statuses }) {
               className="px-6 py-2 bg-blue-500 text-white rounded-md"
               onClick={handleFormSubmit}
             >
-              Đặt tour
+              Thêm chuyến đi
             </button>
           </div>
         </div>

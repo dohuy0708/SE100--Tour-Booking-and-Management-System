@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import EditScheduleModal from "./EditScheduleModal";
 
-export default function ScheduleItemComponent({ schedule }) {
+export default function ScheduleItemComponent({ schedule, refeshData }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState(null);
+  const [selectedSchedule, setSelectedSchedule] = useState(schedule);
 
   const handleEdit = (schedule) => {
     setSelectedSchedule(schedule); // Lưu thông tin lịch trình cần chỉnh sửa
@@ -19,10 +19,10 @@ export default function ScheduleItemComponent({ schedule }) {
     <>
       <div className="flex items-center p-4 bg-white rounded-md shadow-md">
         {/* Tour Image */}
-        <div className="w-34 h-24 mr-4">
+        <div className="w-32 h-24 mr-4">
           <img
-            src={schedule.tour?.tourImage || "https://via.placeholder.com/150"}
-            alt={schedule.tour?.tourName || "Tour Image"}
+            src={`http://localhost:8080${schedule.tour_image}`}
+            alt={"Tour Image"}
             className="object-cover w-full h-full rounded-md"
           />
         </div>
@@ -31,26 +31,29 @@ export default function ScheduleItemComponent({ schedule }) {
         <div className="flex flex-1">
           {/* Thông tin tour */}
           <div className="flex-1">
-            <p className="font-bold">Mã chuyến đi: {schedule.scheduleId}</p>
-            <p className="font-medium">{schedule.tour?.tourName}</p>
-            <p className="text-sm">Mã tour: {schedule.tour?.tourId}</p>
-            <p className="text-sm text-gray-600">
-              Thời gian: {schedule.tour?.duration} ngày
+            <p className="font-medium  text-red-500">
+              Mã chuyến đi: {schedule.schedule_code}
             </p>
+            <p className="font-medium  text-blue-500">{schedule.tour_name}</p>
+            <p className="text-sm">Mã tour: {schedule.tour_code}</p>
           </div>
 
           {/* Ngày khởi hành */}
           <div className="flex-1 flex flex-col items-center justify-center">
             <p className="font-medium">Ngày khởi hành:</p>
-            <p className="font-bold text-blue-500">{schedule.departureDate}</p>
-            <p className="text-sm text-gray-600">{schedule.departureTime}</p>
+            <p className="font-bold text-blue-500">
+              {new Date(schedule.departure_date).toLocaleDateString()}
+            </p>
+            <p className="text-sm text-gray-600">
+              Thời gian: {schedule.departure_time}
+            </p>
           </div>
 
           {/* Sức chứa & Chỗ đã đặt */}
           <div className="flex-1 flex flex-col items-center justify-center">
             <p className="font-medium">Sức chứa: {schedule.capacity}</p>
-            <p className="font-medium text-gray-600">
-              Chỗ đã đặt: {schedule.booked}
+            <p className="font-medium text-yellow-500">
+              Còn trống: {schedule.available_slots}
             </p>
           </div>
 
@@ -58,10 +61,14 @@ export default function ScheduleItemComponent({ schedule }) {
           <div className="mr-4 w-34 flex items-center justify-center">
             <p
               className={`px-2 py-1 w-24 text-sm font-medium text-center rounded-md ${
-                schedule.status === "Open"
+                schedule.status === "ĐANG BÁN"
                   ? "bg-green-100 text-green-600"
-                  : schedule.status === "Closed"
-                  ? "bg-red-100 text-red-600"
+                  : schedule.status === "ĐÃ KẾT THÚC"
+                  ? "bg-gray-100 text-gray-600"
+                  : schedule.status === "CHỜ DIỄN RA"
+                  ? "bg-blue-100 text-blue-600"
+                  : schedule.status === "ĐANG DIỄN RA"
+                  ? "bg-purple-100 text-purple-600"
                   : "bg-gray-100 text-gray-600"
               }`}
             >
@@ -97,6 +104,7 @@ export default function ScheduleItemComponent({ schedule }) {
           isOpen={isModalOpen}
           onClose={closeModal}
           schedule={selectedSchedule}
+          fetchData={refeshData}
         />
       )}
     </>

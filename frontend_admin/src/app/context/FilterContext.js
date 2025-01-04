@@ -15,9 +15,21 @@ export const FilterProvider = ({ children }) => {
       try {
         // Giả sử bạn có các API để lấy dữ liệu location
         const locationData = await getLocations(); // Gọi API hoặc fetch dữ liệu cho locations
+        // lấy thông tin tour
 
-        console.log("locationData", locationData);
-        const tours = await getTourSchedule();
+        const response = await fetch("http://localhost:8080/tours/detail", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
+        /// gọi API từ server
+        const tours = await response.json();
         console.log("Tour Data context:", tours);
         setTourData(tours);
         setLocations(locationData);

@@ -2,12 +2,21 @@ import React, { useEffect, useState } from "react";
 import { FilterProvider } from "../../context/FilterContext";
 import FilterComponent from "../../components/FilterComponent/FilterComponent";
 import { getScheduleData } from "../../services/Schedule_w_TourService";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import ScheduleModal from "../SchedulePage/partials/EditScheduleModal";
 import ScheduleItemComponent from "../SchedulePage/partials/ScheduleItemComponent";
 import HistoryItemComponent from "./partials/HistoryItemComponent";
+import { notifyError } from "../../components/Notification";
 
 export default function HistoryPage() {
+  const statuses = [
+    { id: 1, name: "ĐANG BÁN" },
+    { id: 2, name: "CHỜ DIỄN RA" },
+    { id: 3, name: "ĐANG DIỄN RA" },
+    { id: 4, name: "ĐÃ KẾT THÚC" },
+  ];
   const [schedules, setSchedules] = useState([]);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [ScheduleStatuses, setScheduleStatuses] = useState([]);
@@ -18,30 +27,34 @@ export default function HistoryPage() {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchScheduleData = async () => {
-      try {
-        setLoading(true);
-        const fetchedSchedules = await getScheduleData({
-          filters: {}, // Bắt đầu không có bộ lọc
-          page: currentPage,
-          limit: recordsPerPage,
-        });
+  const fetchScheduleData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/schedules/end", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
-        setSchedules(fetchedSchedules);
-        setFilteredSchedules(fetchedSchedules);
-
-        console.log("Fetched Schedules:", fetchedSchedules);
-      } catch (error) {
-        console.error("Error fetching schedule data:", error);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
       }
-    };
+      const fetchedSchedules = await response.json();
 
+      setSchedules(fetchedSchedules);
+      setFilteredSchedules(fetchedSchedules);
+    } catch (error) {
+      notifyError("Lỗi khi lấy dữ liệu từ server!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchScheduleData();
   }, []);
-
   // Xử lý lọc
   const handleFilterApply = async (filters) => {
     // Áp dụng lọc và phân trang
@@ -85,16 +98,16 @@ export default function HistoryPage() {
           <FilterComponent
             onFilterApply={handleFilterApply}
             onReset={handleReset}
-            status={ScheduleStatuses}
+            status={statuses}
           />
 
           {/* Nút Thêm */}
 
-          <ScheduleModal
+          {/* <ScheduleModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            statuses={ScheduleStatuses} // Truyền statuses vào modal
-          ></ScheduleModal>
+            statuses={statuses} // Truyền statuses vào modal
+          ></ScheduleModal> */}
         </div>
 
         {/* Danh sách lịch trình */}

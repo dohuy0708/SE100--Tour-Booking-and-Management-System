@@ -1,7 +1,7 @@
 import { useState } from "react";
 import EditBookingModal from "./EditBookingModal";
 
-export default function BookingItemComponent({ booking }) {
+export default function BookingItemComponent({ booking, refreshData }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const handleEdit = (id) => {
@@ -9,6 +9,7 @@ export default function BookingItemComponent({ booking }) {
     setIsModalOpen(true);
   };
 
+  console.log("price", booking.total_price);
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedBooking(null);
@@ -16,50 +17,60 @@ export default function BookingItemComponent({ booking }) {
   return (
     <div className="flex items-center p-4 bg-white rounded-md shadow-md">
       {/* Tour Image */}
-      <div className="w-34 h-24 mr-4">
+      <div className="w-32 h-24 mr-4">
         <img
-          src={booking.schedule.tour.tourImage}
-          alt={booking.schedule.tour.tourName}
+          src={`http://localhost:8080${booking?.schedule_id?.tour_image}`}
+          alt={"ảnh đơn đặt"}
           className="object-cover w-full h-full rounded-md"
         />
       </div>
 
       {/* Tour Info */}
-      <div className="flex flex-1">
-        <div className="flex-1">
+      <div className="flex flex-1 ">
+        <div className="flex-1 ">
           <p className="font-bold text-blue-500">
-            Mã đặt chỗ: {booking.bookingId}
+            Mã đặt chỗ: {booking.schedule_code}
           </p>
-          <p className="font-medium">{booking.schedule.tour.tourName}</p>
+          <p className="font-medium">{booking.tour_name}</p>
           <p className="text-sm text-gray-600">
-            Ngày khởi hành: {`${booking.schedule.departureDate}  `}
+            Ngày khởi hành:{" "}
+            {new Date(booking.schedule_date).toLocaleDateString()}
           </p>
           <p className="text-sm text-gray-600">
-            Mã tour: {booking.schedule.tour.tourId}
+            Mã tour: {booking?.tour_details?.tour_code || "11"}
           </p>
         </div>
 
         {/* Customer Info */}
-        <div className="flex-1">
-          <p className="font-medium">Tên khách: {booking.customer.name}</p>
+        <div className="flex-1 space-y-1">
+          <p className="font-medium">
+            Tên khách: {booking.customer_id.user_name}
+          </p>
           <p className="text-sm text-gray-600">
-            SĐT: {booking.customer.phoneNumber}
+            SĐT: {booking.customer_id.phone_number}
+          </p>
+          <p className="text-sm text-gray-600">
+            Email: {booking.customer_id.email}
           </p>
         </div>
 
         {/* Booking Info */}
-        <div className="mr-4 w-34">
+        <div className="mr-4 w-34 space-y-1 ">
           <p className="font-bold text-red-500">
-            {booking.totalPrice.toLocaleString()} VND
+            {parseFloat(booking.total_price.$numberDecimal).toLocaleString()}{" "}
+            VND
           </p>
           <p className="text-sm text-gray-600">
-            Ngày đặt: {booking.bookingDate}
+            Ngày đặt:
+            {new Date(booking.booking_date).toLocaleDateString()}
           </p>
           <p
-            className={`px-2 py-1 w-24 text-sm font-medium rounded-md ${
-              booking.status === "Pending"
+            className={`px-2 py-1 w-fit text-sm font-medium rounded-md   ${
+              booking.status === "CHỜ XÁC NHẬN"
                 ? "bg-purple-100 text-purple-600"
-                : "bg-green-100 text-green-600"
+                : booking.status === "ĐÃ XÁC NHẬN"
+                ? "bg-green-100 text-green-600"
+                : "bg-gray-100 text-gray-600"
             }`}
           >
             {booking.status}
@@ -69,7 +80,7 @@ export default function BookingItemComponent({ booking }) {
         {/* Button Edit */}
         <div className="flex items-center w-34">
           <button
-            onClick={() => handleEdit(booking.bookingId)}
+            onClick={() => handleEdit(booking)}
             className="px-4 py-2 ml-4"
           >
             <svg
@@ -91,7 +102,8 @@ export default function BookingItemComponent({ booking }) {
       <EditBookingModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        initialBooking={selectedBooking}
+        Booking={selectedBooking}
+        refreshData={refreshData}
       />
     </div>
   );

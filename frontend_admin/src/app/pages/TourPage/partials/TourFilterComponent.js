@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useFilterContext } from "../../../context/FilterContext";
 
 export default function TourFilterComponent({ onFilterApply, onReset }) {
+  const { locations } = useFilterContext(); // Lấy dữ liệu từ context
+
   const [filters, setFilters] = useState({
     tourType: "",
     location: "",
@@ -8,17 +11,17 @@ export default function TourFilterComponent({ onFilterApply, onReset }) {
   });
 
   const tourTypes = [
-    { id: "domestic", name: "Trong nước" },
-    { id: "international", name: "Nước ngoài" },
+    { id: "domestic", name: "TRONG NƯỚC" },
+    { id: "international", name: "NƯỚC NGOÀI" },
   ];
 
-  const locations = [
-    { id: "hanoi", locationName: "Hà Nội" },
-    { id: "danang", locationName: "Đà Nẵng" },
-    { id: "hochiminh", locationName: "Hồ Chí Minh" },
-    { id: "dalat", locationName: "Đà Lạt" },
-    { id: "halong", locationName: "Hạ Long" },
-  ];
+  // const locations = [
+  //   { id: "hanoi", locationName: "Hà Nội" },
+  //   { id: "danang", locationName: "Đà Nẵng" },
+  //   { id: "hochiminh", locationName: "Hồ Chí Minh" },
+  //   { id: "dalat", locationName: "Đà Lạt" },
+  //   { id: "halong", locationName: "Hạ Long" },
+  // ];
 
   const priceRanges = [
     { id: "under5m", name: "Dưới 5 triệu" },
@@ -26,6 +29,14 @@ export default function TourFilterComponent({ onFilterApply, onReset }) {
     { id: "10to20m", name: "10 - 20 triệu" },
     { id: "above20m", name: "Trên 20 triệu" },
   ];
+  useEffect(() => {
+    if (locations && locations.length > 0) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        location: locations[0].id || "", // Set mặc định nếu cần
+      }));
+    }
+  }, [locations]); // Chạy lại mỗi khi locations thay đổi
 
   const handleChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
@@ -70,7 +81,7 @@ export default function TourFilterComponent({ onFilterApply, onReset }) {
           <option value="">Tất cả</option>
           {locations.map((loc) => (
             <option key={loc.id} value={loc.id}>
-              {loc.locationName}
+              {loc.location_name}
             </option>
           ))}
         </select>

@@ -1,4 +1,4 @@
-export default function CustomerModal({ isOpen, onClose }) {
+export default function CustomerModal({ isOpen, onClose, customerId }) {
   // Kiểm tra nếu modal không mở
   if (!isOpen) return null;
 
@@ -38,6 +38,8 @@ export default function CustomerModal({ isOpen, onClose }) {
       },
     ],
   };
+
+  // xử lý feach data từ server .
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">

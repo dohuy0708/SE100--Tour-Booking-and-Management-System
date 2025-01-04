@@ -9,10 +9,6 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
     status: "", // Trạng thái sẽ được lấy từ props
   });
   // Kiểm tra dữ liệu locations và status
-  useEffect(() => {
-    console.log("Locations: ", locations); // Kiểm tra dữ liệu location từ context
-    console.log("Status: ", status); // Kiểm tra dữ liệu status từ props
-  }, [locations, status]);
 
   // Khi status props thay đổi, cập nhật lại state filters.status
   useEffect(() => {

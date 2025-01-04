@@ -3,37 +3,63 @@ import FilterComponent from "../../components/FilterComponent/FilterComponent";
 import { getBookingData } from "./services/BookingService";
 import BookingModal from "./partial/BookingModal.js";
 import BookingItemComponent from "./partial/BookingItemComponent.js";
-import { FilterProvider } from "../../context/FilterContext.js";
+import {
+  FilterProvider,
+  useFilterContext,
+} from "../../context/FilterContext.js";
 import { TourProvider } from "../../context/TourContext.js";
 import { getBookingStatus } from "../../services/BookingstatusService.js";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifyError, notifySuccess } from "../../components/Notification";
 // Trang Booking
 export default function BookingPage() {
   const [bookingList, setBookingList] = useState([]);
   const [filteredBookingList, setFilteredBookingList] = useState([]);
   const [bookingStatuses, setBookingStatuses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // const { tourData } = useFilterContext(); // Lấy dữ liệu từ context
 
+  const statuses = [
+    { id: 1, name: "CHỜ XÁC NHẬN" },
+    { id: 2, name: "ĐÃ XÁC NHẬN" },
+    { id: 3, name: "ĐÃ HỦY" },
+  ];
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(8);
+  const fetchData = async () => {
+    try {
+      //lấy data từ server
+      const response = await fetch("http://localhost:8080/bookings", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      // const fetchedSchedules = await response.json();
+      // const bookings = await getBookingData({
+      //   filters: {}, // Bắt đầu không có bộ lọc
+      //   page: currentPage,
+      //   limit: recordsPerPage,
+      // });
+      // const statuses = await getBookingStatus();
+      const bookings = await response.json();
+      setBookingList(bookings);
+      setFilteredBookingList(bookings);
+      setBookingStatuses(statuses);
+      console.log("Bookings", bookings);
+    } catch (error) {
+      notifyError("Lỗi khi lấy dữ liệu từ server!");
+    }
+  };
   // Dữ liệu status cho trang Booking
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const bookings = await getBookingData({
-          filters: {}, // Bắt đầu không có bộ lọc
-          page: currentPage,
-          limit: recordsPerPage,
-        });
-        const statuses = await getBookingStatus();
-        setBookingList(bookings);
-        setFilteredBookingList(bookings);
-        setBookingStatuses(statuses);
-      } catch (error) {
-        console.error("Error fetching booking data:", error);
-      }
-    };
     fetchData();
   }, []);
 
@@ -65,6 +91,7 @@ export default function BookingPage() {
   return (
     <FilterProvider>
       <div className="p-0 bg-gray-100">
+        <ToastContainer />
         <h1 className="text-2xl font-bold text-gray-700 mb-4">ĐƠN ĐẶT</h1>
         <div className="flex items-center justify-between mb-4">
           <FilterComponent
@@ -98,6 +125,7 @@ export default function BookingPage() {
           <BookingModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
+            refreshData={fetchData}
           />
         </div>
 
@@ -112,6 +140,7 @@ export default function BookingPage() {
                 <BookingItemComponent
                   key={booking.bookingId}
                   booking={booking}
+                  refreshData={fetchData}
                 />
               ))
           ) : (

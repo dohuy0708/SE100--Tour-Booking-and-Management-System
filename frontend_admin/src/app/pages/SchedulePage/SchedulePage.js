@@ -6,40 +6,54 @@ import { getScheduleData } from "../../services/Schedule_w_TourService.js";
 import { FilterProvider } from "../../context/FilterContext.js";
 import ScheduleModal from "./partials/ScheduleModal.js";
 import { getScheduleStatus } from "./services/getScheduleStatus.js";
+import Swal from "sweetalert2";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifyError } from "../../components/Notification.js";
 
 export default function SchedulePage() {
+  const statuses = [
+    { id: 1, name: "ĐANG BÁN" },
+    { id: 2, name: "CHỜ DIỄN RA" },
+    { id: 3, name: "ĐANG DIỄN RA" },
+    { id: 4, name: "ĐÃ KẾT THÚC" },
+  ];
   const [schedules, setSchedules] = useState([]);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
-  const [ScheduleStatuses, setScheduleStatuses] = useState([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(8);
+  const [recordsPerPage] = useState(7);
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchScheduleData = async () => {
-      try {
-        setLoading(true);
-        const fetchedSchedules = await getScheduleData({
-          filters: {}, // Bắt đầu không có bộ lọc
-          page: currentPage,
-          limit: recordsPerPage,
-        });
-        const statuses = await getScheduleStatus();
-        setSchedules(fetchedSchedules);
-        setFilteredSchedules(fetchedSchedules);
-        setScheduleStatuses(statuses);
+  const fetchScheduleData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/schedules", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
-        console.log("Fetched Schedules:", fetchedSchedules);
-      } catch (error) {
-        console.error("Error fetching schedule data:", error);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
       }
-    };
+      const fetchedSchedules = await response.json();
 
+      setSchedules(fetchedSchedules);
+      setFilteredSchedules(fetchedSchedules);
+    } catch (error) {
+      notifyError("Lỗi khi lấy dữ liệu từ server!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchScheduleData();
   }, []);
 
@@ -87,7 +101,7 @@ export default function SchedulePage() {
           <FilterComponent
             onFilterApply={handleFilterApply}
             onReset={handleReset}
-            status={ScheduleStatuses}
+            status={statuses}
           />
 
           {/* Nút Thêm */}
@@ -115,7 +129,8 @@ export default function SchedulePage() {
           <ScheduleModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            statuses={ScheduleStatuses} // Truyền statuses vào modal
+            statuses={statuses} // Truyền statuses vào modal
+            refreshData={fetchScheduleData}
           ></ScheduleModal>
         </div>
 
@@ -128,7 +143,11 @@ export default function SchedulePage() {
                 currentPage * recordsPerPage
               )
               .map((schedule) => (
-                <ScheduleItemComponent key={schedule.id} schedule={schedule} />
+                <ScheduleItemComponent
+                  key={schedule._id}
+                  schedule={schedule}
+                  refeshData={fetchScheduleData}
+                />
               ))
           ) : (
             <p className="text-center text-gray-500">

@@ -1,5 +1,6 @@
+import { useEffect } from "react";
+
 export default function HistoryModal({ isOpen, onClose, schedule }) {
-  if (!isOpen) return null;
   // Dữ liệu phản hồi ảo
   const feedbackData = [
     {
@@ -21,6 +22,33 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
       content: "Dịch vụ ăn uống và nghỉ ngơi cần được cải thiện.",
     },
   ];
+
+  const fetchScheduleData = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/feedbacks/schedule/:schedule_id${schedule._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      const fetchedSchedules = await response.json();
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    fetchScheduleData();
+  }, []);
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">
       <div className="bg-white rounded-lg shadow-lg w-3/5 p-6 flex flex-col max-h-[85vh]">
@@ -62,21 +90,17 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
               <div>
                 <p>
                   <strong>Mã chuyến đi: </strong>
-                  {schedule.scheduleId}
+                  {schedule.schedule_code}
                 </p>
                 <p>
                   <strong>Tên chuyến đi: </strong>
-                  {schedule.tour?.tourName}
-                </p>
-                <p>
-                  <strong>Thời gian : </strong>
-                  {schedule.tour?.duration} ngày
+                  {schedule.tour_name}
                 </p>
               </div>
               <div>
                 <p>
                   <strong>Ngày khởi hành: </strong>
-                  {schedule.departureDate}
+                  {schedule.departure_time}
                 </p>
                 <p>
                   <strong>Số lượng khách: </strong>

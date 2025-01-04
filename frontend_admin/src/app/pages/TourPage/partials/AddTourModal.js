@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useFilterContext } from "../../../context/FilterContext";
+import { ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
+
+import "react-toastify/dist/ReactToastify.css";
+import { notifyError, notifySuccess } from "../../../components/Notification";
 
 export default function AddTourModal({ isOpen, onClose }) {
+  const { locations } = useFilterContext(); // Lấy dữ liệu từ context
   const [tourData, setTourData] = useState({
     tourId: "",
     tourName: "",
@@ -9,18 +16,9 @@ export default function AddTourModal({ isOpen, onClose }) {
     duration: "",
     image: null,
   });
-  const [locations, setLocations] = useState([]);
+  const [Chooselocation, setLocations] = useState([]);
 
-  const provinces = [
-    "Hà Nội",
-    "Hồ Chí Minh",
-    "Đà Nẵng",
-    "Hải Phòng",
-    "Cần Thơ",
-    // Thêm danh sách tỉnh thành ở đây
-  ];
   const [numDays, setNumDays] = useState(1);
-  const [policy, setPolicy] = useState(""); // To store the policy content
   const [days, setDays] = useState([{ image: "", imageDesc: "", dayDesc: "" }]);
   const [prices, setPrices] = useState({
     adultPrice: "",
@@ -57,14 +55,14 @@ export default function AddTourModal({ isOpen, onClose }) {
     }));
   };
   const handleAddLocation = () => {
-    setLocations([...locations, ""]); // Thêm một địa điểm mới với giá trị rỗng
+    setLocations([...Chooselocation, ""]); // Thêm một địa điểm mới với giá trị rỗng
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTourData({ ...tourData, [name]: value });
   };
   const handleLocationChange = (index, value) => {
-    const updatedLocations = [...locations];
+    const updatedLocations = [...Chooselocation];
     updatedLocations[index] = value;
     setLocations(updatedLocations);
   };
@@ -92,41 +90,105 @@ export default function AddTourModal({ isOpen, onClose }) {
       prices.adultPrice && prices.childPrice && prices.infantPrice;
 
     const isLocationsValid =
-      locations.length > 0 && locations.every((location) => location);
+      Chooselocation.length > 0 && Chooselocation.every((location) => location);
 
     const isDaysValid = days.every(
       (day) => day.image && day.imageDesc && day.dayDesc
     );
 
-    const isPolicyValid = policy !== "";
-
-    return (
-      isTourDataValid &&
-      isPricesValid &&
-      isLocationsValid &&
-      isDaysValid &&
-      isPolicyValid
-    );
+    return isTourDataValid && isPricesValid && isLocationsValid && isDaysValid;
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      console.log("Tour Data:", tourData);
-      alert("Tour added successfully!");
-      onClose();
+      const formData = new FormData();
+
+      // Thêm thông tin tour
+      formData.append("name", tourData.tourName);
+      formData.append("code", tourData.tourId);
+      formData.append("type", tourData.tourType);
+      formData.append("dura", tourData.duration);
+      formData.append("descri", tourData.description);
+      formData.append("cover_image", tourData.image);
+
+      // Thêm giá vé
+      formData.append("prices[adult_price]", prices.adultPrice);
+      formData.append("prices[children_price]", prices.childPrice);
+      formData.append("prices[infant_price]", prices.infantPrice);
+
+      // Thêm địa điểm
+      Chooselocation.forEach((location, index) => {
+        formData.append(`locations[${index}][location]`, location);
+      });
+
+      // Thêm chương trình tour
+      days.forEach((day, index) => {
+        formData.append(`programs[${index}][day_number]`, index + 1);
+        formData.append(`programs[${index}][program_description]`, day.dayDesc);
+
+        if (day.image) {
+          //  formData.append(`programs[${index}][image]`, day.image);
+        } else {
+          console.warn(`Image for day ${index + 1} is missing.`);
+        }
+      });
+
+      try {
+        const response = await fetch("http://localhost:8080/tours", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          // Reset tất cả các state
+          setTourData({
+            tourId: "",
+            tourName: "",
+            tourType: "",
+            description: "",
+            duration: "",
+            image: null,
+          });
+
+          setLocations([]);
+          setNumDays(1);
+          setDays([{ image: "", imageDesc: "", dayDesc: "" }]);
+          setPrices({
+            adultPrice: "",
+            childPrice: "",
+            infantPrice: "",
+          });
+          Swal.fire({
+            icon: "success",
+            title: "Thêm tour thành công",
+
+            confirmButtonText: "OK",
+            confirmButtonColor: "#3085d6",
+          }).then(() => {
+            // Đóng modal
+            onClose();
+          });
+        } else {
+          notifyError("Thêm tour thất bại");
+        }
+      } catch (error) {
+        console.error("Error submitting tour:", error);
+        notifyError("Đã có lỗi xảy ra, vui lòng thử lại");
+      }
     } else {
-      alert("Please fill all required fields.");
+      notifyError("Vui lòng nhập đủ thông tin ");
     }
   };
 
   useEffect(() => {
     // Disable "Thêm" button based on validation
     const isValid = validateForm();
-  }, [tourData, locations, days, prices, policy]);
+  }, [tourData, Chooselocation, days, prices]);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">
+      <ToastContainer />
       <div className="bg-white rounded-lg shadow-lg w-4/5 p-6 flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex justify-between items-center border-b mb-4">
@@ -251,9 +313,13 @@ export default function AddTourModal({ isOpen, onClose }) {
                             onChange={handleInputChange}
                             className="w-full p-2 border rounded"
                           >
-                            <option value="">Chọn loại tour</option>
-                            <option value="domestic">Trong nước</option>
-                            <option value="international">Nước ngoài</option>
+                            {!tourData.tourType && (
+                              <option value="" disabled hidden>
+                                Chọn loại tour
+                              </option>
+                            )}
+                            <option value="TRONG NƯỚC">TRONG NƯỚC</option>
+                            <option value="QUỐC TẾ">QUỐC TẾ</option>
                           </select>
                         </div>
                       </div>
@@ -299,7 +365,7 @@ export default function AddTourModal({ isOpen, onClose }) {
                 {" "}
                 {/* Set max height with scroll */}
                 {/* Danh sách địa điểm */}
-                {locations.map((location, index) => (
+                {Chooselocation.map((location, index) => (
                   <div key={index} className="flex items-center gap-4">
                     <select
                       value={location}
@@ -308,10 +374,14 @@ export default function AddTourModal({ isOpen, onClose }) {
                       }
                       className="w-full p-2 border rounded"
                     >
-                      <option value="">Chọn địa điểm</option>
-                      {provinces.map((province) => (
-                        <option key={province} value={province}>
-                          {province}
+                      {!location && (
+                        <option value="" disabled hidden>
+                          Chọn địa điểm
+                        </option>
+                      )}
+                      {locations.map((loc) => (
+                        <option key={loc.id} value={loc.id}>
+                          {loc.location_name}
                         </option>
                       ))}
                     </select>
@@ -515,22 +585,6 @@ export default function AddTourModal({ isOpen, onClose }) {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Chính sách */}
-          <div className="mb-4">
-            <h4 className="font-semibold text-blue-500 text-xl">
-              Thông tin chính sách
-            </h4>
-            <div className="border border-gray-300 rounded-lg p-2 bg-slate-50">
-              <label className="font-medium">Chính sách:</label>
-              <textarea
-                value={policy} // Bind it to a state variable to handle the text content
-                onChange={(e) => setPolicy(e.target.value)} // Update state when text changes
-                placeholder="Nhập thông tin chính sách"
-                className="w-full p-2 border rounded h-72" // You can adjust height as needed
-              />
             </div>
           </div>
         </div>

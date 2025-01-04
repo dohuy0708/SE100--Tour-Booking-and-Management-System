@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getCustomerData } from "../../../services/Customer_with_TourService";
 import CustomerModal from "./CustomerModal"; // Import modal
 
 export default function CustomerTableComponent({ searchQuery }) {
@@ -9,31 +8,44 @@ export default function CustomerTableComponent({ searchQuery }) {
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái của modal
 
   // Fetch customer data khi component mount
-  useEffect(() => {
-    const fetchCustomerData = async () => {
-      try {
-        const customers = await getCustomerData(); // Nhận dữ liệu khách hàng từ service
-        setCustomers(customers);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error loading customer data:", error);
-        setLoading(false);
-      }
-    };
+  const fetchCustomerData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8080/list_customer", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      const customerData = await response.json();
+      setCustomers(customerData);
+    } catch (e) {
+      console.error("Error:", e);
+      alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchCustomerData();
   }, []);
 
   // Hàm lọc khách hàng theo tên
   const filteredCustomers = searchQuery
     ? customers.filter((customer) =>
-        customer.name.toLowerCase().includes(searchQuery.toLowerCase())
+        customer.user_name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : customers;
 
   const handleViewDetails = (customerId) => {
-    const customer = customers.find((cust) => cust.id === customerId);
-    setSelectedCustomer(customer); // Lưu khách hàng chọn vào state
+    // const customer = customers.find((cust) => cust._id === customerId);
+    setSelectedCustomer(customerId); // Lưu khách hàng chọn vào state
     setIsModalOpen(true); // Mở modal
   };
 
@@ -52,7 +64,7 @@ export default function CustomerTableComponent({ searchQuery }) {
       <CustomerModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        initialCustomer={selectedCustomer}
+        customerId={selectedCustomer}
       />
 
       {/* Table */}
@@ -61,15 +73,12 @@ export default function CustomerTableComponent({ searchQuery }) {
           <table className="min-w-full table-auto border-collapse border border-gray-300">
             <thead className="border-b-2 bg-blue-200 text-gray-700">
               <tr>
-                <th className="px-4 py-2 border-b border-gray-300">ID</th>
+                <th className="px-4 py-2 border-b border-gray-300">STT</th>
                 <th className="px-4 py-2 border-b border-gray-300">Tên</th>
                 <th className="px-4 py-2 border-b border-gray-300">Email</th>
                 <th className="px-4 py-2 border-b border-gray-300">SDT</th>
                 <th className="px-4 py-2 border-b border-gray-300">
                   Ngày sinh
-                </th>
-                <th className="px-4 py-2 border-b border-gray-300">
-                  Tour đã đặt
                 </th>
                 <th className="px-4 py-2 border-b border-gray-300"> </th>
               </tr>
@@ -87,31 +96,30 @@ export default function CustomerTableComponent({ searchQuery }) {
               ) : (
                 filteredCustomers.map((customer, index) => (
                   <tr
-                    key={customer.id}
+                    key={customer._id}
                     className={index % 2 === 0 ? "bg-gray-50" : "bg-white"} // Thay đổi màu nền xen kẽ
                   >
                     <td className="px-4 py-2 border-b border-gray-300 text-center">
-                      {customer.id}
+                      {index + 1}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300">
-                      {customer.name}
+                      {customer.user_name}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300">
                       {customer.email}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 text-center">
-                      {customer.phone}
+                      {customer.phone_number}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 text-center">
-                      {customer.birthday}
+                      {new Date(customer.date_of_birth).toLocaleDateString(
+                        "vi-VN"
+                      )}
                     </td>
-                    <td className="px-4 py-2 border-b border-gray-300 text-center">
-                      {/* Số lượng tour đã đặt */}
-                      {customer.listTour.length}
-                    </td>
+
                     <td className="px-4 py-2 border-b border-gray-300 text-center">
                       <button
-                        onClick={() => handleViewDetails(customer.id)}
+                        onClick={() => handleViewDetails(customer._id)}
                         className="px-4 py-2 rounded "
                       >
                         <svg

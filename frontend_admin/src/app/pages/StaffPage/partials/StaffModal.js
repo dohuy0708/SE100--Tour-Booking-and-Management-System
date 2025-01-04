@@ -16,7 +16,7 @@ export default function StaffModal({ isOpen, onClose, staff, onDelete }) {
         <div className="mb-6 text-left items-center pl-28 ">
           <p>
             <strong>Tên: </strong>
-            {staff.name}
+            {staff.user_name}
           </p>
           <p>
             <strong>Email: </strong>
@@ -24,11 +24,11 @@ export default function StaffModal({ isOpen, onClose, staff, onDelete }) {
           </p>
           <p>
             <strong>Số điện thoại: </strong>
-            {staff.phone}
+            {staff.phone_number}
           </p>
           <p>
             <strong>Ngày sinh: </strong>
-            {staff.birthday}
+            {new Date(staff.date_of_birth).toLocaleDateString("vi-VN")}
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export default function StaffModal({ isOpen, onClose, staff, onDelete }) {
 
           {/* Delete Button */}
           <button
-            onClick={() => onDelete(staff.userId)} // Call the delete function with userId
+            onClick={() => onDelete(staff._id)} // Call the delete function with userId
             className="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
             Xóa

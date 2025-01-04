@@ -1,35 +1,83 @@
 import React, { useState } from "react";
 import { useFilterContext } from "../../../context/FilterContext.js";
+import { ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  notifyError,
+  notifySuccess,
+} from "../../../components/Notification.js";
 
 export default function ScheduleModal({
   isOpen,
   onClose,
-  statuses,
-  initialSchedule,
+  schedule,
+  fetchData,
 }) {
   const [selectedTour, setSelectedTour] = useState("");
   const [startDate, setStartDate] = useState("");
   const [guestCount, setGuestCount] = useState(1);
   const [scheduleCode, setScheduleCode] = useState("");
-  const [status, setStatus] = useState("Planned"); // Default status value
-
+  // Initialize status with the value of schedule.status
+  const [status, setStatus] = useState(schedule.status || ""); // Default to an empty string if schedule.status is not available
+  const statuses = [
+    { id: 1, name: "ĐANG BÁN" },
+    { id: 2, name: "CHỜ DIỄN RA" },
+    { id: 3, name: "ĐANG DIỄN RA" },
+    { id: 4, name: "ĐÃ KẾT THÚC" },
+  ];
   // Kiểm tra nếu modal không mở
   if (!isOpen) return null;
 
-  const handleFormSubmit = () => {
-    if (!selectedTour || !startDate || !guestCount || !scheduleCode) {
-      alert("Vui lòng điền đầy đủ thông tin!");
-      return;
+  const handleFormSubmit = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/schedules", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sta: status,
+          id: schedule._id,
+        }),
+      });
+
+      console.log(status, schedule._id);
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật chuyến đi thành công",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#3085d6",
+        }).then(() => {
+          fetchData();
+          // Reset states and close modal
+          setSelectedTour("");
+          setStartDate("");
+          setGuestCount(1);
+          setScheduleCode("");
+          setStatus("");
+          onClose();
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Cập nhật chuyến đi thất bại",
+          text: "Vui lòng thử lại sau!",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#3085d6",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting tour:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Cập nhật chuyến đi thất bại",
+        text: "Vui lòng thử lại sau!",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      });
     }
-    alert("Đặt tour thành công!");
-    console.log({
-      scheduleCode,
-      selectedTour,
-      startDate,
-      guestCount,
-      status,
-    });
-    onClose(); // Đóng modal sau khi đặt tour thành công
   };
 
   return (
@@ -37,7 +85,7 @@ export default function ScheduleModal({
       <div className="bg-white rounded-lg shadow-lg w-1/2 p-6 flex flex-col max-h-[70vh]">
         {/* Header */}
         <div className="flex justify-between items-center border-b mb-4">
-          <h1 className="text-2xl font-semibold">THÊM CHUYẾN ĐI</h1>
+          <h1 className="text-2xl font-semibold"> CHUYẾN ĐI</h1>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 flex"
@@ -69,12 +117,13 @@ export default function ScheduleModal({
             <div className="mb-4">
               {/* Chọn tour ở hàng riêng biệt */}
               <div className="mb-4">
-                <h4 className="font-semibold  text-blue-500">Chọn tour:</h4>
+                <h4 className="font-semibold  text-blue-500">Tour:</h4>
                 <input
                   type="text"
                   className="mt-2 w-full p-2 border rounded"
-                  value={scheduleCode}
+                  value={schedule.tour_name}
                   placeholder="Tour"
+                  disabled
                 />
               </div>
 
@@ -88,9 +137,9 @@ export default function ScheduleModal({
                   <input
                     type="text"
                     className="mt-2 w-full p-2 border rounded"
-                    value={scheduleCode}
-                    onChange={(e) => setScheduleCode(e.target.value)}
+                    value={schedule.schedule_code}
                     placeholder="Nhập mã chuyến đi"
+                    disabled
                   />
                 </div>
 
@@ -102,8 +151,8 @@ export default function ScheduleModal({
                   <input
                     type="date"
                     className="mt-2 w-full p-2 border rounded"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    value={schedule.departure_date}
+                    disabled
                   />
                 </div>
 
@@ -116,16 +165,27 @@ export default function ScheduleModal({
                   <input
                     type="number"
                     className="mt-2 w-full p-2 border rounded"
-                    value={guestCount}
-                    onChange={(e) => setGuestCount(e.target.value)}
+                    value={schedule.capacity}
                     min={0}
                     placeholder="Nhập số lượng khách"
+                    disabled
                   />
                 </div>
 
                 {/* Status */}
                 <div>
                   <h4 className="font-semibold  text-blue-500">Tình trạng:</h4>
+                  <select
+                    className="mt-2 w-full p-2 border rounded"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    {statuses.map((s) => (
+                      <option key={s.id} value={s.name}>
+                        {s.name} {/* Dùng thuộc tính 'name' ở đây */}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -137,13 +197,13 @@ export default function ScheduleModal({
               onClick={onClose}
               className="px-6 py-2 bg-red-500 text-white rounded-md"
             >
-              Hủy
+              Thoát
             </button>
             <button
               className="px-6 py-2 bg-blue-500 text-white rounded-md"
               onClick={handleFormSubmit}
             >
-              Đặt tour
+              Cập nhật
             </button>
           </div>
         </div>
