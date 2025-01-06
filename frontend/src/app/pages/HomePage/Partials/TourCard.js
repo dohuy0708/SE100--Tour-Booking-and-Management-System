@@ -48,7 +48,10 @@ function TourCard({ tour }) {
             <p className="  text-lg">Giá từ:</p>
 
             <span className="text-thrd  text-2xl">
-              {tour.tourPrice.infant_price.$numberDecimal} đ
+              {parseFloat(
+                tour.tourPrice.infant_price.$numberDecimal
+              ).toLocaleString()}{" "}
+              đ
             </span>
           </div>
           <button

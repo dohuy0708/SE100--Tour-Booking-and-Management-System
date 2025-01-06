@@ -48,7 +48,7 @@ export default function Search() {
             );
           } else if (type === "abroad") {
             filteredTours = filteredTours.filter(
-              (tour) => tour.tour_type[0] === "NƯỚC NGOÀI"
+              (tour) => tour.tour_type[0] === "QUỐC TẾ"
             );
           }
           console.log("đấy: ", filteredTours);

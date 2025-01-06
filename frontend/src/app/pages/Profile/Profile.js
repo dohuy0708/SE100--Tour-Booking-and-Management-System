@@ -3,6 +3,8 @@ import MyProfile from "./Partials/MyProfile";
 import MyBookings from "./Partials/MyBookings";
 import ChangePassword from "./Partials/ChangePassword";
 import ProfileTab from "./Partials/ProfileTab";
+import MyTours from "./Partials/MyTours";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Profile() {
   const [selectedTab, setSelectedTab] = useState("profile");
@@ -28,6 +30,8 @@ export default function Profile() {
         return <MyProfile userData={userData} />;
       case "bookings":
         return <MyBookings />;
+      case "tours":
+        return <MyTours />;
       case "changePassword":
         return <ChangePassword email={userData.email} />;
       default:
@@ -46,9 +50,9 @@ export default function Profile() {
 
   return (
     <div className="min-h-mincontent bg-gray-50">
-      <div className="mx-auto max-w-7xl p-4 grid grid-cols-4 gap-2">
+      <div className="mx-auto p-4 grid grid-cols-9 gap-2">
         {/* Sidebar */}
-        <div className="col-span-1">
+        <div className="col-span-2">
           <ProfileTab
             selectedTab={selectedTab}
             setSelectedTab={setSelectedTab}
@@ -56,8 +60,9 @@ export default function Profile() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 col-span-3">{renderContent()}</div>
+        <div className="flex-1 col-span-7">{renderContent()}</div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

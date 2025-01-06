@@ -95,7 +95,10 @@ export default function HeaderComponent() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   <UserCircleIcon className="h-7 mr-2" />
-                  <span>Tài khoản</span>
+                  <span>
+                    {JSON.parse(localStorage.getItem("user"))?.user_name}
+                  </span>
+
                   <ChevronDownIcon
                     className={`h-4 w-4 ml-2 transition-transform duration-200 ${
                       dropdownOpen ? "rotate-180" : ""

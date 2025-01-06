@@ -12,7 +12,7 @@ const ScheduleTable = ({ tour }) => {
         return item.status !== "";
       })
     );
-  }, [tour]);
+  }, []);
 
   const navigate = useNavigate();
   const handleByTckets = (tourId, dayId) => {

@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "./Partials/Slider";
 import SearchBar from "../../components/SearchBar";
 import TourSection from "./Partials/TourSection";
-import {
-  getAbroadTours,
-  getBannerTours,
-  getDomestricTours,
-  getNewTours,
-} from "../../Services/userService";
+
 import FavoriteDestinations from "./Partials/FavoriteDestinations ";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
@@ -61,8 +56,7 @@ export default function HomePage() {
         const abroadRes = allTours
           .filter(
             (tour) =>
-              tour.tour_type[0] === "NƯỚC NGOÀI" &&
-              tour.tourSchedules.length > 0
+              tour.tour_type[0] === "QUỐC TẾ" && tour.tourSchedules.length > 0
           )
           .slice(0, 3);
         setAbroadTours(abroadRes);

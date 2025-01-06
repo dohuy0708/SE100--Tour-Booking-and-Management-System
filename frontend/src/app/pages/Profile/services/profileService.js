@@ -37,7 +37,40 @@ export const updateInfo = async (id, name, email, phone, dob) => {
 export const getMyBookings = async (id) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/bookings/customer/${id}`);
-    console.log("đặt: ", response.data);
+    return response.data; // Giả sử response trả về dữ liệu về trạng thái thành công hoặc thất bại
+  } catch (error) {
+    console.error("Lỗi khi thay đổi thông tin:", error);
+    throw error; // Nếu có lỗi, ném lại để xử lý sau
+  }
+};
+
+export const getMyTours = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/bookings/schedule/${id}`);
+    return response.data; // Giả sử response trả về dữ liệu về trạng thái thành công hoặc thất bại
+  } catch (error) {
+    console.error("Lỗi khi thay đổi thông tin:", error);
+    throw error; // Nếu có lỗi, ném lại để xử lý sau
+  }
+};
+
+export const getFeedbacks = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/feedbacks`);
+    return response.data; // Giả sử response trả về dữ liệu về trạng thái thành công hoặc thất bại
+  } catch (error) {
+    console.error("Lỗi khi thay đổi thông tin:", error);
+    throw error; // Nếu có lỗi, ném lại để xử lý sau
+  }
+};
+export const createFeedback = async (formData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/feedbacks`, {
+      customer: formData.customer,
+      schedule: formData.schedule,
+      content: formData.content,
+      date: formData.date,
+    });
     return response.data; // Giả sử response trả về dữ liệu về trạng thái thành công hoặc thất bại
   } catch (error) {
     console.error("Lỗi khi thay đổi thông tin:", error);
