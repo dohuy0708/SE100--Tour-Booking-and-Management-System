@@ -15,7 +15,7 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
     if (status && status.length > 0) {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        status: status[0].id || "", // Set mặc định nếu cần
+        status: "", // Set mặc định nếu cần
       }));
     }
   }, [status]); // Chạy lại mỗi khi status thay đổi
@@ -84,7 +84,7 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
         >
           <option value="">Tất cả</option>
           {status.map((stat) => (
-            <option key={stat.id} value={stat.id}>
+            <option key={stat.id} value={stat.name}>
               {stat.name}
             </option>
           ))}

@@ -21,7 +21,7 @@ export default function ScheduleItemComponent({ schedule, refeshData }) {
         {/* Tour Image */}
         <div className="w-32 h-24 mr-4">
           <img
-            src={`http://localhost:8080${schedule.tour_image}`}
+            src={`http://localhost:8080${schedule?.tour_image}`}
             alt={"Tour Image"}
             className="object-cover w-full h-full rounded-md"
           />

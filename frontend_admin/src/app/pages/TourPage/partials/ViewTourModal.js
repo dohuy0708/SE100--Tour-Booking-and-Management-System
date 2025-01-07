@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
+import { useFilterContext } from "../../../context/FilterContext";
+import Swal from "sweetalert2";
 
-export default function ViewTourModal({ onClose, tour }) {
+export default function ViewTourModal({ onClose, tour, reData }) {
+  const { locations } = useFilterContext(); // Lấy dữ liệu từ context
   const [tourData, setTourData] = useState({
-    tourId: "",
-    tourName: "",
-    tourType: "",
-    description: "",
-    duration: "",
-    image: null,
+    tourId: tour.tour_code,
+    tourName: tour.tour_name,
+    tourType: tour.tour_type,
+    description: tour.description,
+    duration: tour.duration,
+    image: tour.cover_image,
   });
-  useEffect(() => {
-    if (tour) setTourData(tour);
-  }, [tour]);
-  const [locations, setLocations] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  // useEffect(() => {
+  //   if (tour) setTourData(tour);
+  // }, [tour]);
+  const [Choose_locations, setLocations] = useState(
+    tour.tourLocations?.map((loc) => loc.location_name) || [] // Lấy location_name từ mỗi item
+  );
 
   const provinces = [
     "Hà Nội",
@@ -22,13 +28,19 @@ export default function ViewTourModal({ onClose, tour }) {
     "Cần Thơ",
     // Thêm danh sách tỉnh thành ở đây
   ];
-  const [numDays, setNumDays] = useState(1);
+  const [numDays, setNumDays] = useState(tour.tourPrograms?.length);
   const [policy, setPolicy] = useState(""); // To store the policy content
-  const [days, setDays] = useState([{ image: "", imageDesc: "", dayDesc: "" }]);
+  const [days, setDays] = useState(
+    tour.tourPrograms?.map((pro) => ({
+      image: pro?.image, // Ban đầu không có ảnh, sẽ thêm sau qua input
+      imageDesc: pro?.imageDesc || "", // Lấy mô tả ảnh từ dữ liệu
+      dayDesc: pro.program_description || "", // Lấy mô tả ngày từ dữ liệu
+    })) || []
+  );
   const [prices, setPrices] = useState({
-    adultPrice: "",
-    childPrice: "",
-    infantPrice: "",
+    adultPrice: `${parseFloat(tour.tourPrice.adult_price.$numberDecimal)}`,
+    childPrice: `${parseFloat(tour.tourPrice.children_price.$numberDecimal)}`,
+    infantPrice: `${parseFloat(tour.tourPrice.infant_price.$numberDecimal)}`,
   });
   const handleNumDaysChange = (e) => {
     const value = parseInt(e.target.value, 10); // Get the new number of days
@@ -60,19 +72,19 @@ export default function ViewTourModal({ onClose, tour }) {
     }));
   };
   const handleAddLocation = () => {
-    setLocations([...locations, ""]); // Thêm một địa điểm mới với giá trị rỗng
+    setLocations([...Choose_locations, ""]); // Thêm một địa điểm mới với giá trị rỗng
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTourData({ ...tourData, [name]: value });
   };
   const handleLocationChange = (index, value) => {
-    const updatedLocations = [...locations];
+    const updatedLocations = [...Choose_locations];
     updatedLocations[index] = value;
     setLocations(updatedLocations);
   };
   const handleRemoveLocation = (index) => {
-    const updatedLocations = locations.filter((_, i) => i !== index);
+    const updatedLocations = Choose_locations.filter((_, i) => i !== index);
     setLocations(updatedLocations);
   };
   const handleImageUpload = (e) => {
@@ -95,7 +107,8 @@ export default function ViewTourModal({ onClose, tour }) {
       prices.adultPrice && prices.childPrice && prices.infantPrice;
 
     const isLocationsValid =
-      locations.length > 0 && locations.every((location) => location);
+      Choose_locations.length > 0 &&
+      Choose_locations.every((location) => location);
 
     const isDaysValid = days.every(
       (day) => day.image && day.imageDesc && day.dayDesc
@@ -111,7 +124,7 @@ export default function ViewTourModal({ onClose, tour }) {
       isPolicyValid
     );
   };
-  const handleSubmit = () => {
+  const handleEdit = () => {
     if (validateForm()) {
       console.log("Tour Data:", tourData);
       alert("Tour added successfully!");
@@ -120,18 +133,73 @@ export default function ViewTourModal({ onClose, tour }) {
       alert("Please fill all required fields.");
     }
   };
+  const handleDelete = async () => {
+    if (tour.tourSchedules.length > 0) {
+      Swal.fire({
+        icon: "info",
+        title: "Không thể xóa tour",
+        text: "Có lịch trình đang sử dụng tour này",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      });
+    } else {
+      console.log("xóa tour");
+      // gọi api xóa tour
+      Swal.fire({
+        icon: "info",
+        title: "Bạn có chắc chắn muốn xóa tour này không!",
+        showCancelButton: true, // Hiển thị nút Cancel
+        cancelButtonText: "Cancel", // Text cho nút Cancel
+        confirmButtonText: "OK", // Text cho nút OK
+        confirmButtonColor: "#3085d6", // Màu cho nút OK
+        cancelButtonColor: "#d33", // Màu cho nút Cancel
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          // Người dùng nhấn OK
+          try {
+            const response = await fetch(
+              `http://localhost:8080/tours/${tour._id}`,
+              {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                credentials: "include",
+              }
+            );
 
-  useEffect(() => {
-    // Disable "Thêm" button based on validation
-    const isValid = validateForm();
-  }, [tourData, locations, days, prices, policy]);
+            if (response.ok) {
+              Swal.fire({
+                icon: "success",
+                title: "Xóa tour  thành công",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#3085d6",
+              }).then(() => reData());
+            }
+          } catch (error) {
+            console.error("Error submitting tour:", error);
+
+            Swal.fire({
+              icon: "error",
+              title: "Xóa tour không thành công",
+
+              confirmButtonText: "OK",
+              confirmButtonColor: "#3085d6",
+            });
+          } finally {
+            onClose(); // Đóng modal nếu cần
+          }
+        }
+      });
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">
       <div className="bg-white rounded-lg shadow-lg w-4/5 p-6 flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex justify-between items-center border-b mb-4">
-          <h1 className="text-2xl font-semibold">THÊM TOUR</h1>
+          <h1 className="text-2xl font-semibold">THÔNG TIN TOUR</h1>
           <button
             onClick={() => onClose()}
             className="text-gray-400 hover:text-gray-600 flex"
@@ -174,7 +242,7 @@ export default function ViewTourModal({ onClose, tour }) {
                       {tourData.image ? (
                         <div className="relative">
                           <img
-                            src={URL.createObjectURL(tourData.image)}
+                            src={`http://localhost:8080${tourData.image}`}
                             alt="Tour Preview"
                             className="w-full h-40 object-cover rounded"
                           />
@@ -221,6 +289,7 @@ export default function ViewTourModal({ onClose, tour }) {
                           <label className="block font-medium">Mã tour:</label>
                           <input
                             type="text"
+                            disabled
                             name="tourId"
                             placeholder="MT001"
                             value={tourData.tourId}
@@ -235,6 +304,7 @@ export default function ViewTourModal({ onClose, tour }) {
                           </label>
                           <input
                             type="text"
+                            disabled
                             name="duration"
                             placeholder="3N2Đ"
                             value={tourData.duration}
@@ -246,16 +316,13 @@ export default function ViewTourModal({ onClose, tour }) {
                           <label className="block font-medium">
                             Loại tour:
                           </label>
-                          <select
+                          <input
+                            disabled
                             name="tourType"
                             value={tourData.tourType}
                             onChange={handleInputChange}
                             className="w-full p-2 border rounded"
-                          >
-                            <option value="">Chọn loại tour</option>
-                            <option value="domestic">Trong nước</option>
-                            <option value="international">Nước ngoài</option>
-                          </select>
+                          ></input>
                         </div>
                       </div>
 
@@ -265,6 +332,7 @@ export default function ViewTourModal({ onClose, tour }) {
                         <input
                           type="text"
                           name="tourName"
+                          disabled
                           value={tourData.tourName}
                           onChange={handleInputChange}
                           className="w-full p-2 border rounded"
@@ -300,37 +368,32 @@ export default function ViewTourModal({ onClose, tour }) {
                 {" "}
                 {/* Set max height with scroll */}
                 {/* Danh sách địa điểm */}
-                {locations.map((location, index) => (
+                {Choose_locations.map((location, index) => (
                   <div key={index} className="flex items-center gap-4">
                     <select
                       value={location}
+                      disabled
                       onChange={(e) =>
                         handleLocationChange(index, e.target.value)
                       }
                       className="w-full p-2 border rounded"
                     >
                       <option value="">Chọn địa điểm</option>
-                      {provinces.map((province) => (
-                        <option key={province} value={province}>
-                          {province}
+                      {locations.map((loc) => (
+                        <option key={loc.id} value={loc.id}>
+                          {loc.location_name}
                         </option>
                       ))}
                     </select>
-                    <button
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => handleRemoveLocation(index)}
-                    >
-                      Xóa
-                    </button>
                   </div>
                 ))}
                 {/* Nút thêm địa điểm */}
-                <button
+                {/* <button
                   className="px-4 py-2 bg-gray-400 text-white rounded-md"
                   onClick={handleAddLocation}
                 >
                   Thêm địa điểm
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -411,7 +474,8 @@ export default function ViewTourModal({ onClose, tour }) {
                   Số lượng ngày:
                 </label>
                 <input
-                  type="number"
+                  type="String"
+                  disabled
                   value={numDays}
                   onChange={handleNumDaysChange}
                   className="p-2 border rounded  "
@@ -432,7 +496,7 @@ export default function ViewTourModal({ onClose, tour }) {
                           {day.image ? (
                             <div className="relative">
                               <img
-                                src={URL.createObjectURL(day.image)} // Preview the selected image
+                                src={`http://localhost:8080${day.image}`}
                                 alt={`Ảnh ngày ${index + 1}`}
                                 className="w-full h-40 object-cover rounded"
                               />
@@ -476,21 +540,6 @@ export default function ViewTourModal({ onClose, tour }) {
                             className="mt-2 w-full text-sm"
                           />
                         </div>
-
-                        <label className="font-medium">Mô tả ảnh:</label>
-                        <input
-                          type="text"
-                          value={day.imageDesc}
-                          onChange={(e) =>
-                            handleProgramInputChange(
-                              index,
-                              "imageDesc",
-                              e.target.value
-                            )
-                          }
-                          placeholder="Mô tả ảnh"
-                          className="p-2 border rounded"
-                        />
                       </div>
 
                       <div className="flex flex-col w-5/6 ">
@@ -518,38 +567,33 @@ export default function ViewTourModal({ onClose, tour }) {
               ))}
             </div>
           </div>
-
-          {/* Chính sách */}
-          <div className="mb-4">
-            <h4 className="font-semibold text-blue-500 text-xl">
-              Thông tin chính sách
-            </h4>
-            <div className="border border-gray-300 rounded-lg p-2 bg-slate-50">
-              <label className="font-medium">Chính sách:</label>
-              <textarea
-                value={policy} // Bind it to a state variable to handle the text content
-                onChange={(e) => setPolicy(e.target.value)} // Update state when text changes
-                placeholder="Nhập thông tin chính sách"
-                className="w-full p-2 border rounded h-72" // You can adjust height as needed
-              />
-            </div>
-          </div>
         </div>
 
         {/* Button */}
-        <div className="mt-6 flex justify-end space-x-4">
+        <div className="mt-6 flex justify-between items-center">
+          {/* Nút Xóa Tour ở bên trái */}
           <button
-            onClick={() => onClose()}
+            onClick={handleDelete}
             className="px-6 py-2 bg-red-500 text-white rounded-md"
           >
-            Hủy
+            Xóa Tour
           </button>
-          <button
-            className="px-6 py-2 bg-blue-500 text-white rounded-md"
-            onClick={handleSubmit}
-          >
-            Thêm
-          </button>
+
+          {/* Hai nút còn lại ở bên phải */}
+          <div className="flex space-x-4">
+            <button
+              onClick={() => onClose()}
+              className="px-6 py-2 bg-gray-500 text-white rounded-md"
+            >
+              Thoát
+            </button>
+            <button
+              className="px-6 py-2 bg-blue-500 text-white rounded-md"
+              onClick={handleEdit}
+            >
+              Cập nhật
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -24,6 +24,8 @@ export default function CustomerTableComponent({ searchQuery }) {
       }
 
       const customerData = await response.json();
+      console.log("Customer daaa", customerData);
+
       setCustomers(customerData);
     } catch (e) {
       console.error("Error:", e);
@@ -44,8 +46,9 @@ export default function CustomerTableComponent({ searchQuery }) {
     : customers;
 
   const handleViewDetails = (customerId) => {
-    // const customer = customers.find((cust) => cust._id === customerId);
-    setSelectedCustomer(customerId); // Lưu khách hàng chọn vào state
+    const customer = customers.find((cust) => cust._id === customerId);
+    console.log("view detail", customer);
+    setSelectedCustomer(customer); // Lưu khách hàng chọn vào state
     setIsModalOpen(true); // Mở modal
   };
 
@@ -64,7 +67,7 @@ export default function CustomerTableComponent({ searchQuery }) {
       <CustomerModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        customerId={selectedCustomer}
+        customer={selectedCustomer}
       />
 
       {/* Table */}

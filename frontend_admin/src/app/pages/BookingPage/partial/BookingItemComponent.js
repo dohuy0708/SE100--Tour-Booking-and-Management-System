@@ -19,7 +19,7 @@ export default function BookingItemComponent({ booking, refreshData }) {
       {/* Tour Image */}
       <div className="w-32 h-24 mr-4">
         <img
-          src={`http://localhost:8080${booking?.schedule_id?.tour_image}`}
+          src={`http://localhost:8080${booking?.tour_image}`}
           alt={"ảnh đơn đặt"}
           className="object-cover w-full h-full rounded-md"
         />
@@ -29,7 +29,7 @@ export default function BookingItemComponent({ booking, refreshData }) {
       <div className="flex flex-1 ">
         <div className="flex-1 ">
           <p className="font-bold text-blue-500">
-            Mã đặt chỗ: {booking.schedule_code}
+            Mã đặt chỗ: {booking._id.slice(-6)}
           </p>
           <p className="font-medium">{booking.tour_name}</p>
           <p className="text-sm text-gray-600">
@@ -37,20 +37,18 @@ export default function BookingItemComponent({ booking, refreshData }) {
             {new Date(booking.schedule_date).toLocaleDateString()}
           </p>
           <p className="text-sm text-gray-600">
-            Mã tour: {booking?.tour_details?.tour_code || "11"}
+            Mã tour: {booking?.schedule_code || "11"}
           </p>
         </div>
 
         {/* Customer Info */}
         <div className="flex-1 space-y-1">
-          <p className="font-medium">
-            Tên khách: {booking.customer_id.user_name}
+          <p className="font-medium">Tên khách: {booking.customer.user_name}</p>
+          <p className="text-sm text-gray-600">
+            SĐT: {booking.customer.phone_number}
           </p>
           <p className="text-sm text-gray-600">
-            SĐT: {booking.customer_id.phone_number}
-          </p>
-          <p className="text-sm text-gray-600">
-            Email: {booking.customer_id.email}
+            Email: {booking.customer.email}
           </p>
         </div>
 
@@ -62,7 +60,15 @@ export default function BookingItemComponent({ booking, refreshData }) {
           </p>
           <p className="text-sm text-gray-600">
             Ngày đặt:
-            {new Date(booking.booking_date).toLocaleDateString()}
+            {new Date(booking.booking_date).toLocaleString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+
+              hour12: false, // Hiển thị giờ 24h
+            })}
           </p>
           <p
             className={`px-2 py-1 w-fit text-sm font-medium rounded-md   ${

@@ -299,14 +299,16 @@ export default function BookingModal({ isOpen, onClose, refreshData }) {
                   onChange={(e) => setSelectedStartDate(e.target.value)}
                 >
                   <option value="">Chọn ngày</option>
-                  {selectedTour?.tourSchedules.map((schedule, idx) => (
-                    <option key={schedule._id} value={schedule._id}>
-                      {new Date(schedule.departure_date).toLocaleDateString(
-                        "vi-VN"
-                      )}{" "}
-                      {/* Chỉ lấy ngày */}
-                    </option>
-                  ))}
+                  {selectedTour?.tourSchedules
+                    .filter((schedule) => schedule.status === "ĐANG BÁN")
+                    .map((schedule, idx) => (
+                      <option key={schedule._id} value={schedule._id}>
+                        {new Date(schedule.departure_date).toLocaleDateString(
+                          "vi-VN"
+                        )}{" "}
+                        {/* Chỉ lấy ngày */}
+                      </option>
+                    ))}
                 </select>
               </div>
 

@@ -44,8 +44,21 @@ export default function SchedulePage() {
       }
       const fetchedSchedules = await response.json();
 
-      setSchedules(fetchedSchedules);
-      setFilteredSchedules(fetchedSchedules);
+      // Map thứ tự ưu tiên
+      const priority = {
+        "ĐANG BÁN": 1,
+        "CHỜ DIỄN RA": 2,
+        "ĐÃ DIỄN RA": 3,
+        "ĐÃ KẾT THÚC": 4,
+      };
+
+      // Sắp xếp schedules dựa trên thứ tự ưu tiên
+      const sortedSchedules = fetchedSchedules.sort((a, b) => {
+        return priority[a.status] - priority[b.status];
+      });
+      console.log("Schedule List ", fetchedSchedules);
+      setSchedules(sortedSchedules);
+      setFilteredSchedules(sortedSchedules); // Nếu danh sách lọc cần sắp xếp
     } catch (error) {
       notifyError("Lỗi khi lấy dữ liệu từ server!");
     } finally {
@@ -60,16 +73,38 @@ export default function SchedulePage() {
   // Xử lý lọc
   const handleFilterApply = async (filters) => {
     // Áp dụng lọc và phân trang
-    try {
-      const filteredSchedule = await getScheduleData({
-        filters: {}, // Bắt đầu không có bộ lọc
-        page: currentPage,
-        limit: recordsPerPage,
+    console.log("filter:", filters);
+
+    let filteredList = schedules;
+
+    // Lọc theo trạng thái
+    if (filters.status !== "") {
+      filteredList = filteredList.filter((schedule) => {
+        return schedule?.status === filters.status;
       });
-      setFilteredSchedules(filteredSchedule);
-    } catch (error) {
-      console.error("Error applying filters:", error);
     }
+
+    // Lọc theo ngày
+    if (filters.date !== "") {
+      filteredList = filteredList.filter((schedule) => {
+        // So sánh ngày, cần đảm bảo cả hai đều có cùng định dạng
+        const bookingDate = new Date(schedule?.departure_date)
+          .toISOString()
+          .split("T")[0]; // Chỉ lấy phần ngày (YYYY-MM-DD)
+        const filterDate = new Date(filters.date).toISOString().split("T")[0]; // Định dạng ngày của bộ lọc
+        return bookingDate === filterDate;
+      });
+    }
+
+    // Lọc theo location
+    if (filters.location !== "") {
+      filteredList = filteredList.filter((schedule) => {
+        return schedule.locations.some(
+          (loc) => loc.location_name === filters.location
+        );
+      });
+    }
+    setFilteredSchedules(filteredList);
   };
 
   // Xử lý đặt lại bộ lọc

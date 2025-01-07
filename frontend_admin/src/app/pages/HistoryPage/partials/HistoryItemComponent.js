@@ -21,9 +21,7 @@ export default function HistoryItemComponent({ schedule }) {
         {/* Tour Image */}
         <div className="w-34 h-24 mr-4">
           <img
-            src={
-              schedule.tour_id.cover_image || "https://via.placeholder.com/150"
-            }
+            src={`http://localhost:8080${schedule?.tour_image}`}
             alt={"Tour Image"}
             className="object-cover w-full h-full rounded-md"
           />

@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import { notifyError, notifySuccess } from "../../../components/Notification";
 
-export default function AddTourModal({ isOpen, onClose }) {
+export default function AddTourModal({ isOpen, onClose, refreshData }) {
   const { locations } = useFilterContext(); // Lấy dữ liệu từ context
   const [tourData, setTourData] = useState({
     tourId: "",
@@ -67,7 +67,7 @@ export default function AddTourModal({ isOpen, onClose }) {
     setLocations(updatedLocations);
   };
   const handleRemoveLocation = (index) => {
-    const updatedLocations = locations.filter((_, i) => i !== index);
+    const updatedLocations = Chooselocation.filter((_, i) => i !== index);
     setLocations(updatedLocations);
   };
   const handleImageUpload = (e) => {
@@ -164,7 +164,7 @@ export default function AddTourModal({ isOpen, onClose }) {
             confirmButtonText: "OK",
             confirmButtonColor: "#3085d6",
           }).then(() => {
-            // Đóng modal
+            refreshData();
             onClose();
           });
         } else {

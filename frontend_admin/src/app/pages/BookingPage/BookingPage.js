@@ -42,16 +42,22 @@ export default function BookingPage() {
       if (!response.ok) {
         throw new Error(`Server responded with status: ${response.status}`);
       }
-      // const fetchedSchedules = await response.json();
-      // const bookings = await getBookingData({
-      //   filters: {}, // Bắt đầu không có bộ lọc
-      //   page: currentPage,
-      //   limit: recordsPerPage,
-      // });
-      // const statuses = await getBookingStatus();
+
       const bookings = await response.json();
-      setBookingList(bookings);
-      setFilteredBookingList(bookings);
+      // Map thứ tự ưu tiên
+      const priority = {
+        "CHỜ XÁC NHẬN": 1,
+        "ĐÃ XÁC NHẬN": 2,
+        "ĐÃ HỦY": 3,
+      };
+
+      // Sắp xếp bookings dựa trên thứ tự ưu tiên
+      const sortedBookings = bookings.sort((a, b) => {
+        return priority[a.status] - priority[b.status];
+      });
+
+      setBookingList(sortedBookings);
+      setFilteredBookingList(sortedBookings); // Nếu danh sách lọc cần sắp xếp
       setBookingStatuses(statuses);
       console.log("Bookings", bookings);
     } catch (error) {
@@ -65,16 +71,38 @@ export default function BookingPage() {
 
   const handleFilterApply = async (filters) => {
     // Áp dụng lọc và phân trang
-    try {
-      const filteredBookings = await getBookingData({
-        filters,
-        page: currentPage,
-        limit: recordsPerPage,
+    console.log("filter:", filters);
+
+    let filteredList = bookingList;
+
+    // Lọc theo trạng thái
+    if (filters.status !== "") {
+      filteredList = filteredList.filter((booking) => {
+        return booking.status === filters.status;
       });
-      setFilteredBookingList(filteredBookings);
-    } catch (error) {
-      console.error("Error applying filters:", error);
     }
+
+    // Lọc theo ngày
+    if (filters.date !== "") {
+      filteredList = filteredList.filter((booking) => {
+        // So sánh ngày, cần đảm bảo cả hai đều có cùng định dạng
+        const bookingDate = new Date(booking.booking_date)
+          .toISOString()
+          .split("T")[0]; // Chỉ lấy phần ngày (YYYY-MM-DD)
+        const filterDate = new Date(filters.date).toISOString().split("T")[0]; // Định dạng ngày của bộ lọc
+        return bookingDate === filterDate;
+      });
+    }
+    // Lọc theo location
+    if (filters.location !== "") {
+      filteredList = filteredList.filter((booking) => {
+        return booking.locations.some(
+          (loc) => loc.location_name === filters.location
+        );
+      });
+    }
+
+    setFilteredBookingList(filteredList);
   };
 
   const handleReset = () => {

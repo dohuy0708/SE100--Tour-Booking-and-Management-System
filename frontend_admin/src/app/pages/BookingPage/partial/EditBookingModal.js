@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { jsPDF } from "jspdf";
+import { handleExport } from "./InvoicePrinter";
+
 export default function EditBookingModal({
   isOpen,
   onClose,
@@ -18,8 +21,6 @@ export default function EditBookingModal({
       setStatus(Booking.status); // Cập nhật state 'status' từ 'Booking.status'
     }
   }, []);
-
-  const handleExport = () => {};
 
   const handleUpdateBooking = async () => {
     try {
@@ -324,7 +325,7 @@ export default function EditBookingModal({
                   ? "bg-gray-300"
                   : "bg-blue-500"
               }`}
-              onClick={handleExport}
+              onClick={() => handleExport(Booking)}
               disabled={
                 Booking.status === "ĐÃ HỦY" || Booking.status === "CHỜ XÁC NHẬN"
               } // Disable khi status là "ĐÃ HỦY" hoặc "CHỜ XÁC NHẬN"

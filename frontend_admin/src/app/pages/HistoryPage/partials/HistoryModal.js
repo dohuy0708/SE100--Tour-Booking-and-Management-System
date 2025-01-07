@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function HistoryModal({ isOpen, onClose, schedule }) {
+  const [ListSchedule, setListSchedule] = useState([{}]);
   // Dữ liệu phản hồi ảo
   const feedbackData = [
     {
@@ -26,7 +27,7 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
   const fetchScheduleData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/feedbacks/schedule/:schedule_id${schedule._id}`,
+        `http://localhost:8080/feedbacks/schedule/${schedule._id}`,
         {
           method: "GET",
           headers: {
@@ -40,6 +41,8 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
         throw new Error(`Server responded with status: ${response.status}`);
       }
       const fetchedSchedules = await response.json();
+      console.log("List Schedule", fetchedSchedules);
+      setListSchedule(fetchedSchedules);
     } catch (error) {
     } finally {
     }
@@ -47,7 +50,7 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
 
   useEffect(() => {
     fetchScheduleData();
-  }, []);
+  }, [schedule]);
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">
@@ -100,11 +103,11 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
               <div>
                 <p>
                   <strong>Ngày khởi hành: </strong>
-                  {schedule.departure_time}
+                  {new Date(schedule?.departure_date).toLocaleDateString()}
                 </p>
                 <p>
                   <strong>Số lượng khách: </strong>
-                  {schedule.capacity}
+                  {schedule?.capacity}
                 </p>
               </div>
             </div>
@@ -116,24 +119,27 @@ export default function HistoryModal({ isOpen, onClose, schedule }) {
               Thông tin phản hồi
             </h4>
             <div className="border border-gray-300 rounded-lg p-4 bg-slate-50">
-              {feedbackData.length > 0 ? (
+              {ListSchedule.length > 0 ? (
                 <div className="space-y-4">
-                  {feedbackData.map((feedback, index) => (
+                  {ListSchedule.map((feedback, index) => (
                     <div
                       key={index}
                       className="border border-gray-300 rounded-lg p-4 bg-slate-50"
                     >
                       <p>
-                        <strong>Họ tên: </strong> {feedback.name}
+                        <strong>Họ tên: </strong>{" "}
+                        {feedback?.customer_id?.user_name}
                       </p>
                       <p>
-                        <strong>Email: </strong> {feedback.email}
+                        <strong>Email: </strong> {feedback?.customer_id?.email}
                       </p>
                       <p>
-                        <strong>Số điện thoại: </strong> {feedback.phone}
+                        <strong>Số điện thoại: </strong>{" "}
+                        {feedback?.customer_id?.phone_number}
                       </p>
                       <p>
-                        <strong>Nội dung phản hồi: </strong> {feedback.content}
+                        <strong>Nội dung phản hồi: </strong>{" "}
+                        {feedback.feedback_content}
                       </p>
                     </div>
                   ))}

@@ -14,32 +14,31 @@ export default function TourPage() {
   const [filteredTours, setFilteredTours] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchTourData = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/tours", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+  const fetchTourData = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/tours/detail", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
-        if (!response.ok) {
-          throw new Error(`Server responded with status: ${response.status}`);
-        }
-
-        const tourlist = await response.json();
-
-        setTourList(tourlist);
-        setFilteredTours(tourlist);
-      } catch (e) {
-        console.error("Error:", e);
-        alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
-      } finally {
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
       }
-    };
 
+      const tourlist = await response.json();
+      console.log("tour llisst", tourlist);
+      setTourList(tourlist);
+      setFilteredTours(tourlist);
+    } catch (e) {
+      console.error("Error:", e);
+      alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
+    } finally {
+    }
+  };
+  useEffect(() => {
     fetchTourData();
   }, []);
 
@@ -95,13 +94,21 @@ export default function TourPage() {
         <div className="mt-4 grid grid-cols-5 gap-4">
           {filteredTours && filteredTours.length > 0 ? (
             filteredTours.map((tour) => (
-              <TourItemComponent key={tour.tourId} tour={tour} />
+              <TourItemComponent
+                key={tour._id}
+                tour={tour}
+                refreshData={fetchTourData}
+              />
             ))
           ) : (
             <p className="text-center text-gray-500">Không có dữ liệu</p>
           )}
         </div>
-        <AddTourModal isOpen={isModalOpen} onClose={closeModal} />
+        <AddTourModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          refreshData={fetchTourData}
+        />
       </div>
     </FilterProvider>
   );

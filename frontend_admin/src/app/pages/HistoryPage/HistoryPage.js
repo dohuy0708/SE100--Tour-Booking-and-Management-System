@@ -43,6 +43,7 @@ export default function HistoryPage() {
       }
       const fetchedSchedules = await response.json();
 
+      console.log("History item", fetchedSchedules);
       setSchedules(fetchedSchedules);
       setFilteredSchedules(fetchedSchedules);
     } catch (error) {

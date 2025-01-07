@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ViewTourModal from "./ViewTourModal";
 import image2 from "../../../../mocks/img/beach-Bai-Dai_111948560.jpg";
 
-export default function TourItemComponent({ tour }) {
+export default function TourItemComponent({ tour, refreshData }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -35,7 +35,9 @@ export default function TourItemComponent({ tour }) {
           {/* <p className="text-sm text-gray-600 mt-1">Giá: {tour.price}</p> */}
         </div>
       </button>
-      {isModalOpen && <ViewTourModal onClose={closeModal} tour={tour} />}
+      {isModalOpen && (
+        <ViewTourModal onClose={closeModal} tour={tour} reData={refreshData} />
+      )}
     </div>
   );
 }
