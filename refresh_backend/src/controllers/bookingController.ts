@@ -266,8 +266,15 @@ export const getSchedulesByCustomerId = async (req: express.Request, res: expres
       if (bookings.length === 0) {
         return res.status(404).json({ message: 'Không tìm thấy Booking cho khách hàng này' });
       }
+
+      const bookingWithPassengers = await Promise.all(
+        bookings.map(async (booking) => {
+          const passengers = await PassengerModel.find({ booking_id: booking._id });
+          return { ...booking.toObject(), passengers };
+        })
+      );
   
-      return res.status(200).json(bookings);
+      return res.status(200).json(bookingWithPassengers);
     } catch (error) {
       console.error('Error in getScheduleByCustomerId:', error);
       return res.status(500).json({ message: 'Lỗi khi lấy Booking cho khách hàng', error });
