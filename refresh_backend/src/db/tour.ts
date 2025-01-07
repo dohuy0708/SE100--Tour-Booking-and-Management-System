@@ -6,7 +6,7 @@ import { TourLocationModel } from './tour_location';
 import { LocationModel } from './location';
 
 
-const TourTypes={
+export const TourTypes={
     TRONG_NUOC:'TRONG NƯỚC',
     QUOC_TE:'QUỐC TẾ',
 };

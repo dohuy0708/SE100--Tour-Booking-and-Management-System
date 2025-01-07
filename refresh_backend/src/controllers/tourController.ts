@@ -389,7 +389,7 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             i++;
         }
 
-        //tao Location
+        //tao Location trong nuoc
         if(!locations||!Array.isArray(locations)||locations.length===0){
             console.log('Locations:', locations);
             throw new Error('Thiếu Location');
