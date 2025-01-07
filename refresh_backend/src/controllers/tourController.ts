@@ -1,10 +1,10 @@
 import { TourPolicyModel } from "../db/tour_policy";
 import { filterTours, searchTours, TourModel } from '../db/tour';
-import { TourPriceModel, updatePriceByTourId } from '../db/tour_price';
+import { TourPriceModel, updatePriceById, updatePriceByTourId } from '../db/tour_price';
 import { TourLocationModel } from '../db/tour_location';
 import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, getTourById} from "../db/tour";
 import express from "express";
-import { TourProgramModel, deleteProgramByTourId } from "../db/tour_program";
+import { TourProgramModel, deleteProgramByTourId, updateProgramById } from "../db/tour_program";
 import { deletePriceByTourId } from "../db/tour_price";
 import { getScheduleByTourId, ScheduleModel, ScheduleStatus } from "../db/schedule";
 import mongooser from "mongoose";
@@ -77,7 +77,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
     session.startTransaction();
     try{
         const {id}=req.params;  
-        const {name, code, type, dura, descri, policy}=req.body;
+        const {descri, a_price, c_price, i_price, pro_descri}=req.body;
 
         const schedules= await getScheduleByTourId(id);
 
@@ -96,13 +96,14 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
           }
 
 
-        if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
+        if(descri==null||descri==undefined){
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
-        const tour= await updateTourById(id, {name, code, type, dura, descri, policy}).session(session);
+        const tour= await updateTourById(id, 
+            {description:descri}).session(session);
 
         if(!tour){
             await session.abortTransaction();
@@ -110,17 +111,57 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
             return res.status(400).json({message:'Tour không tồn tại'}).end();
         }
 
+
+        // Xu li file upload
+        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+        const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
+        const programImages = files['program_images'] || [];
+
+
          // Cập nhật Program liên quan đến Tour
-         const programs = await TourProgramModel.find({ tour_id: id }).lean();
-         for (const program of programs) {
-             await updateProgramByTourId(id, program, session);
-         }
+        //  const programs = await TourProgramModel.find({ tour_id: id }).lean();
+        //  for (const program of programs) {
+        //      await updateProgramByTourId(id, program, session);
+        //  }
+
+        const programs= await TourProgramModel.find({tour_id: id}).lean();
+
+        if(!programs||!Array.isArray(programs)||programs.length===0){
+            console.log('Programs:', programs);
+            throw new Error('Không có Program ứng với Tour');
+        }
+
+        let i=0;
+        for(const program of programs){
+            if(program.program_description==null||program.program_description==undefined){
+                throw new Error('Thiếu thông tin Program');
+            }
+
+            await updateProgramById(program._id.toString(), {
+                program_description: pro_descri,
+                image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
+
+            }).session(session);
+            i++;
+        }
+
+        
+
 
       // Cập nhật Price liên quan đến Tour
-      const price = await TourProgramModel.findOne({ tour_id: id }).lean();
-    if (price) {
-        await updatePriceByTourId(id, price, session);
+    //   const price = await TourProgramModel.findOne({ tour_id: id }).lean();
+
+    const price = await TourPriceModel.findOne({ tour_id: id }).lean();
+    if (!price) {
+        console.log('Prices:', price);
+        throw new Error('Không có Price ứng với Tour');
       }
+
+        await updatePriceById(price._id.toString(), {
+            adult_price: a_price,
+            children_price: c_price,
+            infant_price: i_price,
+        }).session(session);
 
         await session.commitTransaction();
         session.endSession();

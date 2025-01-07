@@ -32,4 +32,5 @@ export const deleteProgramByTourId = (tour_id: string, options: { session?: any 
 export const updateProgramByTourId = async (tour_id: string, values: Record<string, any>, session?: mongooser.ClientSession) => {
     return await TourProgramModel.updateMany({ tour_id }, values, { session });
   };
+
   
