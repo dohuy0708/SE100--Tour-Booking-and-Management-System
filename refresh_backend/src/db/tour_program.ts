@@ -28,3 +28,8 @@ export const getProgramsByTourId = (tour_id: string) =>TourProgramModel.find({ t
 export const deleteProgramByTourId = (tour_id: string, options: { session?: any } = {}) => {
     return TourProgramModel.deleteMany({ tour_id }, options);
 };
+
+export const updateProgramByTourId = async (tour_id: string, values: Record<string, any>, session?: mongooser.ClientSession) => {
+    return await TourProgramModel.updateMany({ tour_id }, values, { session });
+  };
+  

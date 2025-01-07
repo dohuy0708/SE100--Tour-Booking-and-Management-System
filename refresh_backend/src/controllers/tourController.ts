@@ -1,6 +1,6 @@
 import { TourPolicyModel } from "../db/tour_policy";
 import { filterTours, searchTours, TourModel } from '../db/tour';
-import { TourPriceModel } from '../db/tour_price';
+import { TourPriceModel, updatePriceByTourId } from '../db/tour_price';
 import { TourLocationModel } from '../db/tour_location';
 import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, getTourById} from "../db/tour";
 import express from "express";
@@ -9,7 +9,7 @@ import { deletePriceByTourId } from "../db/tour_price";
 import { getScheduleByTourId, ScheduleModel, ScheduleStatus } from "../db/schedule";
 import mongooser from "mongoose";
 import { createPrice } from "../db/tour_price";
-import { createProgram } from "../db/tour_program";
+import { createProgram, updateProgramByTourId } from "../db/tour_program";
 import { createTourLocation } from "../db/tour_location";
 import { LocationModel } from "../db/location";
 import { abort } from "process";
@@ -73,31 +73,59 @@ export const createNewTour = async (req: express.Request, res: express.Response)
 
 export const updateTour = async (req: express.Request, res: express.Response) =>{
 
+    const session = await mongooser.startSession();
+    session.startTransaction();
     try{
         const {id}=req.params;  
         const {name, code, type, dura, descri, policy}=req.body;
 
         const schedules= await getScheduleByTourId(id);
 
-        if(schedules.length>0){
-            const canUpdate=schedules.every(schedule=>schedule.status.includes(ScheduleStatus.END)||schedule.status.includes(ScheduleStatus.SELLING));
-            if(!canUpdate){
-                return res.status(400).json({message:'Không thể cập nhật Tour vì đang có Schedule đang hoặc chờ diễn ra'}).end();
+        if (schedules.length > 0) {
+            // Kiểm tra nếu có bất kỳ schedule nào đang bán
+            const hasSellingSchedule = schedules.some(schedule => schedule.status === ScheduleStatus.SELLING);
+          
+            if (hasSellingSchedule) {
+                await session.abortTransaction();
+                session.endSession();
+              return res
+                .status(400)
+                .json({ message: 'Không thể cập nhật Tour vì có Schedule đang bán' })
+                .end();
             }
-        }
+          }
+
 
         if(name==null||code==null||type==null||dura==null||descri==null||policy==null||name==undefined||code==undefined||type==undefined||dura==undefined||descri==undefined||policy==undefined){
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
-        const tour= await updateTourById(id, {name, code, type, dura, descri, policy});
+        const tour= await updateTourById(id, {name, code, type, dura, descri, policy}).session(session);
 
         if(!tour){
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({message:'Tour không tồn tại'}).end();
         }
-        await tour.save();
 
-        return res.status(200).json(tour).end();
+         // Cập nhật Program liên quan đến Tour
+         const programs = await TourProgramModel.find({ tour_id: id }).lean();
+         for (const program of programs) {
+             await updateProgramByTourId(id, program, session);
+         }
+
+      // Cập nhật Price liên quan đến Tour
+      const price = await TourProgramModel.findOne({ tour_id: id }).lean();
+    if (price) {
+        await updatePriceByTourId(id, price, session);
+      }
+
+        await session.commitTransaction();
+        session.endSession();
+
+        return res.status(200).json({message: 'Cập nhật Tour thành công'}).end();
     }
     catch(error){
         console.log(error);

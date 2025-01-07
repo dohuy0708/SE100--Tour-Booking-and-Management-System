@@ -36,3 +36,8 @@ export const getPriceByTourId = (tour_id: string) =>TourPriceModel.find({ tour_i
 export const deletePriceByTourId = (tour_id: string, options: { session?: any } = {}) => {
     return TourPriceModel.deleteMany({ tour_id }, options);
 };
+
+export const updatePriceByTourId = async (tour_id: string, values: Record<string, any>, session?: mongooser.ClientSession) => {
+    return await TourPriceModel.updateMany({ tour_id }, values, { session });
+  };
+  
