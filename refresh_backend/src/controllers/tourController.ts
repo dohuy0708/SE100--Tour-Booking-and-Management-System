@@ -96,7 +96,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
           }
 
 
-        if(descri==null||descri==undefined){
+        if(descri==null||descri==undefined|| a_price==null||a_price==undefined||c_price==null||c_price==undefined||i_price==null||i_price==undefined||pro_descri==null||pro_descri==undefined){
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
