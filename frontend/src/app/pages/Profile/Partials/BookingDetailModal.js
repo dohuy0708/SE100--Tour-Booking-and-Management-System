@@ -126,35 +126,71 @@ const BookingDetailModal = ({ booking }) => {
                 {/* Price Details */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                    Chi tiết giá
+                    Danh sách hành khách
                   </h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Giá người lớn:</span>
-                      <span className="font-medium">
-                        {formatCurrency(booking.adult_price)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Giá trẻ em:</span>
-                      <span className="font-medium">
-                        {formatCurrency(booking.children_price)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Giá em bé:</span>
-                      <span className="font-medium">
-                        {formatCurrency(booking.infant_price)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between pt-2 border-t">
-                      <span className="text-gray-800 font-semibold">
-                        Tổng cộng:
-                      </span>
-                      <span className="font-bold text-lg text-main">
-                        {formatCurrency(booking.total_price)}
-                      </span>
-                    </div>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full table-auto border-collapse border border-gray-300">
+                      <thead className="bg-gray-100">
+                        <tr>
+                          <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+                            Tên hành khách
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+                            Ngày sinh
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2 text-left text-gray-800">
+                            Loại vé
+                          </th>
+                          <th className="border border-gray-300 px-4 py-2 text-center text-gray-800">
+                            Giá
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {booking.passengers.map((passenger) => (
+                          <tr key={passenger._id} className="hover:bg-gray-50">
+                            <td className="border border-gray-300 px-4 py-2">
+                              {passenger.passenger_name}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {new Date(
+                                passenger.passenger_date
+                              ).toLocaleDateString()}
+                            </td>
+                            <td className="border border-gray-300 px-4 py-2">
+                              {passenger.passenger_type === "ADULT"
+                                ? "Người lớn"
+                                : passenger.passenger_type === "CHILD"
+                                ? "Trẻ em"
+                                : "Em bé"}
+                            </td>
+                            <td className="border text-right border-gray-300 px-4 py-2">
+                              {" "}
+                              {passenger.passenger_type === "ADULT"
+                                ? parseFloat(
+                                    booking?.adult_price?.$numberDecimal
+                                  ).toLocaleString()
+                                : passenger.passenger_type === "CHILD"
+                                ? parseFloat(
+                                    booking?.children_price?.$numberDecimal
+                                  ).toLocaleString()
+                                : parseFloat(
+                                    booking?.infant_price?.$numberDecimal
+                                  ).toLocaleString()}{" "}
+                              vnđ
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex justify-between pt-4 border-t mt-4">
+                    <span className="text-gray-800 font-semibold">
+                      Tổng cộng:
+                    </span>
+                    <span className="font-bold text-lg text-main">
+                      {formatCurrency(booking.total_price)}
+                    </span>
                   </div>
                 </div>
               </div>
