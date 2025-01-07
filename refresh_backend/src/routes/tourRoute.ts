@@ -10,7 +10,12 @@ export default (router: express.Router) => {
             { name: 'program_images', maxCount: 10 }
         ])
          ,createTourWithAllDependencies as any);
-    router.patch('/tours/:id', updateTour as any);
+    router.patch('/tours/:id', 
+        upload.fields([
+            { name: 'cover_image', maxCount: 1 },
+            { name: 'program_images', maxCount: 10 }
+        ])
+        , updateTour as any);
     router.delete('/tours/:id', deleteTour as any);
     router.get('/tours', getAllTours as any);
     router.get('/tours/findbytour_code', getTourByTourCode as any);

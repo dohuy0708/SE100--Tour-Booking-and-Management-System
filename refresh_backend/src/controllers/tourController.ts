@@ -77,7 +77,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
     session.startTransaction();
     try{
         const {id}=req.params;  
-        const {descri, a_price, c_price, i_price, pro_descri}=req.body;
+        const {descri, a_price, c_price, i_price, pro_descris}=req.body;
 
         const schedules= await getScheduleByTourId(id);
 
@@ -96,9 +96,10 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
           }
 
 
-        if(descri==null||descri==undefined|| a_price==null||a_price==undefined||c_price==null||c_price==undefined||i_price==null||i_price==undefined||pro_descri==null||pro_descri==undefined){
+        if(descri==null||descri==undefined|| a_price==null||a_price==undefined||c_price==null||c_price==undefined||i_price==null||i_price==undefined){
             await session.abortTransaction();
             session.endSession();
+            console.log('Request body:', descri, a_price, c_price, i_price, pro_descris);
             return res.status(400).json({message:'Thiếu thông tin Tour'}).end();
         }
 
@@ -124,12 +125,25 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
         //      await updateProgramByTourId(id, program, session);
         //  }
 
+        if(!pro_descris||!Array.isArray(pro_descris)||pro_descris.length===0){
+            console.log('Program Descriptions:', pro_descris);
+            throw new Error('Thiếu Program Descriptions');
+        }
+
         const programs= await TourProgramModel.find({tour_id: id}).lean();
+
 
         if(!programs||!Array.isArray(programs)||programs.length===0){
             console.log('Programs:', programs);
             throw new Error('Không có Program ứng với Tour');
         }
+
+        if(pro_descris.length<programs.length)
+        {
+            throw new Error('Số mô tả mới không đủ cho số Program hiện tại');
+        }
+
+        
 
         let i=0;
         for(const program of programs){
@@ -138,8 +152,8 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
             }
 
             await updateProgramById(program._id.toString(), {
-                program_description: pro_descri,
-                image: '/assets/'+ (programImages[i] ? programImages[i].filename : coverImage.filename),
+                program_description: pro_descris[i],
+                image: '/assets/'+ (programImages[i] ? programImages[i].filename : program.image),
 
             }).session(session);
             i++;
