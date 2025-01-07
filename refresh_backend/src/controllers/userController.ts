@@ -99,6 +99,18 @@ export const createStaff = async (
       return res.status(400).json({ message: "Thiếu thông tin Staff" }).end();
     }
 
+    // Kiểm tra xem email có đúng định dạng không
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Email không đúng định dạng' });
+    }
+
+// Kiểm tra xem phone có đúng định dạng không
+    const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phoneRegex.test(phone)) {
+            return res.status(400).json({ message: 'Số điện thoại không đúng định dạng' });
+        }
+
     // Kiểm tra xem email đã tồn tại chưa
     const existingStaff = await UserModel.findOne({ email });
     if (existingStaff) {

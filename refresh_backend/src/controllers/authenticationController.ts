@@ -56,6 +56,23 @@ export const register=async(req:express.Request, res:express.Response):Promise<a
             return res.status(400).json({message:'Thiếu thông tin'});
         }
 
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
+        }
+
+        //Kiểm tra số điện thoại
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phoneRegex.test(phone)) {
+            return res.status(400).json({ message: 'Số điện thoại không đúng định dạng' });
+        }
+
+        //Kiểm tra mật khẩu
+        if (pass.length <= 8) {
+            return res.status(400).json({ message: 'Mật khẩu phải dài hơn 8 ký tự' });
+        }
+
         const existingUser =await getUserByEmail(mail);
 
         if(existingUser){
@@ -114,6 +131,24 @@ export const staffregister=async(req:express.Request, res:express.Response):Prom
             return res.status(404).json({message:'Email đã tồn tại'});
         }
 
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
+        }
+
+        //Kiểm tra số điện thoại
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phoneRegex.test(phone)) {
+            return res.status(400).json({ message: 'Số điện thoại không đúng định dạng' });
+        }
+
+        //Kiểm tra mật khẩu
+        if (pass.length <= 8) {
+            return res.status(400).json({ message: 'Mật khẩu phải dài hơn 8 ký tự' });
+        }
+
+
         const salte=random();
         const Code=randomCode();//Ma xac thuc
 
@@ -162,6 +197,12 @@ export const verifyUser=async(req:express.Request, res:express.Response):Promise
             return res.status(400).json({message:'Thiếu thông tin'});
         }
 
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
+        }
+
         const user=await getUserByEmail(mail).select('+authentication.verificationCode');
 
         if(!user){
@@ -192,6 +233,12 @@ export const verifyUser=async(req:express.Request, res:express.Response):Promise
 export const verifyStaff=async(req:express.Request, res:express.Response):Promise<any>=>{
     try{
         const {mail, code}=req.body;
+
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
+        }
 
         if(mail==undefined||code==undefined||mail==null||code==null){
             return res.status(400).json({message:'Thiếu thông tin'});
@@ -227,6 +274,12 @@ export const resendverifyUser=async(req:express.Request, res:express.Response):P
         const  {mail}=req.body;
         if(!mail){
             return res.status(400).json({message:'Thiếu thông tin mail'});
+        }
+
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
         }
 
         const user=await getUserByEmail(mail);
@@ -285,6 +338,12 @@ export const forgetpassword=async(req:express.Request, res:express.Response):Pro
             return res.status(400).json({message:'Thiếu thông tin mail'});
         }
 
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
+        }
+
         const user=await getUserByEmail(mail);
         if(!user){
             return res.status(404).json({message:'Email không tồn tại trong hệ thống'});
@@ -318,6 +377,12 @@ export const resetpassword=async(req:express.Request, res:express.Response):Prom
         const {mail, oldpass, newpass}=req.body;
         if(mail==null||!oldpass==null||!newpass==null||mail==undefined||oldpass==undefined||newpass==undefined){
             return res.status(400).json({message:'Thiếu thông tin'});
+        }
+
+        //Kiểm tra email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(mail)) {
+            return res.status(400).json({ message: 'Email không đúng định dạng' });
         }
 
         const user=await getUserByEmail(mail).select('+authentication.user_password +authentication.salt');
