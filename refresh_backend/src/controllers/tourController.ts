@@ -169,12 +169,20 @@ export const getAllTourWithDetail = async (req: express.Request, res: express.Re
                 // Lấy lịch trình tour
                 const schedules = await ScheduleModel.find({ tour_id: tour._id }).lean();
 
+                // Lấy thông tin location
+
+                const tourlocations= await TourLocationModel.find({tour_id: tour._id}).lean();
+                const locationId=tourlocations.map(location=>location.location_id);
+     
+                const locations= await LocationModel.find({_id:{$in:locationId}}).lean();
+
                 // Gộp thông tin
                 return {
                     ...tour,
                     tourPrice: price,
                     tourPrograms: programs,
                     tourSchedules: schedules,
+                    tourLocations: locations,
                 };
             })
         );
