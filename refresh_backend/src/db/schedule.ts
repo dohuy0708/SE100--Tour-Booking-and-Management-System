@@ -135,3 +135,22 @@ export const filterSchedules = async (filters: any) => {
 
     return schedules;
 };
+
+export const updateOneField = async (
+    schedule_id: Object,
+    fieldName: string,
+    value: any
+) => {
+    if (!schedule_id || !fieldName) {
+        throw new Error("schedule_id và fieldName là bắt buộc");
+    }
+
+    const updateData: Record<string, any> = { [fieldName]: value };
+
+    return await ScheduleModel.findByIdAndUpdate(schedule_id, updateData, {
+        new: true, // Trả về document sau khi cập nhật
+    })
+        .lean()
+        .exec();
+};
+

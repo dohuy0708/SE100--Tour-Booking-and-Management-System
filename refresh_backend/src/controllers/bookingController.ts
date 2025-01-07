@@ -1,9 +1,9 @@
 import { searchSchedules } from './../db/schedule';
 import { register } from './authenticationController';
 import { Tour } from './../../../backend/src/models/tour_model';
-import { getUserByEmail, createUser, getUserBySessionToken, getUserById } from "../db/user";
+import { getUserByEmail, createUser, getUserBySessionToken, getUserById, UserModel } from "../db/user";
 import { createBooking, deleteBookingById, updateBookingById, getBookings, getBookingByIdWithDetails, BookingModel, getBookingById   } from "../db/booking";
-import { getScheduleById } from "../db/schedule";
+import { getScheduleById, updateOneField, ScheduleModel } from "../db/schedule";
 import { getPriceByTourId, TourPriceModel } from "../db/tour_price";
 import express from "express";
 import { random, randomCode, authentication } from "../helpers";
@@ -11,28 +11,40 @@ import { sendEmail } from '../helpers/mail_helper';
 import { createPassenger, PassengerModel } from "../db/passenger";
 import tourRoute from "routes/tourRoute";
 import { getTourById, TourModel } from "../db/tour";
-
+import path from 'path';
+import { TourLocationModel } from '../db/tour_location';
+import { LocationModel } from '../db/location';
 
 export const getAllBookings = async (req: express.Request, res: express.Response) => {
 
     try{
-            const bookings=await getBookings().populate('customer_id').populate({
-                path: 'schedule_id',
-                select: 'tour_code tour_image',
+            const bookings= await BookingModel.find().lean();
 
-            }).lean();
-            const passengerList=await PassengerModel.find({
-                booking_id: { $in: bookings.map((b) => b._id) },
-            }).lean();
+            const result= await Promise.all(
+                bookings.map(async (booking) => {
 
-
-            const bookingWithPeople=bookings.map((booking)=>({
-                ...booking,
-                passengers: passengerList.filter((p) => p.booking_id.toString() === booking._id.toString())
-            }));
-
-
-            return res.status(200).json(bookingWithPeople).end();
+                    const customer= await UserModel.findOne({_id:booking.customer_id}).lean();
+                    const schedule= await ScheduleModel.findOne({_id:booking.schedule_id}).lean();
+                    const tour = await TourModel.findOne({_id:schedule.tour_id}).lean();
+                    const tourlocations= await TourLocationModel.find({tour_id: tour._id}).lean();
+                    const locationId=tourlocations.map(location=>location.location_id);
+                    const locations= await LocationModel.find({_id:{$in:locationId}}).lean();
+                    const passengers=await PassengerModel.find({booking_id:booking._id}).lean();
+                    return {
+                        ...booking,
+                        customer,
+                        schedule_id: schedule._id,
+                        tour_code: schedule.tour_code,
+                        tour_image: schedule.tour_image,
+                        schedule_date: schedule.departure_date,
+                        locations,
+                        passengers,
+                    }
+        
+                })
+            );
+            //tra ket qua ve
+            res.status(200).json(result).end();
         }
         catch(error){
             console.log(error);
@@ -109,6 +121,7 @@ export const createNewBooking = async (req: express.Request, res: express.Respon
         }
 
         scheduledt.available_slots=scheduledt.available_slots-number_slot;
+        const updatedSchedule=await updateOneField(scheduledt, 'available_slots', scheduledt.available_slots);
 
         const tprice= await TourPriceModel.findOne({tour_id: scheduledt.tour_id});
 

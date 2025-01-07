@@ -2,17 +2,36 @@ import { getTourById, TourModel } from "../db/tour";
 import { createSchedule, updateScheduleById, deleteScheduleById, getSchedules, getScheduleByTourId, getScheduleById, ScheduleModel, filterSchedules, searchSchedules, ScheduleStatus} from "../db/schedule";
 import express from "express";
 import { TourMedia } from "../../../backend/src/models/tourmedia_model";
+import { TourLocationModel } from "../db/tour_location";
+import {LocationModel} from "../db/location";
 
 export const getAllSchedules = async (req: express.Request, res: express.Response) => {
 
     try{
-            const schedules=await getSchedules().populate({
-                path: 'tour_id',
-                select: 'cover_image'
-            }).lean();
+            const schedules= await ScheduleModel.find().lean();
             
-            return res.status(200).json(schedules).end();
-        }
+                        const result= await Promise.all(
+                            schedules.map(async (schedule) => {
+            
+                                const tour = await TourModel.findOne({_id:schedule.tour_id}).lean();
+                                const tourlocations= await TourLocationModel.find({tour_id: tour._id}).lean();
+                                console.log(tourlocations);
+                                const locationId=tourlocations.map(location=>location.location_id);
+                                const locations= await LocationModel.find({_id:{$in:locationId}}).lean();
+                                return {
+                                    ...schedule,
+                                    tour_id: tour._id,
+                                    tour_name: tour.tour_name,
+                                    tour_code: tour.tour_code,
+                                    tour_image: tour.cover_image,
+                                    locations,
+                                }
+                    
+                            })
+                        );
+                        //tra ket qua ve
+                        res.status(200).json(result).end();
+                    }
         catch(error){
             console.log(error);
             return res.status(400).json({message:'Lỗi'}).end();
