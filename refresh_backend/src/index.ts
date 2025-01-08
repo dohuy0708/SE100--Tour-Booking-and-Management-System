@@ -15,7 +15,7 @@ const app = express();
 
 app.use(cors({
     credentials: true,
-    origin: "http://localhost:3000"
+    origin: true
 }));
 
 app.use('/assets',express.static(path.join(process.cwd(),'public/assets')));

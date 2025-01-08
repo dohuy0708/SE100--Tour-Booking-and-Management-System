@@ -1,10 +1,10 @@
 import { TourPolicyModel } from "../db/tour_policy";
 import { filterTours, searchTours, TourModel } from '../db/tour';
-import { TourPriceModel, updatePriceById, updatePriceByTourId } from '../db/tour_price';
+import { deletePriceById, TourPriceModel, updatePriceById, updatePriceByTourId } from '../db/tour_price';
 import { TourLocationModel } from '../db/tour_location';
 import { createTour, deleteTourById, updateTourById, getTourByCode, getTours, getTourById} from "../db/tour";
 import express from "express";
-import { TourProgramModel, deleteProgramByTourId, updateProgramById } from "../db/tour_program";
+import { TourProgramModel, deleteProgramById, deleteProgramByTourId, updateProgramById } from "../db/tour_program";
 import { deletePriceByTourId } from "../db/tour_price";
 import { getScheduleByTourId, ScheduleModel, ScheduleStatus } from "../db/schedule";
 import mongooser from "mongoose";
@@ -115,7 +115,7 @@ export const updateTour = async (req: express.Request, res: express.Response) =>
 
         // Xu li file upload
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
+        //const coverImage=files['cover_image'] ? files['cover_image'][0] : null;
         const programImages = files['program_images'] || [];
 
 
@@ -203,8 +203,15 @@ export const deleteTour = async (req: express.Request, res: express.Response) =>
         }
 
 
-        await deleteProgramByTourId(id, {session});
-        await deletePriceByTourId(id, {session});
+        const programs= await TourProgramModel.find({tour_id: id}).session(session);
+        for (const program of programs) 
+        {
+            await deleteProgramById(program._id.toString()).session(session);
+        }
+
+        const price = await TourPriceModel.findOne({ tour_id: id }).lean();
+
+        await deletePriceById(price._id.toString()).session(session);
 
         const deleteTour= await deleteTourById(id).session(session);
 
@@ -356,25 +363,12 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             children_price: prices.children_price,
             infant_price: prices.infant_price,
         }, session);
-
-
         //tao Program
-
-
-
-
-
-
         if(!programs||!Array.isArray(programs)||programs.length===0){
             console.log('Programs:', programs);
             throw new Error('Thiếu Program');
         }
-
-
-       
-
         let i=0;
-
         for(const program of programs){
             if(program.day_number==null||program.program_description==null||program.day_number==undefined||program.program_description==undefined){
                 throw new Error('Thiếu thông tin Program');
@@ -388,15 +382,12 @@ export const getTourWithProgram = async (req: express.Request, res: express.Resp
             }, session);
             i++;
         }
-
         //tao Location trong nuoc
         if(!locations||!Array.isArray(locations)||locations.length===0){
             console.log('Locations:', locations);
             throw new Error('Thiếu Location');
         }
-
         for(const location of locations){
-
             if(location.location==null||location.location==undefined){
                 throw new Error('Thiếu thông tin Location');
             }
