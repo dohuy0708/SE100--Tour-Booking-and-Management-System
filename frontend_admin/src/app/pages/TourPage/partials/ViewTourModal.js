@@ -10,7 +10,7 @@ export default function ViewTourModal({ onClose, tour, reData }) {
     tourType: tour.tour_type,
     description: tour.description,
     duration: tour.duration,
-    image: tour.cover_image,
+    image: `http://localhost:8080${tour.cover_image}`,
   });
   const [isEdit, setIsEdit] = useState(false);
   // useEffect(() => {
@@ -20,19 +20,12 @@ export default function ViewTourModal({ onClose, tour, reData }) {
     tour.tourLocations?.map((loc) => loc.location_name) || [] // Lấy location_name từ mỗi item
   );
 
-  const provinces = [
-    "Hà Nội",
-    "Hồ Chí Minh",
-    "Đà Nẵng",
-    "Hải Phòng",
-    "Cần Thơ",
-    // Thêm danh sách tỉnh thành ở đây
-  ];
   const [numDays, setNumDays] = useState(tour.tourPrograms?.length);
   const [policy, setPolicy] = useState(""); // To store the policy content
   const [days, setDays] = useState(
     tour.tourPrograms?.map((pro) => ({
-      image: pro?.image, // Ban đầu không có ảnh, sẽ thêm sau qua input
+      image: `http://localhost:8080${pro?.image}`,
+      // Ban đầu không có ảnh, sẽ thêm sau qua input
       imageDesc: pro?.imageDesc || "", // Lấy mô tả ảnh từ dữ liệu
       dayDesc: pro.program_description || "", // Lấy mô tả ngày từ dữ liệu
     })) || []
@@ -92,45 +85,115 @@ export default function ViewTourModal({ onClose, tour, reData }) {
     setTourData({ ...tourData, image: file });
   };
 
-  // Validation function
+  // Đảm bảo là nếu tourData.image là một file thì dùng URL.createObjectURL
+  const imageUrl = tourData.image
+    ? tourData.image instanceof Blob // Nếu image là file hoặc blob
+      ? URL.createObjectURL(tourData.image)
+      : tourData.image // Nếu image là URL
+    : null;
+
   const validateForm = () => {
+    let errors = [];
+
     // Check if all required fields are filled
-    const isTourDataValid =
-      tourData.tourId &&
-      tourData.tourName &&
-      tourData.tourType &&
-      tourData.description &&
-      tourData.duration &&
-      tourData.image;
+    const isTourDataValid = tourData.description;
+    if (!isTourDataValid) errors.push("Mô tả tour");
 
     const isPricesValid =
       prices.adultPrice && prices.childPrice && prices.infantPrice;
+    if (!isPricesValid) errors.push("Giá vé (Người lớn, Trẻ em, Em bé)");
 
     const isLocationsValid =
       Choose_locations.length > 0 &&
       Choose_locations.every((location) => location);
+    if (!isLocationsValid) errors.push("Vị trí lựa chọn");
 
-    const isDaysValid = days.every(
-      (day) => day.image && day.imageDesc && day.dayDesc
-    );
+    const isDaysValid = days.every((day) => day.image && day.dayDesc);
+    if (!isDaysValid) errors.push("Thông tin ngày (Ảnh và mô tả ngày)");
 
-    const isPolicyValid = policy !== "";
+    if (errors.length > 0) {
+      console.log("Trường hợp thiếu:", errors.join(", "));
+    }
 
-    return (
-      isTourDataValid &&
-      isPricesValid &&
-      isLocationsValid &&
-      isDaysValid &&
-      isPolicyValid
-    );
+    return isTourDataValid && isPricesValid && isLocationsValid && isDaysValid;
   };
-  const handleEdit = () => {
-    if (validateForm()) {
-      console.log("Tour Data:", tourData);
-      alert("Tour added successfully!");
-      onClose();
+  const handleEdit = async () => {
+    if (
+      tour.tourSchedules.filter(
+        (schedule) =>
+          schedule.status === "CHỜ DIỄN RA" || schedule.status === "ĐANG BÁN"
+      ).length > 0
+    ) {
+      Swal.fire({
+        icon: "info",
+        title: "Không thể chỉnh sửa tour",
+        text: "Có lịch trình đang sử dụng tour này",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      });
     } else {
-      alert("Please fill all required fields.");
+      console.log("cover image", tourData.image);
+      days.forEach((day, index) => {
+        console.log("Day", index, "image", day.image);
+      });
+      if (!validateForm()) {
+        Swal.fire({
+          icon: "info",
+          title: "Vui lòng điền đầy đủ thông tin!",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#3085d6",
+        });
+      } else {
+        const formData = new FormData();
+        // Thêm cover image
+
+        // if (tourData.image) {
+        //   formData.append("cover_image", tourData.image);
+        // }
+        formData.append("descri", tourData.description);
+        formData.append("a_price", prices.adultPrice);
+        formData.append("c_price", prices.childPrice);
+        formData.append("i_price", prices.infantPrice);
+        // Thêm program_images và pro_descris
+        days.forEach((day, index) => {
+          if (day.image) {
+            formData.append(`program_images[${index}]`, day.image);
+          }
+          formData.append(`pro_descris[${index}]`, day.dayDesc || "");
+        });
+        console.log("lò ra con");
+        try {
+          const response = await fetch(
+            `http://localhost:8080/tours/${tour._id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: formData,
+            }
+          );
+
+          if (response.ok) {
+            Swal.fire({
+              icon: "success",
+              title: "Cập nhật tour thành công",
+              confirmButtonText: "OK",
+              confirmButtonColor: "#3085d6",
+            }).then(() => onClose());
+          }
+        } catch (error) {
+          console.error("Error submitting tour:", error);
+
+          Swal.fire({
+            icon: "error",
+            title: "Cập nhật không thành công",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#3085d6",
+          });
+        }
+      }
     }
   };
   const handleDelete = async () => {
@@ -242,7 +305,10 @@ export default function ViewTourModal({ onClose, tour, reData }) {
                       {tourData.image ? (
                         <div className="relative">
                           <img
-                            src={`http://localhost:8080${tourData.image}`}
+                            id="coverImageInput" // Gán ID duy nhất
+                            src={imageUrl}
+                            // src={URL.createObjectURL(tourData.image)}
+                            // src={`http://localhost:8080${tourData.image}`}
                             alt="Tour Preview"
                             className="w-full h-40 object-cover rounded"
                           />
@@ -496,7 +562,8 @@ export default function ViewTourModal({ onClose, tour, reData }) {
                           {day.image ? (
                             <div className="relative">
                               <img
-                                src={`http://localhost:8080${day.image}`}
+                                id={`dayImageInput-${index}`} // ID duy nhất cho từng ngày
+                                src={day.image}
                                 alt={`Ảnh ngày ${index + 1}`}
                                 className="w-full h-40 object-cover rounded"
                               />
@@ -534,7 +601,7 @@ export default function ViewTourModal({ onClose, tour, reData }) {
                               handleProgramInputChange(
                                 index,
                                 "image",
-                                e.target.files[0]
+                                URL.createObjectURL(e.target.files[0])
                               )
                             } // Update state with selected image
                             className="mt-2 w-full text-sm"
