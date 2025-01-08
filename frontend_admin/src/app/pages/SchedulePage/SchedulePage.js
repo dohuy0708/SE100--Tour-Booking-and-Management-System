@@ -119,8 +119,9 @@ export default function SchedulePage() {
   };
   if (loading) {
     return (
-      <div className="p-4 bg-gray-100">
-        <p className="text-center text-gray-500">Đang tải dữ liệu...</p>
+      <div className="flex justify-center items-center h-mincontent py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang tải...</span>
       </div>
     );
   }
@@ -185,9 +186,7 @@ export default function SchedulePage() {
                 />
               ))
           ) : (
-            <p className="text-center text-gray-500">
-              Không có lịch trình phù hợp
-            </p>
+            <p className="text-center text-gray-500">Không có dữ liệu</p>
           )}
         </div>
 

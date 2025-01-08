@@ -144,23 +144,32 @@ export default function ViewTourModal({ onClose, tour, reData }) {
           confirmButtonColor: "#3085d6",
         });
       } else {
-        const formData = new FormData();
-        // Thêm cover image
+        // const formData = new FormData();
+        // // Thêm cover image
 
-        // if (tourData.image) {
-        //   formData.append("cover_image", tourData.image);
-        // }
-        formData.append("descri", tourData.description);
-        formData.append("a_price", prices.adultPrice);
-        formData.append("c_price", prices.childPrice);
-        formData.append("i_price", prices.infantPrice);
-        // Thêm program_images và pro_descris
-        days.forEach((day, index) => {
-          if (day.image) {
-            formData.append(`program_images[${index}]`, day.image);
-          }
-          formData.append(`pro_descris[${index}]`, day.dayDesc || "");
-        });
+        // // if (tourData.image) {
+        // //   formData.append("cover_image", tourData.image);
+        // // }
+        // formData.append("descri", tourData.description);
+        // formData.append("a_price", prices.adultPrice);
+        // formData.append("c_price", prices.childPrice);
+        // formData.append("i_price", prices.infantPrice);
+        // // Thêm program_images và pro_descris
+        // days.forEach((day, index) => {
+        //   // if (day.image) {
+        //   //   formData.append(`program_images[${index}]`, day.image);
+        //   // }
+        //   formData.append(`pro_descris[${index}]`, day.dayDesc || "");
+        // });
+
+        const payload = {
+          descri: tourData.description,
+          a_price: prices.adultPrice,
+          c_price: prices.childPrice,
+          i_price: prices.infantPrice,
+          pro_descris: days.map((day) => day.dayDesc || ""), // Mô tả chương trình ngày
+          //    program_images: days.map((day) => day.image), // Nếu muốn truyền URL ảnh (không phải File)
+        };
         console.log("lò ra con");
         try {
           const response = await fetch(
@@ -171,7 +180,13 @@ export default function ViewTourModal({ onClose, tour, reData }) {
                 "Content-Type": "application/json",
               },
               credentials: "include",
-              body: formData,
+              body: JSON.stringify({
+                descri: tourData.description,
+                a_price: prices.adultPrice,
+                c_price: prices.childPrice,
+                i_price: prices.infantPrice,
+                pro_descris: days.map((day) => day.dayDesc || ""),
+              }),
             }
           );
 
@@ -181,7 +196,10 @@ export default function ViewTourModal({ onClose, tour, reData }) {
               title: "Cập nhật tour thành công",
               confirmButtonText: "OK",
               confirmButtonColor: "#3085d6",
-            }).then(() => onClose());
+            }).then(() => {
+              reData();
+              onClose();
+            });
           }
         } catch (error) {
           console.error("Error submitting tour:", error);

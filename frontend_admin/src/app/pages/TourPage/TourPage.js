@@ -7,15 +7,17 @@ import "react-toastify/dist/ReactToastify.css";
 import image2 from "../../../mocks/img/beach-Bai-Dai_111948560.jpg";
 import AddTourModal from "./partials/AddTourModal";
 import { FilterProvider } from "../../context/FilterContext";
-import { notifySuccess } from "../../components/Notification";
+import { notifyError, notifySuccess } from "../../components/Notification";
 
 export default function TourPage() {
   const [tourList, setTourList] = useState();
   const [filteredTours, setFilteredTours] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchTourData = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch("http://localhost:8080/tours/detail", {
         method: "GET",
         headers: {
@@ -34,8 +36,9 @@ export default function TourPage() {
       setFilteredTours(tourlist);
     } catch (e) {
       console.error("Error:", e);
-      alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
+      // notifyError("Lỗi khi lấy dữ ");
     } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -59,7 +62,14 @@ export default function TourPage() {
   const handleReset = () => {
     setFilteredTours(tourList);
   };
-
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-mincontent py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang tải...</span>
+      </div>
+    );
+  }
   return (
     <FilterProvider>
       <div className="bg-gray-100">

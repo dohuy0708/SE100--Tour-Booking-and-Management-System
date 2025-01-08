@@ -126,7 +126,8 @@ export default function AddTourModal({ isOpen, onClose, refreshData }) {
         formData.append(`programs[${index}][program_description]`, day.dayDesc);
 
         if (day.image) {
-          //  formData.append(`programs[${index}][image]`, day.image);
+          console.log("programimage", day.image);
+          // formData.append("programs_images", day.image);
         } else {
           console.warn(`Image for day ${index + 1} is missing.`);
         }

@@ -19,7 +19,7 @@ export default function BookingPage() {
   const [bookingStatuses, setBookingStatuses] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const { tourData } = useFilterContext(); // Lấy dữ liệu từ context
-
+  const [isLoading, setIsLoading] = useState(false);
   const statuses = [
     { id: 1, name: "CHỜ XÁC NHẬN" },
     { id: 2, name: "ĐÃ XÁC NHẬN" },
@@ -31,6 +31,7 @@ export default function BookingPage() {
   const fetchData = async () => {
     try {
       //lấy data từ server
+      setIsLoading(true);
       const response = await fetch("http://localhost:8080/bookings", {
         method: "GET",
         headers: {
@@ -62,6 +63,8 @@ export default function BookingPage() {
       console.log("Bookings", bookings);
     } catch (error) {
       notifyError("Lỗi khi lấy dữ liệu từ server!");
+    } finally {
+      setIsLoading(false);
     }
   };
   // Dữ liệu status cho trang Booking
@@ -116,6 +119,14 @@ export default function BookingPage() {
     setCurrentPage(page);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-mincontent py-6">
+        <div className="animate-spin rounded-full border-t-4 border-blue-500 w-16 h-16"></div>
+        <span className="ml-4 text-lg text-gray-700">Đang tải...</span>
+      </div>
+    );
+  }
   return (
     <FilterProvider>
       <div className="p-0 bg-gray-100">
