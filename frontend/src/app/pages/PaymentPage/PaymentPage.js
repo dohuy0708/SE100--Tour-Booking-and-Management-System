@@ -142,6 +142,7 @@ const PaymentPage = () => {
     setConfirmNextStep(true); // Đánh dấu đã xác nhận
     setShowModal(false); // Đóng modal
     try {
+      setIsLoading(true);
       // Gọi hàm tạo booking
       const result = await handleCreateBooking(
         bookingInfo.name,
@@ -162,6 +163,8 @@ const PaymentPage = () => {
     } catch (error) {
       console.error("Error creating booking:", error);
       toast.error("Lỗi khi tạo đặt chỗ!");
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleCancelNextStep = () => {
