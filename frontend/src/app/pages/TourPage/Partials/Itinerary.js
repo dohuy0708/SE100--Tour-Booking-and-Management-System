@@ -7,7 +7,7 @@ const Itinerary = ({ days }) => {
     <div className="bg-white p-6 rounded-lg shadow-md mt-6">
       <h2 className="text-2xl font-bold text-main mb-4">Lịch trình</h2>
       <div className="flex border-b mb-4">
-        {days.map((_, index) => (
+        {days.map((day, index) => (
           <button
             key={index}
             className={`px-4 py-2 font-medium ${
@@ -33,7 +33,11 @@ const Itinerary = ({ days }) => {
         )} */}
 
         <img
-          src={`/img${activeTab + 1}.png`}
+          src={
+            days[activeTab].image
+              ? `http://localhost:8080${days[activeTab]?.image}`
+              : `/img${activeTab + 1}.png`
+          }
           alt={`Ngày ${activeTab + 1}`}
           className="w-full rounded-lg shadow-md"
         />

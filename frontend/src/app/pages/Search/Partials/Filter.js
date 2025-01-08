@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { getLocations } from "../services/searchService";
+import { useLocation } from "react-router-dom";
 
 const Filter = ({ onApplyFilters }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const type = queryParams.get("type"); // Lấy type từ URL (domestic hoặc abroad)
   // State cho khoảng giá, điểm đến, ngày đi, và danh sách điểm đến
   const [priceRange, setPriceRange] = useState([0, 10000000]); // Mặc định: 0 - 10 triệu
   const [destination, setDestination] = useState("Tất cả"); // Điểm đến mặc định: "Tất cả"
@@ -88,11 +92,21 @@ const Filter = ({ onApplyFilters }) => {
           className="w-full px-3 py-2 border rounded"
         >
           <option value="Tất cả">Tất cả</option>
-          {locations.map((item) => (
-            <option key={item._id} value={item.location_name}>
-              {item.location_name}
-            </option>
-          ))}
+          {type === "domestic"
+            ? locations
+                .map((item) => (
+                  <option key={item._id} value={item.location_name}>
+                    {item.location_name}
+                  </option>
+                ))
+                .slice(0, 63)
+            : locations
+                .map((item) => (
+                  <option key={item._id} value={item.location_name}>
+                    {item.location_name}
+                  </option>
+                ))
+                .slice(-13)}
         </select>
       </div>
 
