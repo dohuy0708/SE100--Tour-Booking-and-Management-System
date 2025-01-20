@@ -1,4 +1,3 @@
-import { group } from 'console';
 import mongooser from "mongoose";
 
 const GroupRoleSchema = new mongooser.Schema({

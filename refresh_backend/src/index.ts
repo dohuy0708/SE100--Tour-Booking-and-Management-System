@@ -6,32 +6,46 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoose from 'mongoose';    
 import router from './routes';
+import dotenv from 'dotenv';
+import path from 'path';
 
-
+dotenv.config();
 
 const app = express();
 
 app.use(cors({
     credentials: true,
+    origin: true
 }));
+
+app.use('/assets',express.static(path.join(process.cwd(),'public/assets')));
 
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+
+const PORT=process.env.PORT||8080;
+const MONGO_URL=process.env.MONGO_URL as string;
+
+if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
+    console.error('Missing MAIL_USER or MAIL_PASS in .env');
+    process.exit(1);
+}
+
 const server=http.createServer(app);
 
-server.listen(8080,()=>{
-    console.log('Server is running on http://localhost:8080');
+server.listen(PORT,()=>{
+    console.log('Server is running on http://localhost:'+PORT);
 });
 
-const MONGO_URL='mongodb+srv://22520523:hp33333333@cluster0.iloao.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+
 
 
 mongoose.Promise=Promise;
 mongoose.connect(MONGO_URL);
 mongoose.connection.on('error',(error:Error)=>{
-    console.log(error);
+    console.log('MongoDB connection error: ',error);
 });
 
 app.use('/', router());

@@ -2,7 +2,7 @@ import mongooser from "mongoose";
 
 const FeedbackSchema = new mongooser.Schema({
     customer_id:{type: mongooser.Schema.Types.ObjectId, ref: 'User', required: true},
-    tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
+    schedule_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Schedule', required: true},
     feedback_content:{type: String, required: true},
     feedback_date:{type: Date, required: true},
 });
@@ -22,9 +22,9 @@ export const getFeedbacks=()=>FeedbackModel.find();
 export const getFeedbackById=(feedback_id:string)=>FeedbackModel.findById(feedback_id);
 
 export const getFeedbackWithDetails=()=>{
-    FeedbackModel.find().populate('customer_id').populate('tour_id');
+    FeedbackModel.find().populate('customer_id').populate('schedule_id');
 }
 
 export const getFeedbackByIdWithDetails=(feedback_id:string)=>{
-    FeedbackModel.findById(feedback_id).populate('customer_id').populate('tour_id');
+    FeedbackModel.findById(feedback_id).populate('customer_id').populate('schedule_id');
 }

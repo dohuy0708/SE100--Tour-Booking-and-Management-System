@@ -16,15 +16,15 @@ export const getAllLocations = async (req: express.Request, res: express.Respons
 export const createNewLocation = async (req: express.Request, res: express.Response) =>{
 
     try{
-        const {name, addr}=req.body;
+        const {name, code}=req.body;
 
-        if(name==null||addr==null||name==undefined||addr==undefined){
+        if(name==null||code==null||name==undefined||code==undefined){
             return res.status(400).json({message:'Thiếu thông tin Location'}).end();
         }
 
         const location= await createLocation({
             location_name: name,
-            address:addr,
+            location_code:code,
         });
 
         return res.status(200).json(location).end();
@@ -38,13 +38,13 @@ export const createNewLocation = async (req: express.Request, res: express.Respo
 export const updateLocation = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {name, addr}=req.body;
+        const {name, code}=req.body;
 
-        if(name==null||addr==null||name==undefined||addr==undefined){
+        if(name==null||code==null||name==undefined||code==undefined){
             return res.status(400).json({message:'Thiếu thông tin Location'}).end();
         }
 
-        const location= await updateLocationById(id, {name, addr});
+        const location= await updateLocationById(id, {location_name:name, loaction_code:code});
 
         if(!location){
             return res.status(400).json({message:'Location không tồn tại'}).end();

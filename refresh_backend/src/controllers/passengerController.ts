@@ -15,14 +15,14 @@ export const getAllPassengers = async (req: express.Request, res: express.Respon
 
 export const createNewPassenger = async (req: express.Request, res: express.Response) =>{
     try{
-        const {name, age, type, passport}=req.body;
-        if(name==null||age==null||type==null||name==undefined||age==undefined||type==undefined){
+        const {booking, name, date, type, passport}=req.body;
+        if(name==null||date==null||type==null||name==undefined||date==undefined||type==undefined || booking==null || booking==undefined){
             return res.status(400).json({message:'Thiếu thông tin hành khách'}).end();
         }
         const passenger= await createPassenger({
-            //booking_id,
+            booking_id:booking,
             passenger_name:name,
-            passenger_age:age,
+            passenger_date:date,
             passenger_type:type,
             passport_number:passport,
         });

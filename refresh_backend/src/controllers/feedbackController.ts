@@ -1,4 +1,4 @@
-import { createFeedback, deleteFeedbackById, updateFeedbackById, getFeedbacks, getFeedbackByIdWithDetails } from "../db/feedback";
+import { createFeedback, deleteFeedbackById, updateFeedbackById, getFeedbacks, getFeedbackByIdWithDetails, FeedbackModel } from "../db/feedback";
 import express from "express";
 
 export const getAllFeedbacks = async (req: express.Request, res: express.Response) => {
@@ -16,15 +16,15 @@ export const getAllFeedbacks = async (req: express.Request, res: express.Respons
 export const createNewFeedback = async (req: express.Request, res: express.Response) =>{
 
     try{    
-        const {customer, tour, content, date}=req.body;
+        const {customer, schedule, content, date}=req.body;
 
-        if(customer==null||tour==null||content==null||date==null||customer==undefined||tour==undefined||content==undefined||date==undefined){
+        if(customer==null||schedule==null||content==null||date==null||customer==undefined||schedule==undefined||content==undefined||date==undefined){
             return res.status(400).json({message:'Thiếu thông tin Feedback'}).end();
         }
 
         const feedback= await createFeedback({
             customer_id: customer,
-            tour_id: tour,
+            schedule_id: schedule,
             feedback_content: content,
             feedback_date: date,
         });
@@ -40,15 +40,15 @@ export const createNewFeedback = async (req: express.Request, res: express.Respo
 export const updateFeedback = async (req: express.Request, res: express.Response) =>{
     try{
         const {id}=req.params;  
-        const {customer, tour, content, date}=req.body;
+        const {customer, schedule, content, date}=req.body;
 
-        if(customer==null||tour==null||content==null||date==null||customer==undefined||tour==undefined||content==undefined||date==undefined){
+        if(customer==null||schedule==null||content==null||date==null||customer==undefined||schedule==undefined||content==undefined||date==undefined){
             return res.status(400).json({message:'Thiếu thông tin Feedback'}).end();
         }
 
         const feedback= await updateFeedbackById(id, {
             customer_id: customer,
-            tour_id: tour,
+            tour_id: schedule,
             feedback_content: content,
             feedback_date: date,
         });
@@ -90,6 +90,22 @@ export const getFeedbackByIdWithTheDetails = async (req: express.Request, res: e
         const feedback = await getFeedbackByIdWithDetails(id) ;
         if (feedback==undefined||feedback==null) {
             return res.status(404).json({ message: 'Feedback không tồn tại' }).end();
+        }
+        return res.status(200).json(feedback).end();
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ message: 'Lỗi' }).end();
+    }
+}
+export const getFeedbackByScheduleId = async (req: express.Request, res: express.Response) => {
+    try {
+        const { schedule_id } = req.params;
+        const feedback = await FeedbackModel.find({schedule_id: schedule_id}).populate({
+            path: 'customer_id',
+            select: 'user_name email phone_number '
+        }) ;
+        if (feedback==undefined||feedback==null) {
+            return res.status(404).json({ message: 'Feedback  tồn tại' }).end();
         }
         return res.status(200).json(feedback).end();
     } catch (error) {
