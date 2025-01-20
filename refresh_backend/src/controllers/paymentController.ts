@@ -1,4 +1,4 @@
-import { createPayment, deletePaymentById, updatePaymentById, getPayments } from "db/payment";
+import { createPayment, deletePaymentById, updatePaymentById, getPayments } from "../db/payment";
 import express from "express";
 
 export const getAllPayments = async (req: express.Request, res: express.Response) => {
@@ -9,7 +9,7 @@ export const getAllPayments = async (req: express.Request, res: express.Response
         }
         catch(error){
             console.log(error);
-            return res.sendStatus(400).json({message:'Lỗi'}).end();
+            return res.status(400).json({message:'Lỗi'}).end();
         }
 }
 
@@ -18,8 +18,8 @@ export const createNewPayment = async (req: express.Request, res: express.Respon
     try{
         const {booking, amount, date, method}=req.body;
 
-        if(!booking||!amount||!date||!method){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Payment'}).end();
+        if(booking==null||amount==null||date==null||method==null||booking==undefined||amount==undefined||date==undefined||method==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Payment'}).end();
         }
 
         const payment= await createPayment({
@@ -33,7 +33,7 @@ export const createNewPayment = async (req: express.Request, res: express.Respon
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -42,8 +42,8 @@ export const updatePayment = async (req: express.Request, res: express.Response)
         const {id}=req.params;  
         const {booking, amount, date, method}=req.body;
 
-        if(!booking||!amount||!date||!method){
-            return res.sendStatus(400).json({message:'Thiếu thông tin Payment'}).end();
+        if(booking==null||amount==null||date==null||method==null||booking==undefined||amount==undefined||date==undefined||method==undefined){
+            return res.status(400).json({message:'Thiếu thông tin Payment'}).end();
         }
 
         const payment= await updatePaymentById(id, {
@@ -54,7 +54,7 @@ export const updatePayment = async (req: express.Request, res: express.Response)
         });
 
         if(!payment){
-            return res.sendStatus(400).json({message:'Payment không tồn tại'}).end();
+            return res.status(400).json({message:'Payment không tồn tại'}).end();
         }
         await payment.save();
 
@@ -62,7 +62,7 @@ export const updatePayment = async (req: express.Request, res: express.Response)
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }
 
@@ -73,13 +73,13 @@ export const deletePayment = async (req: express.Request, res: express.Response)
         const payment= await deletePaymentById(id);
 
         if(!payment){
-            return res.sendStatus(400).json({message:'Payment không tồn tại'}).end();
+            return res.status(400).json({message:'Payment không tồn tại'}).end();
         }
 
         return res.status(200).json(payment).end();
     }
     catch(error){
         console.log(error);
-        return res.sendStatus(400).json({message:'Lỗi'}).end();
+        return res.status(400).json({message:'Lỗi'}).end();
     }
 }

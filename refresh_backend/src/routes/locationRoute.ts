@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewLocation, updateLocation, deleteLocation, getAllLocations } from 'controllers/locationController';
+import { createNewLocation, updateLocation, deleteLocation, getAllLocations } from '../controllers/locationController';
 
 export default (router: express.Router) => {
     

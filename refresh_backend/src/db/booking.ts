@@ -3,6 +3,7 @@ import mongooser from "mongoose";
 const BookingSchema = new mongooser.Schema({
     customer_id:{type: mongooser.Schema.Types.ObjectId, ref: 'User', required: true},
     tour_id:{type: mongooser.Schema.Types.ObjectId, ref: 'Tour', required: true},
+    number_slots:{type: Number, required: true},
     booking_date:{type: Date, required: true}, 
     total_price:{type: mongooser.Types.Decimal128,
                     required: true,
@@ -32,3 +33,11 @@ export const deleteBookingById=(booking_id:string)=>BookingModel.findByIdAndDele
 export const getBookings=()=>BookingModel.find();
 
 export const getBookingById=(booking_id:string)=>BookingModel.findById(booking_id);
+
+export const getBookingWithDetails=()=>{
+    BookingModel.find().populate('customer_id').populate('tour_id');
+}
+
+export const getBookingByIdWithDetails=(booking_id:string)=>{
+    BookingModel.findById(booking_id).populate('customer_id').populate('tour_id');
+}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewTour, updateTour, deleteTour, getAllTours, getTourByTourCode } from 'controllers/tourController';
+import { createNewTour, updateTour, deleteTour, getAllTours, getTourByTourCode } from '../controllers/tourController';
 
 export default (router: express.Router) => {
     router.post('/tours', createNewTour as any);

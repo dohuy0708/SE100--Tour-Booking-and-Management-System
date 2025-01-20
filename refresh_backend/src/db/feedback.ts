@@ -20,3 +20,11 @@ export const deleteFeedbackById=(feedback_id:string)=>FeedbackModel.findByIdAndD
 export const getFeedbacks=()=>FeedbackModel.find();
 
 export const getFeedbackById=(feedback_id:string)=>FeedbackModel.findById(feedback_id);
+
+export const getFeedbackWithDetails=()=>{
+    FeedbackModel.find().populate('customer_id').populate('tour_id');
+}
+
+export const getFeedbackByIdWithDetails=(feedback_id:string)=>{
+    FeedbackModel.findById(feedback_id).populate('customer_id').populate('tour_id');
+}

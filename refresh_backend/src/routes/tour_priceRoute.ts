@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewPrice, updatePrice, deletePrice, getAllPrices } from 'controllers/tour_priceController';
+import { createNewPrice, updatePrice, deletePrice, getAllPrices } from '../controllers/tour_priceController';
 
 export default (router: express.Router) => {
     router.post('/prices', createNewPrice as any);

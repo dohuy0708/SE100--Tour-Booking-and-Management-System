@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewPolicy, deletePolicy, updatePolicy, getAllPolicies } from 'controllers/tour_policyController';
+import { createNewPolicy, deletePolicy, updatePolicy, getAllPolicies } from '../controllers/tour_policyController';
 
 
 export default (router: express.Router) => {

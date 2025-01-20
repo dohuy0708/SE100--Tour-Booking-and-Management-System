@@ -1,5 +1,5 @@
 import express from 'express';
-import { createNewProgram, deleteProgram, updateProgram, getAllPrograms } from 'controllers/tour_programController';
+import { createNewProgram, deleteProgram, updateProgram, getAllPrograms } from '../controllers/tour_programController';
 
 export default (router: express.Router) => {
     

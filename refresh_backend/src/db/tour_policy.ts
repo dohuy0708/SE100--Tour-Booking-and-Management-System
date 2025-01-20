@@ -1,6 +1,7 @@
 import mongooser from "mongoose";
 
 const TourPolicySchema = new mongooser.Schema({
+    policy_name:{type: String, required: true},
     policy_type:{
         type: [String],
         enum:['DOMESTIC','INTERNATIONAL'],
