@@ -112,7 +112,7 @@ const tourInfo = {
 };
 const paymentMethods = [
   {
-    id: "cash",
+    id: "CASH",
     label: "Tiền mặt",
     details: (
       <p>
@@ -122,7 +122,7 @@ const paymentMethods = [
     ),
   },
   {
-    id: "bank",
+    id: "BANK_TRANSFER",
     label: "Chuyển khoản",
     details: (
       <>
@@ -148,17 +148,7 @@ const paymentMethods = [
     ),
   },
   {
-    id: "zalopay",
-    label: "Thanh toán bằng ZaloPay",
-    details: (
-      <p>
-        Quý khách có thể thanh toán qua ví điện tử ZaloPay bằng cách quét mã QR
-        hoặc thực hiện giao dịch trên ứng dụng ZaloPay.
-      </p>
-    ),
-  },
-  {
-    id: "credit",
+    id: "CREDIT_CARD",
     label: "Thẻ tín dụng",
     details: (
       <p>

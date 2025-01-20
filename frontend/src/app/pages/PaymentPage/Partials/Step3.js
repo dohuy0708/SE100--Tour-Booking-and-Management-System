@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { sPayment } from "../paymentStore";
 import { useNavigate } from "react-router-dom";
-export default function Step3() {
+export default function Step3({ tour }) {
   const navigate = useNavigate();
   const handleBackToHome = () => {
     navigate("/");
@@ -34,7 +34,7 @@ export default function Step3() {
 
           <div className="flex items-center space-x-2">
             <span className="font-medium">Mã Tour:</span>
-            <span className="text-main">DN1213131</span>
+            <span className="text-main">{tour.tour_code}</span>
           </div>
 
           <div className="mt-6">

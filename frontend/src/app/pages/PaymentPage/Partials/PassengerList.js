@@ -2,25 +2,31 @@ import React from "react";
 import PassengerInfo from "./PassengerInfo"; // Import component đã có
 import { sPayment } from "../paymentStore";
 
-const PassengerList = ({ day }) => {
+const PassengerList = ({ price }) => {
   // Lấy danh sách hành khách từ Signify store
   const sPassengers = sPayment.slice((n) => n.passengers).use();
 
   // Định nghĩa loại hành khách
   const passengerTypes = {
-    adult: { label: "Người lớn", description: "Từ 12 trở lên" },
-    child: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
-    baby: { label: "Em bé", description: "Dưới 3 tuổi" },
+    ADULT: { label: "Người lớn", description: "Từ 12 trở lên" },
+    CHILD: { label: "Trẻ em", description: "Từ 3 - 11 tuổi" },
+    INFANT: { label: "Em bé", description: "Dưới 3 tuổi" },
   };
 
   // Tăng số lượng hành khách
   const handleIncrement = (type) => {
+    console.log("giasL: ", price);
     sPayment.set((state) => {
-      state.value.passengers.push({ type, name: "", gender: "Nam", dob: "" });
+      state.value.passengers.push({ type, name: "", gender: "Nam", date: "" });
     });
-    var iN = type === "adult" ? 0 : type === "child" ? 1 : 2;
+    var iN =
+      type === "ADULT"
+        ? "adult_price"
+        : type === "CHILD"
+        ? "children_price"
+        : "infant_price";
     sPayment.set((pre) => {
-      pre.value.price += day.tickets[iN].price;
+      pre.value.price += parseFloat(price[iN].$numberDecimal);
     });
   };
 
@@ -30,9 +36,14 @@ const PassengerList = ({ day }) => {
       const index = state.value.passengers.findIndex((p) => p.type === type);
       if (index > -1) state.value.passengers.splice(index, 1);
     });
-    var iN = type === "adult" ? 0 : type === "child" ? 1 : 2;
+    var iN =
+      type === "ADULT"
+        ? "adult_price"
+        : type === "CHILD"
+        ? "children_price"
+        : "infant_price";
     sPayment.set((pre) => {
-      pre.value.price -= day.tickets[iN].price;
+      pre.value.price -= parseFloat(price[iN].$numberDecimal);
     });
   };
 
@@ -95,6 +106,8 @@ const PassengerList = ({ day }) => {
         <h3 className="text-lg font-semibold mb-4">Thông tin hành khách</h3>
         {sPassengers.map((detail, index) => (
           <PassengerInfo
+            type={detail.type}
+            price={price}
             key={index}
             typeLabel={passengerTypes[detail.type].label}
             index={index}

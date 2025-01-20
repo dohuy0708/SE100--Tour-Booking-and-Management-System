@@ -1,71 +1,112 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   UserIcon,
   KeyIcon,
   ShoppingCartIcon,
-  ArrowLeftEndOnRectangleIcon,
+  ArrowLeftOnRectangleIcon,
+  PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileTab({ selectedTab, setSelectedTab }) {
-  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng trang
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Quản lý trạng thái modal
+  const navigate = useNavigate();
 
   const tabs = [
     {
       key: "profile",
       label: "Hồ sơ",
-      icon: <UserIcon className="h-5 w-5 mr-2" />,
+      icon: <UserIcon className="h-6 w-6 mr-3" />,
     },
     {
       key: "bookings",
       label: "Đặt chỗ của tôi",
-      icon: <ShoppingCartIcon className="h-5 w-5 mr-2" />,
+      icon: <ShoppingCartIcon className="h-6 w-6 mr-3" />,
+    },
+    {
+      key: "tours",
+      label: "Tour đã đi",
+      icon: <PaperAirplaneIcon className="h-6 w-6 mr-3" />,
     },
     {
       key: "changePassword",
-      label: "Đổi Mật Khẩu",
-      icon: <KeyIcon className="h-5 w-5 mr-2" />,
+      label: "Đổi mật khẩu",
+      icon: <KeyIcon className="h-6 w-6 mr-3" />,
     },
     {
       key: "logout",
       label: "Đăng xuất",
-      icon: <ArrowLeftEndOnRectangleIcon className="h-5 w-5 mr-2" />,
+      icon: <ArrowLeftOnRectangleIcon className="h-6 w-6 mr-3" />,
     },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    // Dispatch một custom event khi đăng xuất
+    localStorage.removeItem("user_id");
     window.dispatchEvent(new Event("userLogout"));
     navigate("/");
   };
+
   return (
-    <div className="w-1/4 bg-white">
+    <div className="bg-white rounded-lg shadow-md">
       <div>
-        <h2 className="text-xl text-gray-600 font-bold p-4 border-b">
+        <h2 className="text-2xl font-bold text-gray-800 p-6 border-b">
           Hồ Sơ Của Tôi
         </h2>
-        <ul>
+        <ul className="space-y-2 mt-4">
           {tabs.map((tab) => (
             <li
               key={tab.key}
               onClick={() => {
                 if (tab.key === "logout") {
-                  handleLogout();
+                  setShowLogoutModal(true); // Hiện modal khi nhấn Đăng xuất
                 } else {
                   setSelectedTab(tab.key);
                 }
               }}
-              className={`flex items-center text-gray-700 py-3 px-4 border-b border-gray-300 bg-gray-200 hover:text-main hover:bg-gray-50 cursor-pointer ${
-                selectedTab === tab.key ? "font-bold text-main bg-gray-50" : ""
-              }`}
+              className={`flex items-center px-5 py-4 mx-2 rounded-lg cursor-pointer transition-all duration-200 
+                ${
+                  selectedTab === tab.key
+                    ? "bg-main text-white font-semibold shadow-lg"
+                    : "bg-white text-gray-700 hover:bg-gray-100 hover:shadow-sm"
+                }`}
             >
               {tab.icon}
-              {tab.label}
+              <span>{tab.label}</span>
             </li>
           ))}
         </ul>
       </div>
+
+      {/* Modal xác nhận đăng xuất */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Xác nhận đăng xuất
+            </h3>
+            <p className="text-sm text-gray-600 mb-6">
+              Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={() => {
+                  setShowLogoutModal(false);
+                  handleLogout();
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Đăng xuất
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
