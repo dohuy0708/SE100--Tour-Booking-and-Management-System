@@ -1,0 +1,45 @@
+import express from 'express';
+import {get, merge} from 'lodash';
+import {getUserBySessionToken} from '../db/user';
+
+export const isAuthenticated=async(req:express.Request, res:express.Response,next: express.NextFunction)=>{
+    try{
+        const sessionToken=req.cookies['5H-AUTH'];
+        if(!sessionToken){
+            res.status(403).json({message:'Chưa từng đăng nhập'}).end();
+            return;
+        }
+        const exitstingUser=await getUserBySessionToken(sessionToken);
+        if(!exitstingUser){
+            res.status(403).json({message:'Chưa đăng nhập'}).end();
+            return
+        }
+        merge(req, {indentity: exitstingUser});
+        next();
+    }
+    catch(error){
+        console.log(error);
+        res.sendStatus(400).json({message:'Lỗi'});
+    }
+}
+
+export const isOwner=async(req:express.Request, res:express.Response, next: express.NextFunction)=>{
+    try{
+        const {id}=req.params;
+        const currentUserId=get(req, 'indentity._id') as string;
+
+        if(!currentUserId){
+            res.sendStatus(403).json({message:'Chưa đăng nhập'}).end();
+            return;
+        }
+        if(currentUserId.toString()!==id){
+            res.sendStatus(403).json({message:'Không có quyền'}).end();
+            return;
+        }
+        next();
+    }
+    catch(error){   
+        console.log(error);
+        res.sendStatus(400).json({message:'Lỗi'}).end();
+    }
+}
