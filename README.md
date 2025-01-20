@@ -40,11 +40,16 @@ KazeTravel is the tour booking and management system is a website and management
  * Generate reports and statistics
 ## UI
 ### Customer
+* Home
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/Home%20(2).png)
 
+* Search
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/search.png)
 
+* Booking
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/tour%20info.png)
+
+* Infomation
 
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/info.png)
 
@@ -55,11 +60,18 @@ KazeTravel is the tour booking and management system is a website and management
 
 
 ### Admin 
+* Home
  ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/home.png)
+
+* Booking
 
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/booking.png)
 
+* Tour
+
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/tour.png)
+
+* Staff
 
 ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/staff.png)
 
