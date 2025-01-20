@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomerModal from "./CustomerModal"; // Import modal
+import { toast } from "react-toastify";
 
 export default function CustomerTableComponent({ searchQuery }) {
   const [customers, setCustomers] = useState([]);
@@ -29,7 +30,7 @@ export default function CustomerTableComponent({ searchQuery }) {
       setCustomers(customerData);
     } catch (e) {
       console.error("Error:", e);
-      alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
+      toast.error("Có lỗi xảy ra khi lấy dữ liệu từ server!");
     } finally {
       setLoading(false);
     }

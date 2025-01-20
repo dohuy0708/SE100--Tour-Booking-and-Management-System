@@ -154,7 +154,7 @@ export default function EditBookingModal({
                   type="text"
                   className="mt-1 p-2 border rounded"
                   placeholder="Họ tên"
-                  value={Booking.customer_id.user_name}
+                  value={Booking.customer.user_name}
                   disabled
                 />
               </div>
@@ -166,7 +166,7 @@ export default function EditBookingModal({
                   type="text"
                   className="mt-1 p-2 border rounded"
                   placeholder="Số điện thoại"
-                  value={Booking.customer_id.phone_number}
+                  value={Booking.customer.phone_number}
                   disabled
                 />
               </div>
@@ -178,7 +178,7 @@ export default function EditBookingModal({
                   type="email"
                   className="mt-1 p-2 border rounded"
                   placeholder="Email"
-                  value={Booking.customer_id.email}
+                  value={Booking.customer.email}
                   disabled
                 />
               </div>
@@ -190,9 +190,9 @@ export default function EditBookingModal({
                   type="text"
                   className="mt-1 p-2 border rounded"
                   value={
-                    new Date(
-                      Booking.customer_id.date_of_birth
-                    ).toLocaleDateString("vi-VN") || "trống"
+                    new Date(Booking.customer.date_of_birth).toLocaleDateString(
+                      "vi-VN"
+                    ) || "trống"
                   }
                   disabled
                 />
@@ -306,7 +306,7 @@ export default function EditBookingModal({
                   className="mt-2 w-full p-2 border rounded"
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  disabled={Booking.status === "ĐÃ HỦY"} // Disable khi status là "ĐÃ HỦY"
+                  disabled={Booking.status !== "CHỜ XÁC NHẬN"} // Disable khi status là "ĐÃ HỦY"
                 >
                   {statuses.map((s) => (
                     <option key={s.id} value={s.name}>

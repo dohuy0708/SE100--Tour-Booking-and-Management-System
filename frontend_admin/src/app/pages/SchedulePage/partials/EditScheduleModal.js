@@ -149,9 +149,15 @@ export default function ScheduleModal({
                     Ngày khởi hành:
                   </h4>
                   <input
-                    type="date"
+                    type="String"
                     className="mt-2 w-full p-2 border rounded"
-                    value={schedule.departure_date}
+                    value={
+                      schedule?.departure_date
+                        ? new Date(schedule.departure_date)
+                            .toISOString()
+                            .split("T")[0]
+                        : ""
+                    }
                     disabled
                   />
                 </div>
@@ -179,6 +185,7 @@ export default function ScheduleModal({
                     className="mt-2 w-full p-2 border rounded"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
+                    disabled={status === "ĐÃ KẾT THÚC"}
                   >
                     {statuses.map((s) => (
                       <option key={s.id} value={s.name}>

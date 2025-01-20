@@ -3,7 +3,7 @@ import StaffModal from "./StaffModal";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { notifyError, notifySuccess } from "../../../components/Notification";
 
@@ -34,7 +34,7 @@ export default function StaffTableComponent({ searchQuery }) {
         setStaff(staffData);
       } catch (e) {
         console.error("Error:", e);
-        alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
+        toast.error("Có lỗi xảy ra khi lấy dữ liệu từ server!");
       } finally {
         setLoading(false);
       }

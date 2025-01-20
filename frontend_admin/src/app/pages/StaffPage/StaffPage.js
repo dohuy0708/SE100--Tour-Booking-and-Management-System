@@ -48,6 +48,7 @@ export default function StaffPage() {
         </button>
       </div>
       <StaffTableComponent searchQuery={searchQuery}></StaffTableComponent>
+      <ToastContainer autoClose={2000} />
     </div>
   );
 }
