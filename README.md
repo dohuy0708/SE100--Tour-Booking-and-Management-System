@@ -40,28 +40,30 @@ KazeTravel is the tour booking and management system is a website and management
  * Generate reports and statistics
 ## UI
 ### Customer
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;  ">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/Home%20(2).png" alt="Ảnh 1" style="width: 500px; height: 300px; object-fit: cover;">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/search.png" alt="Ảnh 1" style="width: 500px; height: 300px;object-fit: cover;">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/tour%20info.png" alt="Ảnh 1" style="width: 500px; height: 300px;object-fit: cover;">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/info.png" alt="Ảnh 1" style="width: 500px; height: 300px; object-fit: cover;">
-    
-</div>
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/Home%20(2).png)
+
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/search.png)
+
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/tour%20info.png)
+
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend_admin/public/info.png)
+
+ 
 
 
 
 
 
 ### Admin 
+ ![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/home.png)
+
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/booking.png)
+
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/tour.png)
+
+![Image](https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/staff.png)
+
  
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;  ">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/home.png" alt="Ảnh 1" style="width: 500px; height: 300px; object-fit: cover;">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/booking.png" alt="Ảnh 1" style="width: 500px; height: 300px;object-fit: cover;">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/tour.png" alt="Ảnh 1" style="width: 500px; height: 300px;object-fit: cover;">
-   <img src="https://github.com/dohuy0708/SE100-Tour_Booking_and_Management_System/blob/master/frontend/public/staff.png" alt="Ảnh 1" style="width: 500px; height: 300px; object-fit: cover;">
-</div>
-
 
 
 ## Demo
