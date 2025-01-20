@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Banner from "../../components/Banner";
+import TourInfo from "./Partials/TourInfo";
+import { useParams } from "react-router-dom";
+import { getTourInfo } from "../../Services/userService";
+const TourPage = () => {
+  const { id } = useParams();
 
-export default function TourPage() {
+  const [tourDetail, setTourDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTourDetail = async () => {
+      try {
+        const response = await getTourInfo(id);
+        if (response) {
+          setTourDetail(response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch tour details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTourDetail();
+  }, [id]);
+
+  if (loading) return <p>Đang tải...</p>;
+  if (!tourDetail) return <p>Không tìm thấy thông tin tour!</p>;
+
   return (
     <div>
-      <h1>Tour Page</h1>
+      <Banner tour={{ title: tourDetail.title, img: tourDetail.img }} />
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
+        <TourInfo tour={tourDetail} />
+      </div>
     </div>
   );
-}
+};
+
+export default TourPage;
