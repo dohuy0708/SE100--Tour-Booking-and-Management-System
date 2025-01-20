@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useFilterContext } from "../../context/FilterContext.js";
 
-export default function FilterComponent({ onFilterApply, onReset, status }) {
+export default function HistoryFilterComponent({
+  onFilterApply,
+  onReset,
+  status,
+}) {
   const { locations } = useFilterContext(); // Lấy dữ liệu từ context
   const [filters, setFilters] = useState({
     date: "",
@@ -9,13 +13,17 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
     status: "", // Trạng thái sẽ được lấy từ props
   });
   // Kiểm tra dữ liệu locations và status
+  useEffect(() => {
+    console.log("Locations: ", locations); // Kiểm tra dữ liệu location từ context
+    console.log("Status: ", status); // Kiểm tra dữ liệu status từ props
+  }, [locations, status]);
 
   // Khi status props thay đổi, cập nhật lại state filters.status
   useEffect(() => {
     if (status && status.length > 0) {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        status: "", // Set mặc định nếu cần
+        status: status[0].id || "", // Set mặc định nếu cần
       }));
     }
   }, [status]); // Chạy lại mỗi khi status thay đổi
@@ -68,7 +76,7 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
           <option value="">Tất cả</option>
           {locations.map((loc) => (
             <option key={loc.id} value={loc.id}>
-              {loc.location_name}
+              {loc.locationName}
             </option>
           ))}
         </select>
@@ -84,7 +92,7 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
         >
           <option value="">Tất cả</option>
           {status.map((stat) => (
-            <option key={stat.id} value={stat.name}>
+            <option key={stat.id} value={stat.id}>
               {stat.name}
             </option>
           ))}

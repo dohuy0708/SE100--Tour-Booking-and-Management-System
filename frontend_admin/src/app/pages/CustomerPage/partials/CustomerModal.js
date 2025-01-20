@@ -1,44 +1,43 @@
-export default function CustomerModal({ isOpen, onClose }) {
+import { faLuggageCart } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+
+export default function CustomerModal({ isOpen, onClose, customer }) {
   // Kiểm tra nếu modal không mở
-  if (!isOpen) return null;
 
-  // Dữ liệu ảo
-  const customer = {
-    id: 4,
-    name: "Pham Minh D",
-    email: "minhd@example.com",
-    phone: "0934123456",
-    birthday: "10-08-1987",
-    listTour: [
-      {
-        bookingId: 6,
-        schedule: {
-          scheduleId: 6,
-          departureDate: "2025-02-01",
-          tour: {
-            tourId: 6,
-            tourName: "Da Nang - Ba Na Hills - My Khe Beach",
+  const [ListBooking, setListBooking] = useState([{}]);
+  // xử lý feach data từ server .
+  // Fetch customer data khi component mount
+  const fetchCustomerData = async () => {
+    console.log(" model customer", customer);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/bookings/customer/${customer._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
           },
-        },
-        bookingDate: "2024-12-15",
-        totalPrice: 10800000,
-      },
-      {
-        bookingId: 7,
-        schedule: {
-          scheduleId: 7,
-          departureDate: "2025-03-01",
-          tour: {
-            tourId: 7,
-            tourName: "Hue Ancient Citadel Tour",
-          },
-        },
-        bookingDate: "2024-12-20",
-        totalPrice: 7500000,
-      },
-    ],
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      const listbooking = await response.json();
+      console.log("List booking", listbooking);
+      setListBooking(listbooking);
+    } catch (e) {
+      console.error("Error:", e);
+      //alert("Có lỗi xảy ra khi lấy dữ liệu từ server!");
+    } finally {
+    }
   };
-
+  useEffect(() => {
+    fetchCustomerData();
+  }, [customer]);
+  if (!isOpen) return null; // Không render nếu modal không được mở
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center pt-8 place-items-start z-50">
       <div className="bg-white rounded-lg shadow-lg w-3/4 p-6 flex flex-col max-h-[70vh]">
@@ -83,7 +82,7 @@ export default function CustomerModal({ isOpen, onClose }) {
                   type="text"
                   className="mt-1 p-2 border rounded"
                   placeholder="Họ tên"
-                  value={customer.name}
+                  value={customer?.user_name}
                   readOnly
                 />
               </div>
@@ -95,7 +94,7 @@ export default function CustomerModal({ isOpen, onClose }) {
                   type="text"
                   className="mt-1 p-2 border rounded"
                   placeholder="Số điện thoại"
-                  value={customer.phone}
+                  value={customer?.phone_number}
                   readOnly
                 />
               </div>
@@ -107,7 +106,7 @@ export default function CustomerModal({ isOpen, onClose }) {
                   type="email"
                   className="mt-1 p-2 border rounded"
                   placeholder="Email"
-                  value={customer.email}
+                  value={customer?.email}
                   readOnly
                 />
               </div>
@@ -116,9 +115,9 @@ export default function CustomerModal({ isOpen, onClose }) {
               <div className="flex flex-col">
                 <label className="font-medium mb-1">Ngày sinh</label>
                 <input
-                  type="date"
+                  type="String"
                   className="mt-1 p-2 border rounded"
-                  value={customer.birthday}
+                  value={new Date(customer?.date_of_birth).toLocaleDateString()}
                   readOnly
                 />
               </div>
@@ -126,7 +125,7 @@ export default function CustomerModal({ isOpen, onClose }) {
           </div>
 
           {/* Customer Tour Information */}
-          {customer?.listTour && customer.listTour.length > 0 && (
+          {ListBooking && ListBooking?.length > 0 && (
             <div className="mb-4">
               <h4 className="font-semibold text-xl text-blue-500 mb-2">
                 Thông tin tour đã đặt
@@ -134,46 +133,51 @@ export default function CustomerModal({ isOpen, onClose }) {
 
               {/* Total number of tours */}
               <div className="mb-2">
-                <strong>Tổng số tour đã đặt:</strong> {customer.listTour.length}
+                <strong>Tổng số tour đã đặt:</strong> {ListBooking?.length}
               </div>
 
               {/* List of tours */}
               {/* List of tours */}
               <div className="grid grid-cols-2 gap-4">
-                {customer.listTour.map((tour) => (
+                {ListBooking.map((tour) => (
                   <div
-                    key={tour.bookingId}
+                    key={tour._id}
                     className="border p-4 rounded-lg bg-gray-50"
                   >
                     <div className="font-semibold text-lg">
                       <div>
                         <label className="font-semibold">Tên tour:</label>{" "}
                         <span className="font-light">
-                          {tour.schedule.tour.tourName}
+                          {tour.schedule_id?.tour_id?.tour_name}
                         </span>
                       </div>
                       <div>
                         <label className="font-semibold">Mã chuyến đi:</label>{" "}
-                        <span className="font-light">{tour.bookingId}</span>
+                        <span className="font-light">
+                          {tour.schedule_id?.tour_id?.tour_code}
+                        </span>
                       </div>
                       <div>
                         <label className="font-semibold">Ngày đặt:</label>{" "}
                         <span className="font-light">
-                          {new Date(tour.bookingDate).toLocaleDateString()}
+                          {new Date(tour?.booking_date).toLocaleDateString()}
                         </span>
                       </div>
                       <div>
                         <label className="font-semibold">Ngày đi:</label>{" "}
                         <span className="font-light">
                           {new Date(
-                            tour.schedule.departureDate
+                            tour?.schedule_id?.departure_date
                           ).toLocaleDateString()}
                         </span>
                       </div>
                       <div>
                         <label className="font-semibold">Giá tiền:</label>{" "}
                         <span className="font-light">
-                          {tour.totalPrice.toLocaleString()} VND
+                          {parseFloat(
+                            tour?.total_price?.$numberDecimal
+                          ).toLocaleString()}{" "}
+                          VND
                         </span>
                       </div>
                     </div>

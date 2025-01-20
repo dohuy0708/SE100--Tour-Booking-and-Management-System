@@ -1,40 +1,31 @@
-import FeedbackPage from "../pages/FeedbackPage";
 import HistoryPage from "../pages/HistoryPage";
-import LocationPage from "../pages/LocationPage";
+import SignUp from "../pages/SignupPage";
+
 import StaffPage from "../pages/StaffPage";
 import TourPage from "../pages/TourPage";
-
 const adminRoutes = [
-  {
-    //   path: "/tour",
-    //   page: TourPage,
-    //   isShowLayout: true,
-    //   roles: ["admin"], // Chỉ admin có quyền
-  },
   {
     path: "/Tour",
     page: TourPage,
     isShowLayout: true,
+    roles: ["ADMIN"], // Chỉ admin có quyền truy cập
   },
   {
     path: "/Staff",
     page: StaffPage,
     isShowLayout: true,
+    roles: ["ADMIN"], // Chỉ admin có quyền truy cập
   },
   {
     path: "/History",
     page: HistoryPage,
     isShowLayout: true,
+    roles: ["ADMIN"], // Chỉ admin có quyền truy cập
   },
   {
-    path: "/Feedback",
-    page: FeedbackPage,
-    isShowLayout: true,
-  },
-  {
-    path: "/Location",
-    page: LocationPage,
-    isShowLayout: true,
+    path: "/signup",
+    page: SignUp,
+    roles: ["ADMIN"], // Người dùng hoặc admin được phép truy cập
   },
 ];
 

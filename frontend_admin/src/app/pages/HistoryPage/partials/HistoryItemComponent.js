@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import EditScheduleModal from "./EditScheduleModal";
-
-export default function ScheduleItemComponent({ schedule, refeshData }) {
+import HistoryModal from "./HistoryModal";
+import image from "../../../../mocks/img/Vinpearl-amusement-park_245977546.jpg";
+export default function HistoryItemComponent({ schedule }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState(schedule);
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
 
   const handleEdit = (schedule) => {
     setSelectedSchedule(schedule); // Lưu thông tin lịch trình cần chỉnh sửa
@@ -19,7 +19,7 @@ export default function ScheduleItemComponent({ schedule, refeshData }) {
     <>
       <div className="flex items-center p-4 bg-white rounded-md shadow-md">
         {/* Tour Image */}
-        <div className="w-32 h-24 mr-4">
+        <div className="w-34 h-24 mr-4">
           <img
             src={`http://localhost:8080${schedule?.tour_image}`}
             alt={"Tour Image"}
@@ -31,10 +31,10 @@ export default function ScheduleItemComponent({ schedule, refeshData }) {
         <div className="flex flex-1">
           {/* Thông tin tour */}
           <div className="flex-1">
-            <p className="font-medium  text-red-500">
+            <p className="font-medium text-red-500">
               Mã chuyến đi: {schedule.schedule_code}
             </p>
-            <p className="font-medium  text-blue-500">{schedule.tour_name}</p>
+            <p className="font-medium text-blue-500">{schedule.tour_name}</p>
             <p className="text-sm">Mã tour: {schedule.tour_code}</p>
           </div>
 
@@ -44,6 +44,7 @@ export default function ScheduleItemComponent({ schedule, refeshData }) {
             <p className="font-bold text-blue-500">
               {new Date(schedule.departure_date).toLocaleDateString()}
             </p>
+
             <p className="text-sm text-gray-600">
               Thời gian: {schedule.departure_time}
             </p>
@@ -53,60 +54,46 @@ export default function ScheduleItemComponent({ schedule, refeshData }) {
           <div className="flex-1 flex flex-col items-center justify-center">
             <p className="font-medium">Sức chứa: {schedule.capacity}</p>
             <p className="font-medium text-yellow-500">
-              Còn trống: {schedule.available_slots}
+              Chỗ đã đặt:{" "}
+              {schedule.capacity && schedule.available_slots !== undefined
+                ? schedule.capacity - schedule.available_slots
+                : "NaN"}{" "}
             </p>
           </div>
-
-          {/* Tình trạng */}
-          <div className="mr-4 w-34 flex items-center justify-center">
-            <p
-              className={`px-2 py-1 w-24 text-sm font-medium text-center rounded-md ${
-                schedule.status === "ĐANG BÁN"
-                  ? "bg-green-100 text-green-600"
-                  : schedule.status === "ĐÃ KẾT THÚC"
-                  ? "bg-gray-100 text-gray-600"
-                  : schedule.status === "CHỜ DIỄN RA"
-                  ? "bg-blue-100 text-blue-600"
-                  : schedule.status === "ĐANG DIỄN RA"
-                  ? "bg-purple-100 text-purple-600"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {schedule.status}
-            </p>
-          </div>
-
-          {/* Button Edit */}
           <div className="flex items-center w-34">
             <button
               onClick={() => handleEdit(schedule)}
-              className="px-4 py-2 ml-4"
+              className="px-4 py-2 ml-4 bg-blue-400 text-white rounded-md flex items-center justify-center"
+              style={{
+                backgroundImage: 'url("/path/to/your-image.jpg")',
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
             >
+              Phản hồi
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
+                fill="none"
                 viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 ml-2"
               >
                 <path
-                  fill="currentColor"
-                  d="M21 12a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6a1 1 0 0 0 0-2H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-6a1 1 0 0 0-1-1m-15 .76V17a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .71-.29l6.92-6.93L21.71 8a1 1 0 0 0 0-1.42l-4.24-4.29a1 1 0 0 0-1.42 0l-2.82 2.83l-6.94 6.93a1 1 0 0 0-.29.71m10.76-8.35l2.83 2.83l-1.42 1.42l-2.83-2.83ZM8 13.17l5.93-5.93l2.83 2.83L10.83 16H8Z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
                 />
               </svg>
             </button>
           </div>
         </div>
       </div>
-
-      {/* Edit Schedule Modal */}
-      {isModalOpen && (
-        <EditScheduleModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          schedule={selectedSchedule}
-          fetchData={refeshData}
-        />
-      )}
+      <HistoryModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        schedule={selectedSchedule}
+      ></HistoryModal>
     </>
   );
 }

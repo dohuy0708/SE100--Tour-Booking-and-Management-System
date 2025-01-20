@@ -21,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-const RevenueChart = () => {
+const RevenueChart = ({ labels, data }) => {
   const chartRef = useRef(null); // Dùng để lưu trữ instance của biểu đồ
   const canvasRef = useRef(null); // Dùng để tham chiếu đến phần tử canvas
 
@@ -36,24 +36,11 @@ const RevenueChart = () => {
     chartRef.current = new ChartJS(ctx, {
       type: "line",
       data: {
-        labels: [
-          "5k",
-          "10k",
-          "15k",
-          "20k",
-          "25k",
-          "30k",
-          "35k",
-          "40k",
-          "45k",
-          "50k",
-          "55k",
-          "60k",
-        ],
+        labels,
         datasets: [
           {
             label: "Doanh thu",
-            data: [20, 40, 60, 100, 80, 90, 70, 60, 50, 80, 90, 70],
+            data,
             borderColor: "#4F46E5",
             backgroundColor: "rgba(79, 70, 229, 0.2)",
             fill: true,
@@ -69,7 +56,10 @@ const RevenueChart = () => {
             beginAtZero: true,
             ticks: {
               callback: function (value) {
-                return value + "%"; // Hiển thị đơn vị %
+                return value.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                });
               },
             },
           },
@@ -83,7 +73,7 @@ const RevenueChart = () => {
         chartRef.current.destroy();
       }
     };
-  }, []);
+  }, [labels, data]);
 
   return (
     <div style={{ position: "relative", height: "400px" }}>

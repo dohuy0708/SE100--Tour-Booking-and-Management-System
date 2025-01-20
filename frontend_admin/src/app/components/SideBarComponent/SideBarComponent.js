@@ -2,7 +2,10 @@ import React from "react";
 import Logo from "../../assets/img/Logo.png";
 import LogoName from "../../assets/img/Logo_name.png";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 export default function SideBarComponent() {
+  const { user } = useAuth();
+
   return (
     <div class="  ">
       {" "}
@@ -48,6 +51,7 @@ export default function SideBarComponent() {
                     TRANG CHỦ
                   </NavLink>
                 </li>
+
                 <li>
                   <NavLink
                     to="/Booking"
@@ -123,136 +127,90 @@ export default function SideBarComponent() {
                     KHÁCH HÀNG
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
+                {/* Kiểm tra role và chỉ hiển thị Trang Chủ nếu role là ADMIN */}
+                {user?.role === "ADMIN" && (
+                  <li>
+                    <NavLink
+                      className={({ isActive }) =>
+                        `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
   ${
     isActive ? "bg-blue-400 text-white" : "hover:bg-slate-300 hover:text-white"
   }`
-                    }
-                    to="/Tour"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
+                      }
+                      to="/Tour"
                     >
-                      <path
-                        fill="currentColor"
-                        d="m18.25 22l-2.75-3l1.16-1.18l1.59 1.59l3.59-3.59L23 17.23zM20.5 3a.5.5 0 0 1 .5.5v9.84c-.63-.22-1.3-.34-2-.34V5.7l-3 1.16v6.94c-.8.47-1.5 1.11-2 1.88V6.87l-4-1.4v11.66l3.05 1.07l-.05.8c0 .46.05.92.15 1.35L9 18.9l-5.34 2.07l-.16.03a.5.5 0 0 1-.5-.5V5.38c0-.23.15-.41.36-.48L9 3l6 2.1l5.34-2.07zM5 6.46v11.85l3-1.16V5.45z"
-                      />
-                    </svg>
-                    TOUR
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32px"
+                        height="32px"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="m18.25 22l-2.75-3l1.16-1.18l1.59 1.59l3.59-3.59L23 17.23zM20.5 3a.5.5 0 0 1 .5.5v9.84c-.63-.22-1.3-.34-2-.34V5.7l-3 1.16v6.94c-.8.47-1.5 1.11-2 1.88V6.87l-4-1.4v11.66l3.05 1.07l-.05.8c0 .46.05.92.15 1.35L9 18.9l-5.34 2.07l-.16.03a.5.5 0 0 1-.5-.5V5.38c0-.23.15-.41.36-.48L9 3l6 2.1l5.34-2.07zM5 6.46v11.85l3-1.16V5.45z"
+                        />
+                      </svg>
+                      TOUR
+                    </NavLink>
+                  </li>
+                )}
+                {/* Kiểm tra role và chỉ hiển thị Trang Chủ nếu role là ADMIN */}
+                {user?.role === "ADMIN" && (
+                  <li>
+                    <NavLink
+                      className={({ isActive }) =>
+                        `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
   ${
     isActive ? "bg-blue-400 text-white" : "hover:bg-slate-300 hover:text-white"
   }`
-                    }
-                    to="/Staff"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
+                      }
+                      to="/Staff"
                     >
-                      <path
-                        fill="currentColor"
-                        d="M18.72 14.76c.35-.85.54-1.76.54-2.76c0-.72-.11-1.41-.3-2.05c-.65.15-1.33.23-2.04.23A9.07 9.07 0 0 1 9.5 6.34a9.2 9.2 0 0 1-4.73 4.88c-.04.25-.04.52-.04.78A7.27 7.27 0 0 0 12 19.27c1.05 0 2.06-.23 2.97-.64c.57 1.09.83 1.63.81 1.63c-1.64.55-2.91.82-3.78.82c-2.42 0-4.73-.95-6.43-2.66a9 9 0 0 1-2.24-3.69H2v-4.55h1.09a9.09 9.09 0 0 1 15.33-4.6a9 9 0 0 1 2.47 4.6H22v4.55h-.06L18.38 18l-5.3-.6v-1.67h4.83zm-9.45-2.99c.3 0 .59.12.8.34a1.136 1.136 0 0 1 0 1.6c-.21.21-.5.33-.8.33c-.63 0-1.14-.5-1.14-1.13s.51-1.14 1.14-1.14m5.45 0c.63 0 1.13.51 1.13 1.14s-.5 1.13-1.13 1.13s-1.14-.5-1.14-1.13a1.14 1.14 0 0 1 1.14-1.14"
-                      />
-                    </svg>
-                    NHÂN VIÊN
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    aria-current="page"
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32px"
+                        height="32px"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M18.72 14.76c.35-.85.54-1.76.54-2.76c0-.72-.11-1.41-.3-2.05c-.65.15-1.33.23-2.04.23A9.07 9.07 0 0 1 9.5 6.34a9.2 9.2 0 0 1-4.73 4.88c-.04.25-.04.52-.04.78A7.27 7.27 0 0 0 12 19.27c1.05 0 2.06-.23 2.97-.64c.57 1.09.83 1.63.81 1.63c-1.64.55-2.91.82-3.78.82c-2.42 0-4.73-.95-6.43-2.66a9 9 0 0 1-2.24-3.69H2v-4.55h1.09a9.09 9.09 0 0 1 15.33-4.6a9 9 0 0 1 2.47 4.6H22v4.55h-.06L18.38 18l-5.3-.6v-1.67h4.83zm-9.45-2.99c.3 0 .59.12.8.34a1.136 1.136 0 0 1 0 1.6c-.21.21-.5.33-.8.33c-.63 0-1.14-.5-1.14-1.13s.51-1.14 1.14-1.14m5.45 0c.63 0 1.13.51 1.13 1.14s-.5 1.13-1.13 1.13s-1.14-.5-1.14-1.13a1.14 1.14 0 0 1 1.14-1.14"
+                        />
+                      </svg>
+                      NHÂN VIÊN
+                    </NavLink>
+                  </li>
+                )}
+                {/* Kiểm tra role và chỉ hiển thị Trang Chủ nếu role là ADMIN */}
+                {user?.role === "ADMIN" && (
+                  <li>
+                    <NavLink
+                      aria-current="page"
+                      className={({ isActive }) =>
+                        `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
                       ${
                         isActive
                           ? "bg-blue-400 text-white"
                           : "hover:bg-slate-300 hover:text-white"
                       }`
-                    }
-                    to="/History"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
+                      }
+                      to="/History"
                     >
-                      <path
-                        fill="currentColor"
-                        d="M5 19V5zv-.112zm0 2q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v7q0 .425-.288.713T20 13t-.712-.288T19 12V5H5v14h6q.425 0 .713.288T12 20t-.288.713T11 21zm12.35-1.825l3.525-3.55q.3-.3.713-.3t.712.3t.3.713t-.3.712l-4.25 4.25q-.3.3-.712.3t-.713-.3L14.5 19.175q-.275-.3-.275-.712t.3-.713t.7-.3t.7.3zM8 13q.425 0 .713-.288T9 12t-.288-.712T8 11t-.712.288T7 12t.288.713T8 13m0-4q.425 0 .713-.288T9 8t-.288-.712T8 7t-.712.288T7 8t.288.713T8 9m8 4q.425 0 .713-.288T17 12t-.288-.712T16 11h-4q-.425 0-.712.288T11 12t.288.713T12 13zm0-4q.425 0 .713-.288T17 8t-.288-.712T16 7h-4q-.425 0-.712.288T11 8t.288.713T12 9z"
-                      />
-                    </svg>
-                    TOUR ĐÃ ĐI
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    aria-current="page"
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
-                      ${
-                        isActive
-                          ? "bg-blue-400 text-white"
-                          : "hover:bg-slate-300 hover:text-white"
-                      }`
-                    }
-                    to="/Location"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M12 4c2.2 0 4 1.8 4 4c0 2.1-2.1 5.5-4 7.9c-1.9-2.5-4-5.8-4-7.9c0-2.2 1.8-4 4-4m0-2C8.7 2 6 4.7 6 8c0 4.5 6 11 6 11s6-6.6 6-11c0-3.3-2.7-6-6-6m0 4c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2m8 13c0 2.2-3.6 4-8 4s-8-1.8-8-4c0-1.3 1.2-2.4 3.1-3.2l.6.9c-1 .5-1.7 1.1-1.7 1.8c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5c0-.7-.7-1.3-1.8-1.8l.6-.9c2 .8 3.2 1.9 3.2 3.2"
-                      />
-                    </svg>
-                    ĐIỂM ĐẾN
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    aria-current="page"
-                    className={({ isActive }) =>
-                      `group relative flex items-center gap-2.5 rounded-sm  px-8 py-2 font-medium duration-100 ease-in-out 
-                      ${
-                        isActive
-                          ? "bg-blue-400 text-white"
-                          : "hover:bg-slate-300 hover:text-white"
-                      }`
-                    }
-                    to="/Feedback"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="32px"
-                      height="32px"
-                      viewBox="0 0 24 24"
-                      className="duration-300 ease-in-out group-hover:scale-110 group-hover:text-white"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M12 15q.425 0 .713-.288T13 14t-.288-.712T12 13t-.712.288T11 14t.288.713T12 15m0-4q.425 0 .713-.288T13 10V6q0-.425-.288-.712T12 5t-.712.288T11 6v4q0 .425.288.713T12 11m-6 7l-2.3 2.3q-.475.475-1.088.213T2 19.575V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-.85-2H20V4H4v13.125zM4 16V4z"
-                      />
-                    </svg>
-                    PHẢN HỒI
-                  </NavLink>
-                </li>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32px"
+                        height="32px"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M5 19V5zv-.112zm0 2q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v7q0 .425-.288.713T20 13t-.712-.288T19 12V5H5v14h6q.425 0 .713.288T12 20t-.288.713T11 21zm12.35-1.825l3.525-3.55q.3-.3.713-.3t.712.3t.3.713t-.3.712l-4.25 4.25q-.3.3-.712.3t-.713-.3L14.5 19.175q-.275-.3-.275-.712t.3-.713t.7-.3t.7.3zM8 13q.425 0 .713-.288T9 12t-.288-.712T8 11t-.712.288T7 12t.288.713T8 13m0-4q.425 0 .713-.288T9 8t-.288-.712T8 7t-.712.288T7 8t.288.713T8 9m8 4q.425 0 .713-.288T17 12t-.288-.712T16 11h-4q-.425 0-.712.288T11 12t.288.713T12 13zm0-4q.425 0 .713-.288T17 8t-.288-.712T16 7h-4q-.425 0-.712.288T11 8t.288.713T12 9z"
+                        />
+                      </svg>
+                      TOUR ĐÃ ĐI
+                    </NavLink>
+                  </li>
+                )}
               </ul>
             </div>
           </nav>

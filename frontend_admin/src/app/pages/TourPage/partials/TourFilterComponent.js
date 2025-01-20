@@ -1,26 +1,34 @@
-import { useState, useEffect } from "react";
-import { useFilterContext } from "../../context/FilterContext.js";
+import React, { useEffect, useState } from "react";
+import { useFilterContext } from "../../../context/FilterContext";
 
-export default function FilterComponent({ onFilterApply, onReset, status }) {
+export default function TourFilterComponent({ onFilterApply, onReset }) {
   const { locations } = useFilterContext(); // Lấy dữ liệu từ context
+
   const [filters, setFilters] = useState({
-    date: "",
+    tourType: "",
     location: "",
-    status: "", // Trạng thái sẽ được lấy từ props
+    priceRange: "",
   });
-  // Kiểm tra dữ liệu locations và status
 
-  // Khi status props thay đổi, cập nhật lại state filters.status
-  useEffect(() => {
-    if (status && status.length > 0) {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        status: "", // Set mặc định nếu cần
-      }));
-    }
-  }, [status]); // Chạy lại mỗi khi status thay đổi
+  const tourTypes = [
+    { id: "domestic", name: "TRONG NƯỚC" },
+    { id: "international", name: "NƯỚC NGOÀI" },
+  ];
 
-  // Khi locations context thay đổi, cập nhật lại state filters.location
+  // const locations = [
+  //   { id: "hanoi", locationName: "Hà Nội" },
+  //   { id: "danang", locationName: "Đà Nẵng" },
+  //   { id: "hochiminh", locationName: "Hồ Chí Minh" },
+  //   { id: "dalat", locationName: "Đà Lạt" },
+  //   { id: "halong", locationName: "Hạ Long" },
+  // ];
+
+  const priceRanges = [
+    { id: "under5m", name: "Dưới 5 triệu" },
+    { id: "5to10m", name: "5 - 10 triệu" },
+    { id: "10to20m", name: "10 - 20 triệu" },
+    { id: "above20m", name: "Trên 20 triệu" },
+  ];
   useEffect(() => {
     if (locations && locations.length > 0) {
       setFilters((prevFilters) => ({
@@ -30,31 +38,36 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
     }
   }, [locations]); // Chạy lại mỗi khi locations thay đổi
 
-  const handleChange = (field, value) => {
-    setFilters({ ...filters, [field]: value });
+  const handleChange = (key, value) => {
+    setFilters({ ...filters, [key]: value });
   };
 
   const handleApply = () => {
-    onFilterApply(filters); // Truyền filters khi áp dụng bộ lọc
+    onFilterApply(filters);
   };
 
   const handleReset = () => {
-    const resetFilters = { date: "", location: "", status: "" };
-    setFilters(resetFilters);
-    onReset(resetFilters); // Reset bộ lọc và truyền dữ liệu reset
+    setFilters({ tourType: "", location: "", priceRange: "" });
+    onReset();
   };
 
   return (
     <div className="p-2 px-3 bg-white shadow rounded-xl flex flex-wrap gap-4 items-center w-fit">
-      {/* Ngày */}
+      {/* Loại tour */}
       <div className="flex flex-row items-center space-x-2">
-        <label className="text-sm font-semibold">Ngày</label>
-        <input
-          type="date"
-          value={filters.date}
-          onChange={(e) => handleChange("date", e.target.value)}
+        <label className="text-sm font-semibold">Loại Tour</label>
+        <select
+          value={filters.tourType}
+          onChange={(e) => handleChange("tourType", e.target.value)}
           className="border p-2 rounded text-sm"
-        />
+        >
+          <option value="">Tất cả</option>
+          {tourTypes.map((type) => (
+            <option key={type.id} value={type.id}>
+              {type.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Địa điểm */}
@@ -74,18 +87,18 @@ export default function FilterComponent({ onFilterApply, onReset, status }) {
         </select>
       </div>
 
-      {/* Tình trạng */}
+      {/* Giá */}
       <div className="flex flex-row items-center space-x-2">
-        <label className="text-sm font-semibold">Tình trạng</label>
+        <label className="text-sm font-semibold">Giá</label>
         <select
-          value={filters.status}
-          onChange={(e) => handleChange("status", e.target.value)}
+          value={filters.priceRange}
+          onChange={(e) => handleChange("priceRange", e.target.value)}
           className="border p-2 rounded text-sm"
         >
           <option value="">Tất cả</option>
-          {status.map((stat) => (
-            <option key={stat.id} value={stat.name}>
-              {stat.name}
+          {priceRanges.map((range) => (
+            <option key={range.id} value={range.id}>
+              {range.name}
             </option>
           ))}
         </select>
